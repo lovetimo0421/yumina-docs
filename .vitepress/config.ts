@@ -101,9 +101,7 @@ export default defineConfig({
       next: '下一篇'
     },
 
-    lastUpdated: {
-      text: '最后更新'
-    },
+    lastUpdated: false,
 
     returnToTopLabel: '回到顶部',
     sidebarMenuLabel: '菜单',

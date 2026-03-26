@@ -6,7 +6,7 @@
     "dev": "vitepress dev",
     "build": "vitepress build",
     "preview": "vitepress preview",
-    "start": "vitepress build && vitepress preview --port ${PORT:-4173}"
+    "start": "vitepress preview --port ${PORT:-4173}"
   },
   "keywords": [],
   "author": "",

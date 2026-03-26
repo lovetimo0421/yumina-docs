@@ -75,8 +75,6 @@
 
 如果你想用自己的 API Key 来驱动 AI（不消耗平台额度），可以在这里添加。
 
-![API Key 管理界面](./images/api-key-settings.png)
-
 **支持的提供商：**
 
 | 提供商 | Key 格式 | 获取链接 |

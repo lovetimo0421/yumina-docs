@@ -1,0 +1,95 @@
+import { defineConfig } from 'vitepress'
+
+export default defineConfig({
+  title: 'Yumina 创作者指南',
+  description: 'Yumina AI 互动小说平台 — 创作者文档',
+  lang: 'zh-CN',
+  base: '/',
+
+  head: [
+    ['link', { rel: 'icon', href: '/favicon.ico' }],
+  ],
+
+  sitemap: {
+    hostname: 'https://docs.yumina.io',
+  },
+
+  appearance: false,
+  ignoreDeadLinks: true,
+
+  themeConfig: {
+    nav: [
+      { text: '首页', link: '/creator-guide/' },
+      { text: 'Yumina', link: 'https://yumina.io' }
+    ],
+
+    sidebar: {
+      '/creator-guide/': [
+        {
+          text: '创作之旅',
+          items: [
+            { text: '欢迎', link: '/creator-guide/00-welcome' },
+            { text: '核心概念速览', link: '/creator-guide/01-core-concepts' },
+            { text: '新手指南：认识编辑器', link: '/creator-guide/01-beginner-guide' },
+            { text: '教程：从零做一个生存恐怖世界', link: '/creator-guide/02-tutorial-basic' },
+            { text: '懒人教程：让 AI 帮你做', link: '/creator-guide/02-tutorial-agent' },
+            { text: '进阶教程：大逃杀游戏（即将推出）', link: '/creator-guide/02-tutorial-advanced' },
+          ]
+        },
+        {
+          text: '功能参考',
+          items: [
+            { text: '词条与世界书', link: '/creator-guide/03-entries-and-lorebook' },
+            { text: '变量系统', link: '/creator-guide/04-variables' },
+            { text: 'AI 指令与宏', link: '/creator-guide/05-directives-and-macros' },
+            { text: '行为规则引擎', link: '/creator-guide/06-rules-engine' },
+            { text: '自定义前端指南', link: '/creator-guide/07-components' },
+            { text: '自定义消息渲染器', link: '/creator-guide/08-message-renderer' },
+            { text: '音频系统', link: '/creator-guide/09-audio' },
+            { text: 'AI 模型与设置', link: '/creator-guide/10-ai-settings' },
+            { text: '发布、导出与 Bundle', link: '/creator-guide/11-publish-and-share' },
+          ]
+        },
+        {
+          text: '附录',
+          items: [
+            { text: '术语表', link: '/creator-guide/12-glossary' },
+            { text: '常见问题', link: '/creator-guide/13-faq' },
+          ]
+        }
+      ]
+    },
+
+    outline: {
+      label: '本页目录',
+      level: [2, 3]
+    },
+
+    search: {
+      provider: 'local',
+      options: {
+        translations: {
+          button: { buttonText: '搜索', buttonAriaLabel: '搜索' },
+          modal: {
+            noResultsText: '没有找到相关结果',
+            resetButtonTitle: '清除',
+            footer: { selectText: '选择', navigateText: '切换', closeText: '关闭' }
+          }
+        }
+      }
+    },
+
+    docFooter: {
+      prev: '上一篇',
+      next: '下一篇'
+    },
+
+    lastUpdated: {
+      text: '最后更新'
+    },
+
+    returnToTopLabel: '回到顶部',
+    sidebarMenuLabel: '菜单',
+    darkModeSwitchLabel: '主题',
+  }
+})

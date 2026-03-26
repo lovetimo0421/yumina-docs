@@ -1,8 +1,8 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'Yumina 创作者指南',
-  description: 'Yumina AI 互动小说平台 — 创作者文档',
+  title: 'Yumina 文档',
+  description: 'Yumina AI 互动小说平台 — 官方文档',
   lang: 'zh-CN',
   base: '/',
 
@@ -19,21 +19,37 @@ export default defineConfig({
 
   themeConfig: {
     nav: [
-      { text: '首页', link: '/creator-guide/' },
+      { text: '首页', link: '/' },
+      { text: '基础教程', link: '/guide/01-what-is-yumina' },
+      { text: '创作者指南', link: '/creator-guide/00-welcome' },
       { text: 'Yumina', link: 'https://yumina.io' }
     ],
 
     sidebar: {
+      '/guide/': [
+        {
+          text: '基础教程',
+          items: [
+            { text: '什么是 Yumina', link: '/guide/01-what-is-yumina' },
+            { text: '注册与登录', link: '/guide/02-register-and-login' },
+            { text: '探索世界', link: '/guide/03-explore-worlds' },
+            { text: '开始游戏', link: '/guide/04-start-playing' },
+            { text: '我的库', link: '/guide/05-my-library' },
+            { text: '多人房间', link: '/guide/06-multiplayer' },
+            { text: '个人主页与社交', link: '/guide/07-profile-and-social' },
+            { text: '设置', link: '/guide/08-settings' },
+          ]
+        }
+      ],
       '/creator-guide/': [
         {
-          text: '创作之旅',
+          text: '入门',
           items: [
             { text: '欢迎', link: '/creator-guide/00-welcome' },
-            { text: '核心概念速览', link: '/creator-guide/01-core-concepts' },
             { text: '新手指南：认识编辑器', link: '/creator-guide/01-beginner-guide' },
             { text: '教程：从零做一个生存恐怖世界', link: '/creator-guide/02-tutorial-basic' },
             { text: '懒人教程：让 AI 帮你做', link: '/creator-guide/02-tutorial-agent' },
-            { text: '进阶教程：大逃杀游戏（即将推出）', link: '/creator-guide/02-tutorial-advanced' },
+            { text: '进阶教程：大逃杀游戏', link: '/creator-guide/02-tutorial-advanced' },
           ]
         },
         {
@@ -53,6 +69,7 @@ export default defineConfig({
         {
           text: '附录',
           items: [
+            { text: '核心概念速览', link: '/creator-guide/01-core-concepts' },
             { text: '术语表', link: '/creator-guide/12-glossary' },
             { text: '常见问题', link: '/creator-guide/13-faq' },
           ]

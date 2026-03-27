@@ -21,6 +21,7 @@ export default defineConfig({
     nav: [
       { text: '首页', link: '/' },
       { text: '基础教程', link: '/guide/01-what-is-yumina' },
+      { text: '愿景', link: '/vision/' },
       { text: '创作者指南', link: '/creator-guide/00-welcome' },
       { text: 'Yumina', link: 'https://yumina.io' }
     ],
@@ -38,6 +39,14 @@ export default defineConfig({
             { text: '多人房间', link: '/guide/06-multiplayer' },
             { text: '个人主页与社交', link: '/guide/07-profile-and-social' },
             { text: '设置', link: '/guide/08-settings' },
+          ]
+        }
+      ],
+      '/vision/': [
+        {
+          text: '愿景',
+          items: [
+            { text: '开源', link: '/vision/' },
           ]
         }
       ],

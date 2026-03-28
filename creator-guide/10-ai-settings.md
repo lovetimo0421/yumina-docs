@@ -1,89 +1,89 @@
 <div v-pre>
 
-# AI模型与设置
+# AI Model & Settings
 
-> 世界设置（WorldSettings）是你给AI下达的"工作说明书"——决定了它回复多长、多有创意、记忆力怎么样。
-
----
-
-## 简单版
-
-这些设置控制的是AI"怎么回复你"。你可以把它想象成给AI调音台——每个旋钮都影响输出的味道。但说实话，**大部分情况下默认值就很好用，你完全不需要改任何东西**。
-
-如果非要动手，先认识两个最重要的旋钮：
-
-**temperature（创造力）**——AI脑子里的"冒险精神"：
-
-- `0` = 死板精确，每次给同样的输入都回一模一样的话。适合做计算器，不适合讲故事。
-- `1.0` = 默认值，正常发挥，既有创意又不会胡说八道。
-- `2.0` = 天马行空，可能冒出天才比喻，也可能蹦出一堆胡话。
-
-**推荐范围：0.7 - 1.0**。写文学向的世界可以往上调，做机制严格的游戏就往下压。
-
-**maxTokens（回复长度上限）**——AI单次回复最多能写多少token。1个token大约是1个汉字或半个英文单词。默认 `12000`，相当于6000-8000个汉字，足够写一篇短篇小说了。如果你觉得AI话太多，砍到4000-6000；如果你的世界需要超长叙事（比如多角色群戏），保持默认就好。
-
-**playerName（玩家名字）**——默认是"User"。改成别的之后，提示词里所有的 `{{user}}` 宏都会替换成你设的名字。比如设成"旅行者"，AI就会叫玩家"旅行者"。
-
-就这三个，足够应付90%的情况了。等你跑了几轮测试、发现了具体问题（比如"AI太啰嗦"或"AI总是重复"），再回来翻详细版。
+> WorldSettings are your "job description" for the AI — they determine how long it replies, how creative it gets, and how much it remembers.
 
 ---
 
-## 详细版
+## The short version
 
-以下是 `WorldSettings` 的全部字段，按功能分组。标注"可选"的意思是你可以不填，引擎会用默认值或者干脆不传给AI。
+These settings control how the AI responds. Think of it as a mixing board for the AI — each knob shapes the flavor of its output. Honestly though, **in most cases the defaults work great and you don't need to change anything.**
 
-### 核心生成参数
+If you must tinker, start with two knobs:
 
-| 参数 | 类型 | 默认值 | 范围 | 说明 |
-|------|------|--------|------|------|
-| `maxTokens` | 整数 | `12000` | 正整数 | AI单次回复的最大token数。相当于给AI说"最多写这么多字" |
-| `maxContext` | 整数 | `200000` | 正整数 | 上下文窗口大小。聊天记录超过这个长度时，引擎会裁剪最早的消息。20万token对绝大多数模型绰绰有余——除非你用的是小窗口模型（比如8K的），否则不用改 |
+**temperature (creativity)** — the AI's "adventurous spirit":
 
-### 采样参数
+- `0` = stiff and precise; give it the same input twice and you get the same reply. Great for calculators, not for storytelling.
+- `1.0` = default value, normal performance — creative but not incoherent.
+- `2.0` = wildly imaginative, might produce brilliant metaphors or total gibberish.
 
-这些参数一起决定了AI"从候选词里怎么挑"。你可以把AI生成文本想象成不断从一袋彩球里摸球——这些参数控制袋子里放多少球、怎么摸。
+**Recommended range: 0.7–1.0**. Bump it up for literary worlds, dial it down for strict mechanic-heavy games.
 
-| 参数 | 类型 | 默认值 | 范围 | 说明 |
-|------|------|--------|------|------|
-| `temperature` | 浮点数 | `1.0` | `0.0 - 2.0` | 创造力旋钮。越高越随机/有创意，越低越稳定可预测 |
-| `topP` | 浮点数 | 可选 | `0.0 - 1.0` | 核采样（nucleus sampling）。只从累计概率排前P%的候选词里选。比如 `0.9` = 只看概率最高的那90%候选词，砍掉长尾的低概率词。和temperature互补——一个控制"多随机"，一个控制"候选池多大"。**一般改一个就够了，两个都大幅调容易翻车** |
-| `topK` | 整数 | 可选 | >=0 | 直接限制候选token数量。比如 `topK=50` 就是"你只能从最可能的50个词里挑"。不是所有模型都支持这个参数 |
-| `minP` | 浮点数 | 可选 | `0.0 - 1.0` | 最小概率阈值。概率低于这个值的候选词直接淘汰。比如 `minP=0.05` 就是说"概率低于5%的词不要"。比topK更智能——它按比例筛而不是按数量，所以在AI很"确定"的时候候选池自动缩小，在AI不确定的时候候选池自动放大 |
-| `frequencyPenalty` | 浮点数 | 可选 | `-2.0 - 2.0` | 频率惩罚。正值减少AI重复用词——已经用过的词会被降权，用得越多降得越狠。如果AI老是车轱辘话来回说，试试设 `0.3 - 0.5` |
-| `presencePenalty` | 浮点数 | 可选 | `-2.0 - 2.0` | 存在惩罚。正值鼓励AI谈论新话题——只要某个词出现过（不管几次），就统一降一个权。和frequencyPenalty的区别：frequency看"用了几次"，presence只看"用没用过" |
+**maxTokens (reply length limit)** — maximum tokens the AI can use in a single reply. 1 token is roughly 1 Chinese character or half an English word. Default `12000` — equivalent to 6,000–8,000 English words, enough for a short story. If the AI is too wordy, cut it to 4,000–6,000. If your world needs very long narratives (like multi-character ensemble scenes), keep the default.
 
-### 玩家与世界书
+**playerName (player name)** — defaults to "User." Change it and all `{{user}}` macros in the prompt are replaced with whatever you set. E.g. set it to "Traveler" and the AI will call the player "Traveler."
 
-| 参数 | 类型 | 默认值 | 范围 | 说明 |
-|------|------|--------|------|------|
-| `playerName` | 字符串 | `"User"` | 任意 | 玩家名字。提示词里的 `{{user}}` 宏会替换成这个值 |
-| `lorebookScanDepth` | 整数 | `2` | 正整数 | 扫描最近几条消息来匹配世界书关键词。默认2就是只看最近2条。想要更深的上下文触发就调高，但太高会增加匹配开销。在编辑器的 **Lorebook → Entry Settings** 里可以修改 |
-| `lorebookRecursionDepth` | 整数 | `0` | `0 - 10` | 词条递归触发深度。`0` = 不递归，只做一轮关键词匹配。设成 `2` 的话，被第一轮触发的词条内容会再扫一轮关键词，以此类推最多2层。适合做复杂的关联世界设定，但小心：递归太深可能把你的token预算吃光。在编辑器的 **Lorebook → Entry Settings** 里可以修改 |
-| `lorebookBudgetPercent` | 浮点数 | `100` | `0 - 100` | 世界书可以占用上下文的百分比。`100` = 不限制 |
-| `lorebookBudgetCap` | 整数 | `0` | >=0 | 世界书token硬上限。`0` = 不设上限 |
+Just those three cover 90% of situations. Run a few test sessions, find a specific issue (like "the AI is too long-winded" or "it keeps repeating itself"), then come back and read the detailed version.
 
-::: tip 关于 lorebookBudgetPercent 和 lorebookBudgetCap
-这两个参数目前在编辑器界面里没有暴露，使用默认值即可（不限制）。如果你确实需要调整，可以通过导出世界 JSON、手动编辑 `settings` 对象后再导入来修改。
+---
+
+## The detailed version
+
+Everything in `WorldSettings`, organized by function. Marked "optional" means you don't have to set it — the engine will use default values or just not pass it to the AI.
+
+### Core generation parameters
+
+| Parameter | Type | Default | Range | Description |
+|-----------|------|---------|-------|-------------|
+| `maxTokens` | integer | `12000` | positive integer | Max tokens for a single AI reply. Like telling the AI "write at most this much" |
+| `maxContext` | integer | `200000` | positive integer | Context window size. When chat history exceeds this length, the engine trims oldest messages. 200K tokens is more than enough for most models — don't change unless you're using a small-window model (like 8K) |
+
+### Sampling parameters
+
+These together determine how the AI "picks its next word." Imagine the AI generating text by drawing colored balls from a bag — these parameters control how many balls go in and how they're drawn.
+
+| Parameter | Type | Default | Range | Description |
+|-----------|------|---------|-------|-------------|
+| `temperature` | float | `1.0` | `0.0 - 2.0` | Creativity knob. Higher = more random/creative, lower = more stable/predictable |
+| `topP` | float | optional | `0.0 - 1.0` | Nucleus sampling. Only sample from the top P% of candidate tokens by probability. E.g. `0.9` = only look at the 90% most likely candidates, cutting the long tail. Complements temperature — one controls "how random," the other controls "how big the candidate pool is." **Changing just one is usually enough; aggressively adjusting both can cause problems** |
+| `topK` | integer | optional | >=0 | Directly limits the number of candidate tokens. E.g. `topK=50` = "only pick from the 50 most likely words." Not all models support this parameter |
+| `minP` | float | optional | `0.0 - 1.0` | Minimum probability threshold. Candidate tokens below this are discarded. E.g. `minP=0.05` = "don't consider anything with less than 5% probability." Smarter than topK — scales with the AI's confidence level: smaller candidate pool when AI is confident, larger when uncertain |
+| `frequencyPenalty` | float | optional | `-2.0 - 2.0` | Frequency penalty. Positive values reduce word repetition — words already used get downweighted, more so the more they've been used. If the AI is stuck in a rut repeating itself, try `0.3–0.5` |
+| `presencePenalty` | float | optional | `-2.0 - 2.0` | Presence penalty. Positive values encourage introducing new topics — any word that has appeared at all gets uniformly downweighted. Difference from frequency: frequency looks at "how many times," presence just looks at "whether it appeared" |
+
+### Player & lorebook
+
+| Parameter | Type | Default | Range | Description |
+|-----------|------|---------|-------|-------------|
+| `playerName` | string | `"User"` | any | Player name. `{{user}}` macros in the prompt are replaced with this |
+| `lorebookScanDepth` | integer | `2` | positive integer | How many recent messages to scan for lorebook keyword matching. Default 2 = only the last 2 messages. Increase for deeper context triggering, but too high adds matching overhead. Modifiable in the editor under **Lorebook → Entry Settings** |
+| `lorebookRecursionDepth` | integer | `0` | `0 - 10` | Lorebook recursive trigger depth. `0` = no recursion, single-pass keyword matching. Set to `2` and triggered entries' content gets scanned for keywords again, up to 2 layers deep. Good for complex interconnected lore, but watch out: deep recursion can eat through your token budget. Modifiable in **Lorebook → Entry Settings** |
+| `lorebookBudgetPercent` | float | `100` | `0 - 100` | Percentage of context that lorebook can use. `100` = unlimited |
+| `lorebookBudgetCap` | integer | `0` | >=0 | Hard token cap for lorebook. `0` = no cap |
+
+::: tip About lorebookBudgetPercent and lorebookBudgetCap
+These parameters aren't currently exposed in the editor UI — use the defaults (unlimited). If you really need to adjust them, export the world JSON, manually edit the `settings` object, and re-import.
 :::
 
-### UI与输出控制
+### UI & output control
 
-| 参数 | 类型 | 默认值 | 说明 |
-|------|------|--------|------|
-| `fullScreenComponent` | 布尔 | `false` | 设为 `true` 时，自定义组件会接管整个屏幕。适合做完整的游戏界面（比如地下城探索、视觉小说），聊天窗口会让位给你的自定义UI |
-| `structuredOutput` | 布尔 | `false` | 设为 `true` 时，通过 `response_format: { type: "json_object" }` 要求AI返回JSON格式。适合需要严格解析AI输出的机制世界。注意：开了这个之后AI的回复不再是自然语言，而是JSON对象 |
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `fullScreenComponent` | boolean | `false` | When `true`, custom components take over the entire screen. Great for complete game interfaces (dungeon exploration, visual novels) where you want your custom UI instead of the chat window |
+| `structuredOutput` | boolean | `false` | When `true`, forces the AI to reply in JSON format via `response_format: { type: "json_object" }`. For mechanic-heavy worlds that need to strictly parse AI output. Note: with this on, AI replies are JSON objects, not natural language |
 
-::: warning 高级设置
-`structuredOutput` 目前在编辑器界面里没有暴露。如果你需要开启 JSON 模式，需要通过导出世界 JSON、在 `settings` 里手动加上 `"structuredOutput": true` 后再导入。这是一个面向进阶创作者的功能——大多数世界不需要它。
+::: warning Advanced setting
+`structuredOutput` is not currently exposed in the editor UI. To enable JSON mode, you need to export the world JSON, manually add `"structuredOutput": true` to the `settings` object, and re-import. This is an advanced creator feature — most worlds don't need it.
 :::
 
 ---
 
-## 实用例子
+## Practical examples
 
-### 例1：默认推荐配置（适合大多数世界）
+### Example 1: Recommended default config (works for most worlds)
 
-什么都不改，直接用默认值：
+Change nothing, just use defaults:
 
 ```json
 {
@@ -96,11 +96,11 @@
 }
 ```
 
-这就是"开箱即用"配置。temperature 1.0既不死板也不疯癫，maxTokens 12000够写长篇回复，世界书扫描最近2条消息。对于日常RP、故事互动、角色扮演来说完全够用。你甚至不需要手动写这段JSON——不设置就是这些默认值。
+This is the "ready to go" config. Temperature 1.0 is neither stiff nor crazy. maxTokens 12000 supports long replies. Lorebook scans the last 2 messages. For daily RP, story interaction, and character roleplay, this is perfectly fine. You don't even need to write this JSON — not setting anything gives you exactly these defaults.
 
-### 例2：严肃战略游戏（低随机性，高精确度）
+### Example 2: Serious strategy game (low randomness, high precision)
 
-你在做一个战棋/策略类世界，需要AI严格遵守规则，不要乱发挥：
+You're building a wargame/strategy world and need the AI to strictly follow rules without going off-script:
 
 ```json
 {
@@ -108,15 +108,15 @@
   "topP": 0.9,
   "frequencyPenalty": 0.2,
   "maxTokens": 6000,
-  "playerName": "指挥官"
+  "playerName": "Commander"
 }
 ```
 
-temperature降到0.5让AI变得"听话"，不会突然来一段抒情散文。topP 0.9进一步收窄选词范围。maxTokens砍到6000，因为战略游戏的回复通常不需要太长——简洁的战况报告比冗长的文学描写更合适。轻微的frequencyPenalty让AI不要重复说同样的战术分析。
+Temperature down to 0.5 makes the AI "obedient" — no surprise lyrical tangents. topP 0.9 further narrows word selection. maxTokens cut to 6000 because strategy game replies don't need to be long — concise situation reports beat lengthy literary descriptions. Mild frequencyPenalty prevents the AI from repeating the same tactical analysis.
 
-### 例3：创意写作/文学风格（高创造力，鼓励新内容）
+### Example 3: Creative writing / literary style (high creativity, encourage novelty)
 
-你在做一个诗意的探索类世界，希望AI的文笔华丽、充满想象力：
+You're building a poetic exploration world, wanting vivid, imaginative AI prose:
 
 ```json
 {
@@ -124,14 +124,14 @@ temperature降到0.5让AI变得"听话"，不会突然来一段抒情散文。to
   "presencePenalty": 0.3,
   "frequencyPenalty": 0.4,
   "maxTokens": 12000,
-  "playerName": "旅人"
+  "playerName": "Traveler"
 }
 ```
 
-temperature拉到1.2给AI更多"灵感"（但别超过1.5，否则容易语无伦次）。presencePenalty 0.3鼓励AI引入新话题和新意象，不要总围着同一个东西转。frequencyPenalty 0.4减少重复用词，让文字更丰富多变。这个配置下AI会写出更有文学感的回复，但偶尔也可能"用力过猛"——这是创造力的代价。
+Temperature up to 1.2 gives the AI more "inspiration" (don't go over 1.5 or it starts rambling). presencePenalty 0.3 encourages the AI to introduce new topics and imagery rather than circling the same thing. frequencyPenalty 0.4 reduces word repetition for richer vocabulary. With this config, the AI will write more literary replies — but it might occasionally "try too hard." That's the price of creativity.
 
 ---
 
-**最后一句忠告：** 如果你不确定该怎么调，就别调。默认值是经过平衡的，适合绝大多数世界。等你跑了几轮测试、发现了具体问题，再针对性地动一两个参数，远比一上来就全部改一遍要靠谱得多。
+**One last word of advice:** if you're not sure what to change, don't change anything. The defaults are well-balanced and suit the vast majority of worlds. Once you've run a few test sessions and identified a specific problem, make one or two targeted adjustments rather than changing everything at once.
 
 </div>

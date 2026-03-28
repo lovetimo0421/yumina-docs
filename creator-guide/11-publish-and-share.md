@@ -1,205 +1,204 @@
-# 发布、导出与Bundle
+# Publishing, Exporting & Bundles
 
-> 世界做好了不分享出去，就像做了一桌好菜只给自己吃——也不是不行，但总觉得少点什么。
-
----
-
-## 简单版
-
-世界做好了，怎么让别人玩到？其实很简单：**去发现页面点发布就行。**
-
-在你点"发布"之前，先在编辑器的 **概览（Overview）** 里把这几样东西准备好：
-
-- **名字和描述** — 名字最多200字，描述最多10000字。好名字是门面，好描述是引路牌。
-- **封面图（Cover Image）** — 就是玩家在社区列表里第一眼看到的那张图。没封面的世界就像没贴海报的电影院，路过的人不知道里面放什么。
-- **标签（Tags）** — 最多 7 个。标签帮助玩家发现你的世界，比如"奇幻""恋爱""大逃杀""多人"之类的。
-- **年龄分级** — 全年龄（all）、R18、R18G，三选一。选了R18或R18G会自动打上NSFW标记。
-- **可见性** — 公开（所有人可见）或仅关注者可见。
-
-准备好之后，保存世界，回到 **发现（Discover）** 页面，点顶部的 **发布（Publish）** 按钮。在弹出的发布弹窗里选择你的世界、设好年龄分级和可见性、勾选同意条款，点发布。你的世界就会出现在 **发现（Discover）** 里，其他玩家可以搜索、浏览、直接玩或者复制一份去改造。
-
-不想用平台的发布系统？也可以把世界导出为JSON文件，直接发给朋友。或者，只导出你世界里的一部分内容——比如一套战斗系统——打成一个Bundle分享给其他创作者。
+> Building a world and not sharing it is like cooking a feast and eating alone — perfectly fine, but something feels missing.
 
 ---
 
-## 详细版
+## The short version
 
-### 发布状态（Status）
+When your world is done, how do you get it to other players? Simple: **go to the Discover page and hit publish.**
 
-一个世界有三种状态，像红绿灯一样控制它的可见性：
+Before you click "publish," make sure these are ready in the **Overview** section of the editor:
 
-| 状态 | 含义 | 别人能看到吗？ |
-|------|------|----------------|
-| `draft`（草稿） | 还在做，只有你自己能看到 | 不能 |
-| `published`（已发布） | 上线了，出现在发现（Discover）页面 | 能 |
-| `unpublished`（已下架） | 曾经发布过，但你收回来了 | 不能 |
+- **Name and description** — name up to 200 characters, description up to 10,000. A good name is your storefront; a good description is your guide.
+- **Cover image** — the first thing players see in the community listing. A world without a cover is like a movie theater without a poster — nobody knows what's playing inside.
+- **Tags** — up to 7. Tags help players discover your world: "fantasy," "romance," "battle royale," "multiplayer," and so on.
+- **Age rating** — all ages (all), R18, or R18G. Choosing R18 or R18G automatically adds an NSFW flag.
+- **Visibility** — public (visible to everyone) or followers-only.
 
-状态之间的切换是有规则的，不是随便跳的：
+Once ready, save the world, go to the **Discover** page, and click the **Publish** button at the top. In the publish dialog, select your world, set the age rating and visibility, check the terms agreement, and publish. Your world appears in **Discover** for others to search, browse, play directly, or fork and modify.
+
+Don't want to use the platform's publish system? Export your world as a JSON file and send it to friends directly. Or export just part of your world's content — like a battle system — as a Bundle to share with other creators.
+
+---
+
+## The detailed version
+
+### Publication status
+
+A world has three states, like a traffic light controlling its visibility:
+
+| Status | Meaning | Visible to others? |
+|--------|---------|-------------------|
+| `draft` | Still being worked on, only you can see it | No |
+| `published` | Live, appears on the Discover page | Yes |
+| `unpublished` | Was published, but you pulled it | No |
+
+Status transitions follow rules — you can't jump to any state arbitrarily:
 
 ```
 draft ---------> published
 published -----> unpublished
-unpublished ---> published（重新上架）
-unpublished ---> draft（退回草稿重新打磨）
+unpublished ---> published (re-publish)
+unpublished ---> draft (return to draft for rework)
 ```
 
-注意几个不能走的路：草稿不能直接变成"已下架"——你都没上架过，怎么下架呢？已发布也不能直接退回草稿——需要先下架再退回。
+Note: a draft can't go directly to "unpublished" — it was never published in the first place. A published world can't go directly back to draft — it needs to be unpublished first.
 
-当你下架一个世界时，系统会自动通知所有把它加入收藏库的玩家："这个世界下架了。"重新上架时也会通知他们："它又回来了。"挺贴心的。
+When you unpublish a world, the system automatically notifies all players who've added it to their library: "This world has been unpublished." When you re-publish, they get another notification: "It's back." Pretty thoughtful.
 
-### 发布时的各项设置
+### Publish settings
 
-以下设置都在 **发现（Discover）** 页面的 **发布弹窗** 里配置，不是在编辑器里。
+The following settings are configured in the **publish dialog** on the **Discover** page — not in the editor.
 
-**年龄分级（ageRating）**
+**Age rating (`ageRating`)**
 
-三个档位：
+Three tiers:
 
-| 分级 | 含义 |
-|------|------|
-| `all` | 全年龄，谁都能看 |
-| `r18` | 限制级，未成年不宜 |
-| `r18g` | 重口限制级（猎奇内容） |
+| Rating | Meaning |
+|--------|---------|
+| `all` | All ages, anyone can see |
+| `r18` | Restricted, not for minors |
+| `r18g` | Heavy restricted (graphic/extreme content) |
 
-设了 `r18` 或 `r18g`，`isNsfw` 会自动变成 `true`——你不用手动去勾。反过来也一样：如果你只设了 `isNsfw: true` 但没指定分级，系统会默认给你设成 `r18`。如果你什么都没设，发布时默认就是 `all` + 非NSFW。总之系统会帮你兜底，不会出现"分级和NSFW标记对不上"的尴尬局面。
+Setting `r18` or `r18g` automatically makes `isNsfw` true — you don't need to set it manually. Conversely, if you only set `isNsfw: true` without specifying a rating, the system defaults to `r18`. If you don't set anything, publish defaults to `all` + non-NSFW. The system handles consistency so you won't end up with mismatched ratings.
 
-**可见性（visibility）**
+**Visibility (`visibility`)**
 
 ```
-public     — 公开，所有人都能在发现（Discover）页面看到
-followers  — 仅关注者可见，适合小范围测试或给熟人圈子
+public     — public, everyone can see it on Discover
+followers  — followers-only, good for limited testing or sharing with your circle
 ```
 
-发布时如果没指定，默认是 `public`。
+Defaults to `public` if not specified at publish time.
 
-**是否允许编辑（allowEdit）**
+**Allow editing (`allowEdit`)**
 
-默认 `true`。开着的话，其他创作者可以复制（fork）你的世界去改造。关了的话，只有你自己能复制自己的世界。
+Defaults to `true`. When on, other creators can fork your world to modify it. Off means only you can fork your own world.
 
-这就像开源和闭源的区别：开了allowEdit，你的世界可能会被别人拿去做出各种有趣的变体；关了的话，你的内容就只能被玩、不能被改。看你自己的态度了。
+Like open-source vs. closed-source: with allowEdit on, your world might inspire interesting variations; off and your content can be played but not modified. Your call.
 
-**是否支持多人（allowMultiplayer）**
+**Allow multiplayer (`allowMultiplayer`)**
 
-默认 `false`。这个标记告诉平台这个世界是否设计了多人游玩功能。如果你在世界定义的schema里把 `multiplayerSettings.availability` 设为 `enabled`，系统在创建世界时也会自动推断这个值。具体的多人行为配置在下面的"多人模式设置"里讲。
+Defaults to `false`. This flag tells the platform whether the world is designed for multiplayer. If you set `multiplayerSettings.availability` to `enabled` in the world definition's schema, the system also infers this value automatically. Specific multiplayer behavior config is in "Multiplayer settings" below.
 
-**标签（tags）**
+**Tags (`tags`)**
 
-最多 7 个标签。标签在 **发现（Discover）** 页面的搜索和筛选里非常有用——平台会统计所有已发布世界的标签使用频率，玩家可以按标签浏览和搜索。输入标签时还有自动补全，会基于已有的热门标签给你建议。
+Up to 7 tags. Very useful for search and filtering on the Discover page — the platform tracks tag usage frequency across all published worlds, and players can browse and search by tag. Auto-complete suggests popular tags as you type.
 
-**封面图（thumbnailUrl）**
+**Cover image (`thumbnailUrl`)**
 
-在编辑器的 **概览（Overview）** 区域上传。**发现（Discover）** 页面的卡片、搜索结果、**我的库（Library）** 列表都会用到这张图。没封面的世界几乎不会被点开，强烈建议加一张。
+Upload in the **Overview** section of the editor. Used on Discover cards, search results, and in **My Library**. Worlds without covers almost never get clicked. Strongly recommend adding one.
 
-### 复制与Fork
+### Forking
 
-当一个世界处于已发布状态且 `allowEdit` 为 `true` 时，其他用户可以"复制"它。复制的过程是这样的：
+When a world is published and `allowEdit` is `true`, other users can "fork" it:
 
-1. 创建一份完整的副本，归复制者所有
-2. 名字自动加编号——如果原名叫"黑暗森林"，你的副本就叫"黑暗森林 (1)"；再复制一份就是"黑暗森林 (2)"，以此类推
-3. 副本默认是草稿状态，不会自动发布
-4. 保留原始的标签、描述、封面、Schema等所有内容
-5. 原世界的 `downloadCount`（下载计数）+1
-6. 副本的 `sourceWorldId` 会指向原世界，方便追溯来源
-7. 如果原世界有关联的资源引用（比如图片），也会一并复制过来
+1. A complete copy is created, owned by the forker
+2. The name is auto-incremented — if the original is "Dark Forest," your copy is "Dark Forest (1)"; fork again and it's "Dark Forest (2)"
+3. The copy starts as a draft and isn't published automatically
+4. Preserves all original tags, description, cover, schema, and content
+5. Original world's `downloadCount` increases by 1
+6. The copy's `sourceWorldId` points back to the original for traceability
+7. Any referenced assets (like images) are copied over too
 
-### Bundle系统
+### Bundle system
 
-Bundle是什么？打个比方：你花了两周做了一套精密的战斗系统——变量、规则、UI组件、音效全套。你的朋友也在做世界，需要一套战斗系统。你不用把整个世界给他，只需要把战斗系统相关的部分**打包**成一个Bundle，发给他就行了。
+What is a Bundle? Here's the analogy: you spent two weeks building a polished combat system — variables, rules, UI components, sound effects, the full package. A friend is also building a world and needs a combat system. You don't need to give them your whole world — just **bundle** the combat-related parts and send it over.
 
-Bundle就是一个"零件包"，包含你世界中选定的部分内容。
+A Bundle is a "component pack" containing selected parts of your world.
 
-**YuminaBundle 结构：**
+**YuminaBundle structure:**
 
 ```typescript
 interface YuminaBundle {
-  bundleVersion: "1.0.0";     // 版本号，目前固定1.0.0
-  name: string;                // Bundle名称，比如"回合制战斗系统"
-  description: string;         // 描述这个Bundle是干什么的
-  tags: string[];              // 标签
-  createdAt: string;           // 创建时间（ISO格式）
-  entries: WorldEntry[];       // 词条（角色设定、剧情、风格指令等）
-  variables: Variable[];       // 变量（血量、金币、好感度等）
-  components: GameComponent[]; // 游戏组件（血条、物品栏等）
-  rules: Rule[];               // 规则（当血量归零时触发死亡等）
-  customComponents: CustomComponent[];  // 自定义TSX组件
-  audioTracks: AudioTrack[];   // 音频（BGM、音效、环境音）
-  customTags?: string[];       // 自定义标签定义（可选）
-  entryFolders?: EntryFolder[];  // 词条的文件夹结构（可选）
+  bundleVersion: "1.0.0";     // Version, currently fixed at 1.0.0
+  name: string;                // Bundle name, e.g. "Turn-Based Combat System"
+  description: string;         // What this Bundle does
+  tags: string[];              // Tags
+  createdAt: string;           // Creation time (ISO format)
+  entries: WorldEntry[];       // Entries (character profiles, plot, style directives, etc.)
+  variables: Variable[];       // Variables (HP, gold, affection, etc.)
+  components: GameComponent[]; // Game components (health bars, inventory, etc.)
+  rules: Rule[];               // Rules (trigger death when HP hits zero, etc.)
+  customComponents: CustomComponent[];  // Custom TSX components
+  audioTracks: AudioTrack[];   // Audio (BGM, SFX, ambient)
+  customTags?: string[];       // Custom tag definitions (optional)
+  entryFolders?: EntryFolder[];  // Entry folder structure (optional)
 }
 ```
 
-你可以把它理解成一个"模块"——拿来就用，插到别人的世界里就能跑。
+Think of it as a "module" — plug it into another world and it works.
 
-**创建Bundle**
+**Creating a Bundle**
 
-在编辑器顶部菜单点 **导出 Bundle（Export Bundle）**，勾选你想导出的内容。四大类可选：
+Click **Export Bundle** in the editor's top menu, then check what content to include. Four main categories:
 
-1. **Entries** — 词条（角色设定、剧情、风格指令等）
-2. **Variables** — 变量（血量、金币、好感度等）
-3. **Components** — 游戏组件（状态栏、选项列表等）
-4. **Rules** — 规则（触发条件 + 动作）
+1. **Entries** — entries (character profiles, plot, style directives, etc.)
+2. **Variables** — variables (HP, gold, affection, etc.)
+3. **Components** — game components (status bars, choice lists, etc.)
+4. **Rules** — rules (trigger conditions + actions)
 
-有个贴心的设计：当你勾选了某条规则或组件，系统会自动高亮提示它依赖的变量，标个"suggested"让你不会漏选。
+A thoughtful feature: when you check a rule or component, the system automatically highlights the variables it depends on and marks them as "suggested" so you don't accidentally leave them out.
 
-此外还能带上自定义组件（customComponents）和音频轨道（audioTracks），让Bundle更完整。
+You can also include custom components (`customComponents`) and audio tracks (`audioTracks`) for a more complete Bundle.
 
-**导入时的冲突处理**
+**Conflict handling on import**
 
-当你往一个已有的世界里导入Bundle时，内容是**合并**进去的，不是覆盖。具体的冲突处理逻辑：
+When importing a Bundle into an existing world, content is **merged**, not overwritten. Specific conflict resolution:
 
-- **变量ID相同**：跳过，直接用现有的
-- **变量名相同但ID不同**：创建新变量，名字自动加后缀（比如 `HP (1)`）
-- **词条**：总是生成新UUID，追加到现有词条列表末尾
-- **规则和组件**：同理，新建ID后追加
+- **Same variable ID**: skip, use existing variable
+- **Same variable name but different ID**: create new variable with a suffix (e.g. `HP (1)`)
+- **Entries**: always generate new UUIDs, append to existing entry list
+- **Rules and components**: same — create new IDs and append
 
-规则和组件里引用的变量ID会自动重映射，保证导入后引用关系不会断。这个细节很重要——否则导入一套战斗系统，规则里引用的"HP"变量对不上号，那就白导入了。
+Variable IDs referenced in rules and components are auto-remapped to preserve relationships after import. This matters — if you import a combat system and the rules' "HP" variable doesn't match up, the import is useless.
 
-**发布Bundle到Hub**
+**Publishing Bundles to Hub**
 
-Bundle 保存后默认是私有的。发布后可以在 **发现（Discover）** 页面被其他创作者搜索、预览、安装。
+A saved Bundle defaults to private. After publishing, other creators can search, preview, and install it on the Discover page.
 
-也可以把Bundle下载为 `.bundle.json` 文件，直接发给朋友手动导入。
+You can also download the Bundle as a `.bundle.json` file and send it to friends for manual import.
 
-### 完整世界导出
+### Full world export
 
-除了Bundle这种"部分导出"，你也可以导出完整的世界JSON。在编辑器的 **概览（Overview）** 区域可以导出，也可以在 **我的库（Library）** → **我的项目（My Projects）** 里操作。导出的文件包含整个 `WorldDefinition` 里的所有内容：
+Beyond the "partial export" of Bundles, you can also export a complete world JSON. This is available in the **Overview** section of the editor, or in **My Library → My Projects**. The exported file contains everything in `WorldDefinition`:
 
-- 所有词条（entries）和词条文件夹结构（entryFolders）
-- 所有变量（variables）
-- 所有规则（rules）和事件反应（reactions）
-- 所有游戏组件（components）和自定义TSX组件（customComponents）
-- 消息渲染器（messageRenderer）
-- 音频轨道（audioTracks）和BGM播放列表（bgmPlaylist）、条件BGM（conditionalBGM）
-- UI蓝图（uiBlueprint）
-- 世界设置（settings）——温度、token上限、布局模式、扫描深度等等
-- 多人模式设置（multiplayerSettings）
+- All entries (`entries`) and entry folder structure (`entryFolders`)
+- All variables (`variables`)
+- All rules (`rules`) and reactions
+- All game components (`components`) and custom TSX components (`customComponents`)
+- Message renderer (`messageRenderer`)
+- Audio tracks (`audioTracks`), BGM playlist (`bgmPlaylist`), conditional BGM (`conditionalBGM`)
+- UI blueprint (`uiBlueprint`)
+- World settings (`settings`) — temperature, token limits, layout mode, scan depth, etc.
+- Multiplayer settings (`multiplayerSettings`)
 
-完整导出的用途：
+Uses for full export:
+- **Backup** — export periodically as a local copy. Your data is safe in the cloud, but local backups give peace of mind.
+- **Version control** — commit to a git repo to track changes. Export before major revisions as a manual save point.
+- **Collaborating** — send the JSON to a collaborator and they can import it and work on their own account.
+- **Migration** — the future Tauri offline version uses the same format, so switching will be seamless.
 
-- **备份** — 定期导出一份，万一手滑删了什么还能恢复。数据在云端是安全的，但多一份本地备份心里更踏实。
-- **版本控制** — 扔进Git仓库追踪变更。每次大改之前导出一份，相当于手动存档。
-- **与合作者分享** — 把JSON发给合作者，他们导入后就能在自己账号下继续工作。
-- **跨平台迁移** — 未来Tauri离线版也用同一格式，到时候无缝切换。
+On import, the system automatically recognizes Yumina world JSON, SillyTavern character cards (including PNG-embedded V2 cards), and Bundle JSON — each processed differently. You don't need to pick the format; just drag and drop.
 
-导入时系统能自动识别Yumina世界JSON、SillyTavern角色卡（包括PNG嵌入的V2卡）和Bundle JSON，分别走不同的处理流程。你不需要手动选格式，拖进去就行。
+### Multi-language support
 
-### 多语言支持
+If your world has versions in different languages (e.g., an English original and a Chinese translation), you can link them together. Once linked, players see a language tab when starting the game.
 
-如果你的世界有不同语言的版本（比如中文原版 + 英文翻译版），可以把它们链接在一起。链接后，玩家在开始游戏时会看到语言切换标签页。
+### How to set it up
 
-### 设置方法
+1. In the editor's **Overview** section, set the **Language** for your world
+2. A **Language Variants** section appears
+3. Click **Add Language Version**
+4. Upload the translated world's `.json` file
+5. Select the translated world's language
+6. After import, the two worlds are automatically linked
 
-1. 在编辑器 **概览（Overview）** 里，给世界设置 **语言（Language）**
-2. 设置后会出现 **语言变体（Language Variants）** 区域
-3. 点 **添加语言版本（Add Language Version）**
-4. 上传翻译版的 `.json` 世界文件
-5. 选择翻译版的语言
-6. 导入完成后两个世界自动链接
+### Supported languages
 
-### 支持的语言
-
-| 代码 | 语言 |
-|------|------|
+| Code | Language |
+|------|---------|
 | `en` | English |
 | `zh` | 中文 |
 | `ja` | 日本語 |
@@ -211,107 +210,107 @@ Bundle 保存后默认是私有的。发布后可以在 **发现（Discover）**
 | `ru` | Русский |
 | `ar` | العربية |
 
-### 玩家体验
+### Player experience
 
-链接后，玩家打开任何一个语言版本，在会话选择界面顶部会看到语言标签页（比如 `EN English` | `中 中文` | `日 日本語`）。切换标签页就能选择不同语言版本来玩，各语言的存档独立管理。
+Once linked, when a player opens any language version, they see language tabs at the top of the session picker (e.g. `EN English` | `中 Chinese` | `日 Japanese`). Switching tabs lets them choose a different language version to play. Save data is managed independently per language.
 
-### 取消链接
+### Unlinking
 
-在 **语言变体（Language Variants）** 列表里，点某个变体旁边的取消链接按钮即可。如果一个语言组只剩一个世界，链接会自动解除。
+In the **Language Variants** list, click the unlink button next to a variant. If a language group has only one world remaining, the link is automatically dissolved.
 
 ---
 
-## 多人模式设置（MultiplayerSettings）
+## Multiplayer settings (MultiplayerSettings)
 
-如果你的世界支持多人游玩，可以在世界定义的 `multiplayerSettings` 里配置具体行为。这个设置是可选的——不配置就默认禁用多人。
+If your world supports multiplayer, configure specific behavior in `multiplayerSettings` in the world definition. This is optional — without it, multiplayer is disabled by default.
 
 ```typescript
 multiplayerSettings: {
-  availability: "disabled" | "enabled";       // 默认 disabled
-  defaultChatPolicy: "free" | "active_speaker_only";  // 默认 free
-  defaultAiTriggerMode: "instant" | "timer" | "round" | "manual";  // 默认 manual
-  defaultRoundTimerSeconds: number;           // 5~120秒，默认15秒
-  authorNotes?: string;                       // 给房主看的提示
+  availability: "disabled" | "enabled";       // Default: disabled
+  defaultChatPolicy: "free" | "active_speaker_only";  // Default: free
+  defaultAiTriggerMode: "instant" | "timer" | "round" | "manual";  // Default: manual
+  defaultRoundTimerSeconds: number;           // 5–120 seconds, default 15
+  authorNotes?: string;                       // Notes visible to the room host
 }
 ```
 
-逐个说明：
+Breaking these down:
 
-**availability** — 总开关。`disabled` 就是纯单人世界，`enabled` 才能开房间多人玩。记得同时在世界的数据库层面把 `allowMultiplayer` 设为 `true`——编辑器里有个独立的开关。
+**availability** — the master switch. `disabled` = single-player only. `enabled` = rooms can be created for multiplayer. Also remember to set `allowMultiplayer` to `true` in the world's database layer — there's a separate toggle in the editor.
 
-**defaultChatPolicy** — 聊天策略。
-- `free`：自由聊天，所有人随时可以发言，像群聊一样热闹。适合休闲互动类世界。
-- `active_speaker_only`：轮流发言，一次只有一个人能说话，像桌游回合制。适合TRPG跑团。
+**defaultChatPolicy** — chat policy.
+- `free`: free-form, everyone can send messages at any time, like a group chat. Great for casual, social worlds.
+- `active_speaker_only`: turn-based, only one person can speak at a time, like a board game. Great for TRPG tabletop sessions.
 
-**defaultAiTriggerMode** — AI什么时候回复。这四个模式适合不同的游戏节奏：
-- `instant`：有人说话AI就立刻回复。节奏最快，适合对话驱动的世界。
-- `timer`：等计时器倒计时结束后AI才回复（配合 `defaultRoundTimerSeconds`）。给其他人留出"插嘴"的时间窗口。
-- `round`：等所有人都发了言AI才回复。像TRPG那样一轮结束后DM才说话，保证每个人的行动都被考虑到。
-- `manual`：房主手动触发AI回复。最灵活，完全由房主控制节奏。
+**defaultAiTriggerMode** — when does the AI respond? Four modes for different pacing:
+- `instant`: AI responds immediately when someone speaks. Fastest pace, good for dialogue-driven worlds.
+- `timer`: AI responds when the countdown timer runs out (using `defaultRoundTimerSeconds`). Leaves a window for others to chime in.
+- `round`: AI responds after everyone has sent a message. Like TRPG where the DM speaks after everyone has taken their turn — every action gets considered.
+- `manual`: host manually triggers the AI. Most flexible, host controls the pacing entirely.
 
-**defaultRoundTimerSeconds** — 计时器秒数，最小5秒、最大120秒，默认15秒。主要在 `timer` 模式下生效。
+**defaultRoundTimerSeconds** — timer duration, 5–120 seconds, default 15. Mainly active in `timer` mode.
 
-**authorNotes** — 给开房间的人看的提示文字。比如"建议2-4人游玩""房主请先读完规则""每人选一个职业再开始"。这段话不会发给AI，纯粹是给真人看的使用说明。
+**authorNotes** — notes visible to whoever creates the room. E.g., "Best with 2–4 players," "Host please read rules before starting," "Each player picks a class before beginning." These aren't sent to the AI — purely a human-readable instruction guide.
 
-这些都是**默认值**——房主开房间后可以根据实际情况调整。你设的是"推荐配置"。
+These are all **default values** — the room host can adjust them for the actual session. What you're setting is the "recommended config."
 
 ---
 
-## 实用例子
+## Practical examples
 
-### 例子1：发布检查清单
+### Example 1: Pre-publish checklist
 
-你的世界做好了，准备上线。别急着按按钮，先按这个清单一项一项过：
+Your world is done and you're ready to go live. Don't rush to click — go through this checklist first:
 
 ```
-[ ] 名字 — 有吸引力吗？能让人一眼知道这是什么类型的世界？
-[ ] 描述 — 写了吗？别留空。至少写两句话告诉玩家能在这里体验什么。
-[ ] 封面图（Cover Image）— 上传了吗？在发现（Discover）页面缩小后还能看清吗？
-[ ] 标签（Tags）— 加了 3-7 个相关标签？想想玩家会搜什么词。
-[ ] 年龄分级 — 有成人内容就选r18，有极端内容就选r18g，没有就选all。别搞错。
-[ ] 可见性 — 想让所有人看到就选public。想先让小范围测试就选followers。
-[ ] allowEdit — 想让别人能fork改造就开着。想保护原创就关了。
-[ ] Greeting — 玩家进来第一条消息是什么？设好了吗？第一印象很重要。
-[ ] 自测 — 自己从头到尾玩一遍了吗？变量正常吗？规则触发正常吗？
+[ ] Name — is it compelling? Can someone tell what kind of world it is at a glance?
+[ ] Description — did you write one? Don't leave it blank. At least two sentences telling players what they'll experience.
+[ ] Cover image — uploaded? Does it still look clear when thumbnail-sized on Discover?
+[ ] Tags — added 3–7 relevant tags? Think about what players would search for.
+[ ] Age rating — R18 content gets r18, extreme content gets r18g, otherwise all. Don't get this wrong.
+[ ] Visibility — public if you want everyone to see it. Followers-only for limited testing first.
+[ ] allowEdit — open if you want others to fork and modify. Close to protect your original work.
+[ ] Greeting — what's the first message players see? Is it set up properly? First impressions matter.
+[ ] Self-test — did you play through it yourself from start to finish? Do variables work? Do rules trigger correctly?
 ```
 
-确认无误后，点编辑器顶部的 **保存（Save）**，然后回到 **发现（Discover）** 页面，点顶部的 **发布（Publish）** 按钮，在弹窗中选择你的世界并完成发布流程。
+Once verified, click **Save** in the editor, go to the **Discover** page, click the **Publish** button, select your world in the dialog, and complete the publish flow.
 
-世界上线了。去 **发现（Discover）** 页面看看它的样子吧。
+Your world is live. Go check out how it looks on Discover.
 
-### 例子2：创建一个战斗系统Bundle分享给社区
+### Example 2: Creating a combat system Bundle to share with the community
 
-假设你在自己的RPG世界里做了一套回合制战斗系统，包含：
+Say you built a turn-based combat system in your RPG world containing:
 
-- 变量：`HP`（数值，0~100，stat类别）、`MP`（数值，0~50，resource类别）、`ATK`、`DEF`、`battlePhase`（字符串，flag类别）
-- 规则：`HP归零时触发死亡结算`、`回合开始时MP自然回复5点`
-- 组件：一个stat-bar显示HP、一个stat-bar显示MP
-- 音频：战斗BGM（loop）、受击音效（sfx）
+- Variables: `HP` (number, 0–100, stat), `MP` (number, 0–50, resource), `ATK`, `DEF`, `battlePhase` (string, flag)
+- Rules: `trigger death settlement when HP hits zero`, `MP naturally recovers 5 per turn at turn start`
+- Components: one stat-bar for HP, one stat-bar for MP
+- Audio: battle BGM (loop), hit sound effect (sfx)
 
-打包步骤：
+Packaging steps:
 
-1. 编辑器顶部菜单点 **导出 Bundle（Export Bundle）**
-2. 名字填"回合制战斗系统 v1.0"，描述写清楚用法
-3. 勾选5个变量——注意勾行为的时候系统会提示相关变量，跟着点就行
-4. 勾选2条行为和2个组件
-5. 勾选音频轨道
-6. 标签写 `combat`、`rpg`、`turn-based`
-7. 导出并保存
+1. Click **Export Bundle** in the editor's top menu
+2. Name it "Turn-Based Combat System v1.0," write a clear description of its usage
+3. Check the 5 variables — when you check the rules, the system highlights related variables
+4. Check the 2 rules and 2 components
+5. Check the audio tracks
+6. Add tags: `combat`, `rpg`, `turn-based`
+7. Export and save
 
-导出的Bundle JSON长这样（简化版）：
+The exported Bundle JSON (simplified):
 
 ```json
 {
   "bundleVersion": "1.0.0",
-  "name": "回合制战斗系统 v1.0",
-  "description": "一套开箱即用的回合制战斗系统，包含HP/MP管理、死亡判定和战斗UI",
+  "name": "Turn-Based Combat System v1.0",
+  "description": "A ready-to-use turn-based combat system with HP/MP management, death detection, and battle UI",
   "tags": ["combat", "rpg", "turn-based"],
   "createdAt": "2026-03-23T10:00:00Z",
   "entries": [
     {
       "id": "entry-battle-rules",
-      "name": "战斗系统指令",
-      "content": "当战斗开始时，按照回合顺序行动...",
+      "name": "Combat System Directive",
+      "content": "When combat begins, act in turn order...",
       "role": "system",
       "section": "system-presets",
       "alwaysSend": true,
@@ -332,19 +331,19 @@ multiplayerSettings: {
   "rules": [],
   "customComponents": [],
   "audioTracks": [
-    { "id": "bgm-battle", "name": "战斗BGM", "type": "bgm",
+    { "id": "bgm-battle", "name": "Battle BGM", "type": "bgm",
       "url": "https://example.com/battle.mp3", "loop": true, "volume": 0.6 }
   ]
 }
 ```
 
-别人拿到 Bundle 文件后，在编辑器顶部菜单点 **导入 Bundle（Import Bundle）**，选择要装进哪个世界，战斗系统就到位了。变量名冲突的话系统会自动处理，不用担心。
+Once someone has the Bundle file, they click **Import Bundle** in their editor's top menu, choose which world to install it into, and the combat system is ready to go. Variable name conflicts are handled automatically.
 
-### 例子3：多人模式设置 — 4人合作RPG
+### Example 3: Multiplayer settings — 4-player co-op RPG
 
-你做了一个4人合作的地下城探险世界。每个人扮演一个职业（战士、法师、盗贼、牧师），轮流行动，所有人都行动完毕后AI作为DM来推进剧情。
+You built a 4-player dungeon adventure world. Each person plays a class (warrior, mage, rogue, healer), they take turns acting, and after everyone has acted the AI as DM advances the story.
 
-多人设置应该这样配：
+Multiplayer settings should look like this:
 
 ```json
 {
@@ -353,16 +352,16 @@ multiplayerSettings: {
     "defaultChatPolicy": "active_speaker_only",
     "defaultAiTriggerMode": "round",
     "defaultRoundTimerSeconds": 60,
-    "authorNotes": "建议4名玩家，每人选择一个职业：战士、法师、盗贼、牧师。每轮每人描述自己的行动，所有人行动完毕后AI会推进剧情。计时器60秒——如果有人挂机太久，到时间AI照样往下走。"
+    "authorNotes": "Recommended 4 players, each choosing a class: warrior, mage, rogue, or healer. Each round, every player describes their action, then the AI advances the story once all players have acted. 60-second timer — if someone is idle too long, the AI moves on anyway."
   }
 }
 ```
 
-为什么选这些配置？
+Why these settings?
 
-- `active_speaker_only` — 轮流发言，避免四个人同时打字、AI不知道该回应谁的混乱局面。跑团嘛，就该一个一个来。
-- `round` — 等所有人都说完AI才回复，保证每个人的行动都被考虑到。不会出现"我还没说话DM就跳过我了"的情况。
-- `60秒计时器` — 给每个人足够时间想策略，但也不会等太久。如果有人去倒水了，60秒后AI照样推进，不至于卡住所有人。
-- `authorNotes` — 给开房间的人一份"说明书"，让他知道怎么组织这场游戏、该提醒玩家什么。
+- `active_speaker_only` — turn-based speaking prevents four people typing simultaneously and leaving the AI confused about who to respond to. This is a TRPG session, so it should be one at a time.
+- `round` — AI waits for everyone before responding, ensuring every player's action gets considered. Nobody gets skipped because "the DM already moved on."
+- `60-second timer` — enough time to think about strategy, but not so long it drags. If someone went to get a drink, the AI still moves forward after 60 seconds without locking everyone else in place.
+- `authorNotes` — a "manual" for the host, letting them know how to run the session and what to tell players.
 
-同时别忘了在世界层面把 `allowMultiplayer` 设为 `true`，否则就算multiplayerSettings配好了，平台也不会把它当成多人世界来展示。
+Also don't forget to set `allowMultiplayer` to `true` at the world level — otherwise, even if multiplayerSettings is perfectly configured, the platform won't show it as a multiplayer world.

@@ -1,5 +1,5 @@
-# 进阶教程：大逃杀游戏
+# Advanced Tutorial: Battle Royale
 
-::: warning 施工中
-本页面正在编写中，敬请期待。
+::: warning Under construction
+This page is being written. Check back soon.
 :::

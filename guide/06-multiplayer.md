@@ -1,76 +1,76 @@
-# 多人房间
+# Multiplayer Rooms
 
-Yumina 支持多人联机——你和朋友可以一起在同一个世界里冒险。
+Yumina supports multiplayer — you and your friends can adventure through the same world together.
 
-## 创建房间
+## Creating a room
 
-1. 在库里找到一个支持多人的世界（详情面板上会有绿色的 **ROOM** 按钮）
-2. 点 **ROOM** 按钮
-3. 选择 AI 触发模式（决定 AI 什么时候回复，下面会详细说）
-4. 房间创建成功，自动进入
+1. Find a world in your library that supports multiplayer (the detail panel will have a green **ROOM** button)
+2. Click **ROOM**
+3. Choose an AI trigger mode (determines when the AI responds — more on that below)
+4. The room is created and you're taken right in
 
-![房间界面全景，展示左侧聊天区和右侧控制面板](./images/room-overview.png)
+![Room interface overview showing the left chat area and right control panel](./images/room-overview.png)
 
-## 邀请朋友
+## Inviting friends
 
-创建房间后，你就是房主。点右侧面板底部的 **Copy Invite Link** 按钮，复制邀请链接发给朋友。
+Once you create a room, you're the host. Click the **Copy Invite Link** button at the bottom of the right panel and send the link to your friends.
 
-朋友打开链接后：
-- 如果已登录 → 自动加入房间
-- 如果没登录 → 先跳到登录页面，登录后自动加入
+When a friend opens the link:
+- If already logged in → they join the room automatically
+- If not logged in → they're taken to the login page first, then join automatically after logging in
 
-## 房间界面
+## Room interface
 
-房间分为两个区域：
+The room is split into two areas:
 
-### 左侧：聊天/叙事区
-- AI 的叙述和所有玩家的消息
-- 输入框在底部，和单人游戏一样
+### Left: chat / narrative area
+- AI narration and messages from all players
+- Input box at the bottom, same as single-player
 
-### 右侧：控制面板
-- **Players** — 在线玩家列表（房主有皇冠图标 👑）
-- **本轮状态** — 当前是等待输入、收集中还是 AI 回应中
-- **发言模式切换** — 房主可以切换（下面详细说）
-- **AI 触发按钮** — 手动让 AI 回复
-- **邀请链接按钮** — 随时生成新的邀请链接
+### Right: control panel
+- **Players** — list of online players (host has a crown icon 👑)
+- **Round status** — shows whether you're waiting for input, collecting messages, or waiting for AI
+- **Speech mode toggle** — the host can switch modes (more details below)
+- **AI trigger button** — manually prompt the AI to respond
+- **Invite link button** — generate a new invite link at any time
 
-## 发言模式
+## Speech modes
 
-房主可以切换两种模式：
+The host can switch between two modes:
 
-| 模式 | 说明 |
-|------|------|
-| **自由发言** | 所有人随时都能发消息，消息会排队等 AI 统一回复 |
-| **轮流发言** | 一次只有一个人能说话，房主可以指定当前发言者 |
+| Mode | Description |
+|------|-------------|
+| **Free speech** | Everyone can send messages at any time; messages queue up and the AI responds to them all together |
+| **Turn-based** | Only one person can speak at a time; the host designates who goes next |
 
-轮流发言适合更有秩序的叙事体验，自由发言适合大家一起热闹 ✧
+Turn-based works great for a more structured narrative experience, while free speech is perfect for lively group chaos ✧
 
-## AI 触发模式
+## AI trigger modes
 
-创建房间时选择的 AI 触发方式决定了 AI 什么时候回复：
+The trigger mode chosen when creating the room determines when the AI responds:
 
-- **Manual** — 房主手动点按钮触发 AI 回复
-- **Timer** — 设定时间间隔，时间到了自动触发
-- **Round** — 每个人都发过言后自动触发
-- **Instant** — 每收到一条消息就立刻触发
+- **Manual** — the host manually clicks a button to trigger an AI response
+- **Timer** — set a time interval; AI responds when the timer runs out
+- **Round** — AI responds after everyone has sent a message
+- **Instant** — AI responds the moment any message is received
 
-## 角色和权限
+## Roles and permissions
 
-| 角色 | 能做什么 |
-|------|----------|
-| **房主** | 一切权限：邀请、切换模式、触发 AI、管理房间 |
-| **玩家** | 发消息、参与游戏 |
-| **观众** | 只能看，不能发消息（眼睛图标标识） |
+| Role | What they can do |
+|------|-----------------|
+| **Host** | Full control: invite, switch modes, trigger AI, manage the room |
+| **Player** | Send messages and participate in the game |
+| **Spectator** | Watch only — can't send messages (identified by an eye icon) |
 
-## 游戏流程
+## Game flow
 
-一轮典型的多人游戏流程是这样的：
+A typical multiplayer round looks like this:
 
-1. **等待输入** — 大家可以打字描述行动
-2. **收集中** — 消息在队列里排着，右侧面板能看到待处理的消息列表
-3. **AI 回应** — AI 综合所有玩家的输入，给出统一的叙述回复
-4. 回到第 1 步，继续下一轮
+1. **Waiting for input** — everyone types out their actions
+2. **Collecting** — messages queue up; you can see the pending list in the right panel
+3. **AI responding** — the AI combines all player input into a single narrative response
+4. Back to step 1 for the next round
 
 ---
 
-下一篇看看你的个人主页能做什么 ᕕ( ᐛ )ᕗ
+Next up: what you can do on your profile page ᕕ( ᐛ )ᕗ

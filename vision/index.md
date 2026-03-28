@@ -1,43 +1,43 @@
-# 愿景
+# Vision
 
-## 开源
+## Open Source
 
-Yumina 最早立项，其实只是为了个人使用：一个优化了 UI、并接入了 Godot 游戏引擎的 SillyTavern Fork。可 SillyTavern 的原生架构毕竟诞生于早期的纯文字模拟时代，尽管后来有无数开源贡献者做出了各种各样的插件，它的底层架构仍然限制了它向 AI 原生游戏和电影继续进化。
+Yumina started as a personal project: a fork of SillyTavern with an improved UI, integrated with the Godot game engine. But SillyTavern's original architecture was born in the era of pure text simulation, and despite the countless open-source contributors who built plugins over the years, its foundational structure was always going to limit how far it could evolve toward AI-native games and interactive cinema.
 
-而今天的 Yumina，已经拥有了自己独立的 AI Native 游戏引擎，多人模式，以及多 Agent 世界等能力。就像 SillyTavern 真正伟大的扩展，诞生于开源玩家们的贡献之中一样，我们也相信，Yumina 始终属于社区，也只有社区才能让它变得更好。Yumina 从游戏引擎到前端，都是完全开源的。你不需要任何登录，就可以在本地使用自己的 API 来进行创作、游玩，和增加新的功能。
+Today's Yumina has grown into something with its own independent AI-native game engine, multiplayer support, and multi-agent world capabilities. Just as SillyTavern's greatest extensions came from the open-source community's contributions, we believe Yumina belongs to the community too — and only the community can make it better. Yumina is fully open source, from the game engine to the frontend. You don't need to log in to use your own API locally for creating, playing, and building new features.
 
-## 为什么要中心化 / 商业化
+## Why Centralize & Commercialize
 
-但为什么我们不止步于做一个完全免费且开源的 App 呢？不是我们不想，而是我们不能。
+So why didn't we stop at a completely free and open-source app? Not because we didn't want to — but because we couldn't.
 
-目前 AIRP 领域正在走向两个极端：一端是商业化 App，几乎完全奉行闭源、强监管，甚至随意盗窃其他开源社区创作者的作品，另一端则因为历史原因，对商业化抱有彻底的唾弃和不信任，反对一切中心化与商业化。可无论是哪一端，真正受伤的永远都是那些为爱发电的创作者。
+The AI roleplay space is polarizing right now. On one end are commercial apps that operate almost entirely closed-source, with heavy content restrictions, and sometimes outright stealing work from the open-source creator community. On the other end are communities that, for historical reasons, have a deep ideological opposition to anything commercial or centralized. But in both extremes, the ones who suffer are always the creators who build for the love of it.
 
-创作者的权益，无论在这些中心化平台还是开源平台上，往往都得不到真正保障。商业化平台会偷走他们的作品并为自己牟利；而把作品完全放进公开社区，本质上也无异于要求所有作家都把自己写的书以 PDF 的形式直接发到网络论坛上。无论哪条路走到极端，都无法保障创作者最基础的知识产权与激励机制。
+Creator rights — whether on centralized commercial platforms or in open-source communities — are often left unprotected. Commercial platforms steal their work and profit from it; releasing work fully into the open is, in effect, asking every writer to put their books up as free PDFs on a public forum. Neither extreme, taken to its limit, can protect the most basic intellectual property rights and incentive structures for creators.
 
-这也是为什么，除了将产品开源之外，我们同样做了一个中心化的网站。在这个网站上，创作者可以自己选择是否允许他人下载、编辑和商业化。如果创作者选择将作品完全开放且不商业化，那么任何人都可以把它下载下来，或者使用自己的 API 来体验。如果创作者选择商业化且不开放下载，那么玩家如果想游玩，就必须通过平台官方的 Credits 系统进行购买。因为只有这样，才能保证创作者有收益，同时创作内容不会被轻易盗走，就像今天主流的网文平台一样。创作者甚至还可以选择"不商业化，但也不开放下载"。这样既能保证作品的知识产权，玩家也依然可以体验，只是需要使用官方 API，而创作者和平台官方都不会从中盈利。（具体详见创作者收益篇）
+That's why, alongside open-sourcing the product, we also built a centralized website. On this website, creators choose for themselves: allow downloads and editing, allow commercial use, or restrict both. If a creator wants to fully open their work at no cost, anyone can download it or experience it using their own API. If a creator wants to commercialize and restrict downloads, players who want to play must go through the platform's official Credits system. Only this way can creators earn revenue while ensuring their content isn't easily stolen — much like today's web fiction platforms. Creators can even choose "non-commercial but no free download" — preserving IP rights while still letting players experience the work using the official API, with neither creator nor platform taking a cut. (See the Creator Revenue section for details.)
 
-从玩家和平台的角度来看，这同样是合理的。大部分玩家并不会去 GitHub clone 一整个项目，很多玩家只是想方便、随时随地地在你的网站上打开一个世界开始聊天。而在这些玩家中，又有很大一部分是免费玩家。这些需求，都是一个完全开源的 App 无法独立满足的。
+From the player's and platform's perspective, this also makes sense. Most players won't clone an entire GitHub repository — many just want to open a world and start chatting, anytime and anywhere, on your website. And a significant portion of those players are free users. These needs are things a purely open-source app simply cannot meet on its own.
 
-## 如何保证创作者与玩家的权益
+## Protecting Creators & Players
 
-由于架构体系差别太大且为了防止有小偷在开源社区中偷卡，Yumina 将无法支持 SillyTavern 的 json 格式进行导入。诞生于社区的 Yumina 也完全尊重一切知识产权、版权，且绝不允许任何形式的抄袭。因此我们第一个完善的系统就是举报系统，我们会主动去寻找抄袭作品并进行封号和下架，但我们同时也鼓励大家参与进来，你可以在每一张卡的详情界面中进行举报和上传证据。
+Because the architectural differences are too significant — and to prevent bad actors in the open-source community from stealing cards — Yumina will not support importing SillyTavern's JSON format. Born from the community, Yumina fully respects all intellectual property and copyright, and absolutely prohibits any form of plagiarism. Our first fully developed system was the reporting system. We actively search for plagiarized works and enforce bans and takedowns, but we also encourage the community to participate: on every world's detail page you can submit reports and upload evidence.
 
-虽然简单的抄袭非常好鉴定，但是这个世界往往没有那么简单。比如说，第一个同人作品的作者用着动漫的剧情、插图、音乐，是否有权力要求其他创作者不能做类似的同人作品？一个破限、一个文风描述究竟要多独特才能算一个创作者的个人产权？这些的边界往往非常模糊。因此一切举报内容和结果都将在 Discord 社区中进行公示，玩家也可以选择复查或投票决定是否抄袭。
+While simple plagiarism is easy to identify, the real world is rarely that simple. For example: the first creator of a fan work built around an anime's plot, illustrations, and music — do they have the right to prevent other creators from making similar fan works? How unique must a jailbreak or writing style description be before it counts as a creator's personal intellectual property? These lines are often blurry. That's why all reported content and outcomes are publicly posted in the Discord community, where players can request review or vote on plagiarism determinations.
 
-## 创作者收益
+## Creator Revenue
 
-我们采取了一种类似区块链的记录方式，让每一笔玩家通过官方 API 产生的 token 消耗，都能够以可追溯、不可篡改的形式被记录下来。无论玩家使用的是免费 tier 还是付费 tier，创作者都可以清楚看到每一笔消耗。当然，这里记录的是 token 消耗，而不是玩家的聊天记录。验证这个系统的方式也很简单，你可以直接审查我们的开源代码，或者用一个小号进入自己发布的作品中实际游玩，亲自验证。
+We adopted a blockchain-inspired recording approach where every token consumed by a player using the official API is logged in a traceable, tamper-resistant way. Whether the player is on a free tier or a paid tier, creators can clearly see every single transaction. What's recorded is token usage — not the player's chat history. Verifying this system is simple: you can audit our open-source code directly, or use an alt account to play your own published world and verify it yourself.
 
-目前的分成方式也非常直接：作者将获得玩家消耗官方 token、扣除成本后 **80%** 的收益。我们会提供 Stripe、虚拟货币等方式供作者选择提现。由于目前平台没有广告，也没有任何其他盈利方式，这 20% 将成为维持免费用户额度、网站维护、图床与服务器运行的关键资金来源。
+The revenue split is straightforward: creators receive **80%** of the revenue from player token usage after deducting costs. We offer Stripe, cryptocurrency, and other withdrawal options. Since the platform currently has no ads and no other revenue streams, that 20% funds the free user quota, website maintenance, image hosting, and server operations.
 
-在传统游戏发行行业里，创作者通常只能拿到 10%–20%；就连书籍出版，版税也往往只有 10% 左右。而在 Roblox、堡垒之夜这样的 UGC 平台上，作者通常也只能获得 30% 左右的流水。AI 本身其实更接近制造业，而不是传统互联网行业，因为用户量的增加，本身就会带来成本的同步甚至指数型上升。
+In the traditional game publishing industry, creators typically keep only 10–20%. Even book publishing royalties are usually around 10%. On UGC platforms like Roblox or Fortnite, creators typically earn around 30% of revenue. AI itself is more like manufacturing than traditional internet — user growth brings proportional or even exponential cost increases.
 
-但即便如此，我们依然相信，过去那种"平台拿 80%，创作者只能拿 20%"的时代已经过去了。未来，只有真正服务好那 80% 的创作者的平台，才有资格活下来。
+But even so, we believe the era of "platform takes 80%, creators get 20%" is over. Going forward, only platforms that genuinely serve their creators will deserve to survive.
 
-## 隐私与安全
+## Privacy & Security
 
-如果您使用的是我们的本地版本，那么您的一切数据都将完全留在自己的电脑中。
+If you use our local version, all your data stays entirely on your own computer.
 
-而在网站版中，我们存储聊天记录，只是为了让产品能够正常运行。用户可以随时删除和导出自己的数据。私人聊天不会被用于广告、数据出售/共享，也不会被用于模型训练。我们依据 GDPR 的数据保护原则来保护用户隐私，所有数据目前均存储于 AWS 美国区。
+On the web version, we store chat history only to keep the product functioning. Users can delete and export their data at any time. Private chat is never used for advertising, data sales or sharing, or model training. We protect user privacy in accordance with GDPR data protection principles, and all data is currently stored on AWS in the US.
 
-当然，我们认为法律只是下限，而我们应该对自己有更高的道德要求，所以我们会采取一切办法来保障用户的数据不会受到侵害。
+We believe the law is the floor, not the ceiling — we hold ourselves to higher ethical standards. We will take every measure to ensure that users' data is never compromised.

@@ -1,325 +1,326 @@
-# 新手指南：认识编辑器
+# Beginner's Guide: Getting to Know the Editor
 
-> 这篇会带你把编辑器从头到尾逛一遍，搞清楚每个区域是干嘛的。看完之后你就知道"我想做XX效果，该去哪里设置"了。
+> This guide takes you on a full tour of the editor from top to bottom, so you understand what each section is for. By the end, you'll know exactly where to go when you want to achieve any given effect.
 
-## 进入编辑器
+## Getting into the editor
 
-在 Yumina 左侧导航栏点 **创建（Create）** 按钮，你会看到模板选择页面 **创建新世界（Create New）**。这里有几个起点可以选：
+In the left navigation of Yumina, click the **Create** button. You'll see the template selection page: **Create New**. There are a few starting points to choose from:
 
-- **空白项目（Blank Project）** — 从零开始，完全自由
-- **角色对话（Character Chat）** — 做一个 1 对 1 的角色聊天
-- **世界模拟（World Simulation）** — 构建有阵营、事件的完整世界
-- **渐进式冒险（Progressive Adventure）** — 带属性、背包、任务的 RPG
-- **多人战役（Multiplayer Campaign）** — 2-4 人 DnD 风格跑团
-- **导入世界（Import World）** — 从 JSON 文件或角色卡导入
+- **Blank Project** — start completely from scratch
+- **Character Chat** — set up a 1-on-1 character conversation
+- **World Simulation** — build a full world with factions and events
+- **Progressive Adventure** — an RPG with attributes, inventory, and quests
+- **Multiplayer Campaign** — a 2–4 player DnD-style tabletop campaign
+- **Import World** — import from a JSON file or a character card
 
-新手建议选 **空白项目（Blank Project）**，选完直接进入编辑器。在编辑器顶部的输入框里给世界起个名字就行。
+For beginners, start with **Blank Project** — then click straight into the editor. Type a name for your world in the input field at the top.
 
 ![](./images/create-world.png)
-<!-- 需要截图：Create New 模板选择页面，几个模板卡片并排展示 -->
+<!-- Screenshot needed: Create New template selection page with template cards side by side -->
 
-## 编辑器长什么样
+## What the editor looks like
 
-进来之后，你会看到这样的界面：
+When you first open it, you'll see something like this:
 
-![编辑器主界面](./images/editor-overview.png)
-<!-- 需要截图：编辑器全貌，左侧导航栏完整展示，右侧是某个区域的内容 -->
+![Editor main interface](./images/editor-overview.png)
+<!-- Screenshot needed: Full editor view, left nav fully visible, right side showing one section's content -->
 
-左边是导航栏，一共 8 个区域。别被数量吓到，我们一个一个来看 (•̀ᴗ•́)و
+The left side is the navigation panel with 8 sections. Don't let the number scare you — we'll go through them one by one (•̀ᴗ•́)و
 
 ---
 
-## 开场白（First Message）
+## First Message
 
-这是玩家进入你的世界后看到的 **第一条消息**。还没等玩家说话，AI 就先开口了——这条就是开场白。
+This is the **first message** players see when they enter your world. Before they've said a single word, the AI speaks first — and this is that message.
 
-好的开场白应该做到两件事：
-1. 让玩家知道自己在什么处境（"你醒来发现自己在一个陌生的房间……"）
-2. 给玩家一个行动的理由（"门外传来了敲门声"）
+A good first message should do two things:
+1. Tell the player where they are and what's going on ("You wake up in an unfamiliar room…")
+2. Give the player a reason to act ("There's a knocking at the door")
 
-点 **添加开场白（Add Greeting）** 按钮就能开始写。
+Click **Add Greeting** to start writing.
 
-![开场白编辑界面](./images/first-message.png)
-<!-- 需要截图：First Message 编辑区域，最好有一段示例开场白内容 -->
+![First message editing interface](./images/first-message.png)
+<!-- Screenshot needed: First Message editing area with a sample greeting already written -->
 
-::: tip 小贴士
-一个世界可以有多条开场白。玩家进入后默认看到第一条，可以左右滑动（swipe）切换其他开场白。适合提供不同的开局场景让玩家选择。
+::: tip Quick tip
+A world can have multiple first messages. Players see the first one by default, but can swipe left and right to see the others. Great for offering different starting scenarios to choose from.
 :::
 
 ---
 
-## 词条（Lorebook）
+## Lorebook (Entries)
 
-这是编辑器里你会花最多时间的地方。
+This is where you'll spend most of your time in the editor.
 
-**词条是你写给 AI 看的所有内容**——角色人设、世界观设定、写作风格要求、示例对话、剧情线索……全都是词条。你可以把它理解成 AI 的"剧本"。
+**Entries are everything you write for the AI to read** — character profiles, world-building lore, writing style notes, example dialogue, plot threads… it all lives in entries. Think of it as the AI's "script."
 
-![词条列表界面](./images/lorebook-list.png)
-<!-- 需要截图：Lorebook 区域，左侧分组栏（PRESETS/EXAMPLES/CHAT HISTORY/POST），右侧是词条编辑面板 -->
+![Entry list interface](./images/lorebook-list.png)
+<!-- Screenshot needed: Lorebook section with the left group panel (PRESETS/EXAMPLES/CHAT HISTORY/POST) and right entry editing panel -->
 
-### 四个分组
+### The four groups
 
-左侧有四个分组，决定词条在提示词里的位置。创建词条时，在哪个分组下点 **添加词条（+ Add Entry）**，词条就属于哪个分组：
+On the left you'll see four groups, which determine where an entry lands in the prompt. When you create an entry, it belongs to whichever group you clicked **+ Add Entry** under:
 
-| 分组 | 英文 | 作用 |
-|------|------|------|
-| 预设区 | PRESETS | **始终发送**的核心设定（角色、世界观、风格）。AI 每次都能看到 |
-| 示例区 | EXAMPLES | 示例对话，教 AI 怎么说话 |
-| 聊天历史区 | CHAT HISTORY | **关键词触发**的词条——只有聊天中出现匹配关键词才会激活 |
-| 后置区 | POST | 放在所有对话之后的兜底指令，AI 最后看到，印象最深 |
+| Group | What it does |
+|-------|-------------|
+| PRESETS | Core settings that are **always sent** — character profiles, world rules, writing style. The AI sees these every single time |
+| EXAMPLES | Example dialogue — teach the AI how to talk |
+| CHAT HISTORY | **Keyword-triggered** entries — only activated when matching keywords appear in the chat |
+| POST | Fallback instructions placed after all dialogue — the AI sees these last and remembers them best |
 
-### 发送身份（Send as）
+### Send as
 
-每个词条都有一个 **Send as** 设置，决定 AI 怎么看待这段内容：
+Every entry has a **Send as** setting that tells the AI how to interpret the content:
 
-| 选项 | 英文 | 什么意思 |
-|------|------|---------|
-| 指令 | Instruction | AI 把这当成系统规则来遵守（最常用） |
-| 用户 | User | AI 以为这是玩家说的话 |
-| AI | AI | AI 以为这是自己之前说过的话。写示例对话或 CoT 绕过时用 |
+| Option | Meaning |
+|--------|---------|
+| Instruction | The AI treats this as a system rule to follow (most common) |
+| User | The AI thinks a player said this |
+| AI | The AI thinks it said this itself. Use for example dialogue or chain-of-thought prompting |
 
-### 标签（Tags）
+### Tags
 
-用标签给词条分类：Characters（角色）、Plot（剧情）、Style（风格）、Example（示例）、Preset（预设），也可以点 **+ New** 创建自定义标签。标签纯粹是方便你自己管理，不影响词条的行为。
+Use tags to categorize entries: Characters, Plot, Style, Example, Preset — or click **+ New** to create custom tags. Tags are purely for your own organization and don't affect how entries behave.
 
-### 关键词触发
+### Keyword triggering
 
-词条不是每次都会发给 AI 的（AI 一次能读的内容量是有限的，全塞进去会装不下）。
+Entries aren't sent to the AI every single time (the AI can only read so much at once, and stuffing everything in would overflow).
 
-- **PRESETS 分组**的词条始终发送——核心设定放这里
-- **CHAT HISTORY 分组**的词条用关键词触发——填一些关键词（Keywords），只有聊天中出现这些词才会激活
+- **PRESETS group** entries are always sent — put core settings here
+- **CHAT HISTORY group** entries use keyword triggering — fill in Keywords, and they only activate when those words appear in the chat
 
-比如你在 CHAT HISTORY 里写了一条关于"黑市"的设定，关键词填 `黑市`。只有玩家提到"黑市"的时候，这条内容才会被发给 AI。这样既不浪费 AI 的阅读量，又能保证 AI 在需要的时候拿到正确的信息。聪明吧 (≧▽≦)
+For example: if you have an entry about a "black market" in CHAT HISTORY with the keyword `black market`, that content only gets sent to the AI when the player mentions "black market." This way you don't waste the AI's reading budget, but you also make sure the AI has the right info when it needs it. Pretty smart (≧▽≦)
 
-### 排序（Position）
+### Position (ordering)
 
-数字越小，AI 越优先看到这条内容。如果你有一条特别重要的设定，给它一个小的数字（比如 0），AI 就会更重视它。
+The lower the number, the higher the priority — the AI reads that entry first. If you have a particularly important setting, give it a low number (like 0) and the AI will weight it more heavily.
 
-![词条编辑详情](./images/lorebook-entry-detail.png)
-<!-- 需要截图：一个词条的编辑面板，能看到 Send as 三选一、Content 文本框、Tags 标签、Position -->
+![Entry detail editing view](./images/lorebook-entry-detail.png)
+<!-- Screenshot needed: An entry's editing panel showing Send as (three options), Content text box, Tags, and Position -->
 
-::: info 详细参考
-想深入了解词条的所有配置（模糊匹配、二级关键词、递归触发、条件触发等），看 → [词条与世界书](./03-entries-and-lorebook.md)
+::: info Detailed reference
+For a deep dive on all entry configuration options — fuzzy matching, secondary keywords, recursive triggering, conditional triggering, and more — see → [Entries & Lorebook](./03-entries-and-lorebook.md)
 :::
 
 ---
 
-## 变量（Variables）
+## Variables
 
-变量是你世界的"记忆"。任何需要追踪的数据——生命值、金币、好感度、当前位置——都存在变量里。
+Variables are your world's "memory." Anything you need to track — health, gold, affection, current location — lives in a variable.
 
-点 **添加变量（Add Variable）** 按钮新建。每个变量需要填：显示名称（Display Name）、类型（Type）、默认值（Default Value）。
+Click **Add Variable** to create one. Each variable needs a display name, a type, and a default value.
 
-![变量管理界面](./images/variables.png)
-<!-- 需要截图：Variables 区域，能看到几个不同类型的变量（number/string/boolean），最好有一个展开的变量编辑面板 -->
+![Variable management interface](./images/variables.png)
+<!-- Screenshot needed: Variables section showing several variables of different types (number/string/boolean), preferably with one expanded editing panel -->
 
-四种类型，各有用途：
+Four types, each with its use case:
 
-| 类型 | 存什么 | 举个栗子 |
-|------|-------|---------|
-| 数字（Number） | 数字 | HP: 100, 金币: 500 |
-| 文字（String） | 文字 | 当前位置: "森林" |
-| 开关（Boolean） | 是/否 | 有钥匙: 是 |
-| JSON（Object / Array） | 复杂数据 | 背包: 剑、药水、地图 |
+| Type | Stores | Example |
+|------|--------|---------|
+| Number | Numbers | HP: 100, Gold: 500 |
+| String | Text | Current location: "Forest" |
+| Boolean | Yes/No | Has key: true |
+| JSON (Object / Array) | Complex data | Inventory: sword, potion, map |
 
-变量创建好之后，引擎会自动教 AI 怎么修改它们——你不需要手动写格式说明。AI 会在回复末尾用类似 `[health: -10]` 的格式来更新状态，引擎检测到后自动执行。你要做的就是在每个变量的 **行为规则（Behavior Rules）** 里用大白话告诉 AI "什么情况下该改这个变量"，剩下的引擎全搞定。
+Once you create variables, the engine automatically teaches the AI how to update them — you don't need to write any format instructions. The AI will include updates at the end of its replies using syntax like `[health: -10]`, and the engine detects and executes these automatically. All you need to do is write **Behavior Rules** for each variable in plain language explaining "when should this variable change" — the engine handles everything else.
 
-::: info 详细参考
-操作语法、嵌套路径、JSON变量的高级用法 → [变量系统](./04-variables.md) 和 [AI 指令与宏](./05-directives-and-macros.md)
+::: info Detailed reference
+Operation syntax, nested paths, advanced JSON variable usage → [Variables](./04-variables.md) and [AI Directives & Macros](./05-directives-and-macros.md)
 :::
 
 ---
 
-## 行为（Behaviors）
+## Behaviors
 
-行为是你世界的"自动化管家"。它让你实现这种效果：
+Behaviors are your world's "automated assistant." They let you set up effects like:
 
-- "HP 降到 0 → 弹出通知'你死了'"
-- "每 3 回合 → 饥饿度 +1"
-- "玩家说了'投降' → 触发特殊结局"
-- "60 秒倒计时结束 → 炸弹爆炸"
+- "HP drops to 0 → pop up a notification: 'You died'"
+- "Every 3 turns → hunger +1"
+- "Player says 'surrender' → trigger a special ending"
+- "60-second countdown ends → bomb explodes"
 
-点 **添加行为（Add Behavior）** 后，每条行为就三个部分：**WHEN**（什么时候触发）→ **ONLY IF**（条件满足吗，可选）→ **DO**（做什么）
+After clicking **Add Behavior**, every behavior has three parts: **WHEN** (what triggers it) → **ONLY IF** (an optional condition to check) → **DO** (what to execute)
 
-![行为编辑界面](./images/behaviors.png)
-<!-- 需要截图：Behaviors 区域，能看到行为列表和一条行为的编辑面板（WHEN、ONLY IF、DO 三块） -->
+![Behavior editing interface](./images/behaviors.png)
+<!-- Screenshot needed: Behaviors section showing a behavior list and one behavior's editing panel (WHEN, ONLY IF, DO blocks) -->
 
-举个最简单的例子：
+A simple example:
 
 ```
-WHEN:    变量穿过阈值（Variable crosses threshold）— health 降到 0 以下
-ONLY IF: （不填）
-DO:      通知玩家（Show notification）— "你死了"，danger 样式
+WHEN:    Variable crosses threshold — health drops below 0
+ONLY IF: (leave blank)
+DO:      Notify player — "You died", danger style
 ```
 
-不需要写代码，在编辑器里点点选选就能配好。
+No code required — just click through the options in the editor.
 
-::: info 详细参考
-所有触发器类型、动作类型、优先级和冷却机制 → [行为规则引擎](./06-rules-engine.md)
+::: info Detailed reference
+All trigger types, action types, priority and cooldown mechanics → [Rules Engine](./06-rules-engine.md)
 :::
 
 ---
 
-## 消息渲染器（Message Renderer）
+## Message Renderer
 
-默认情况下，AI 的回复就是一段普通文字。但你见过的那些很酷的世界——气泡对话、视觉小说画面、带血条和背包的游戏界面——都是通过这个区域实现的。
+By default, the AI's reply is just plain text. But those cool worlds you've seen — speech bubbles, visual novel scenes, game interfaces with health bars and inventory — those are all built with this section.
 
-![消息渲染器编辑](./images/message-renderer.png)
-<!-- 需要截图：Message Renderer 区域，能看到 Default/Custom TSX 两个选项，Custom TSX 下面有代码编辑区 -->
+![Message renderer editor](./images/message-renderer.png)
+<!-- Screenshot needed: Message Renderer section showing Default/Custom TSX options, with the code editor visible under Custom TSX -->
 
-这里有两个选项：
-- **默认（Default (plain markdown)）**：普通 Markdown，不需要任何设置
-- **自定义 TSX（Custom TSX）**：用代码完全自定义消息的外观
+There are two options:
+- **Default (plain markdown)**: standard Markdown, no setup needed
+- **Custom TSX**: write code to fully customize how messages look
 
-"等等，代码？！我不会写代码啊" ——别慌，应该没有人会真的自己手敲代码吧 (￣▽￣)ノ
+"Wait, code?! I can't code!" — don't panic. Nobody's expected to hand-write this stuff (￣▽￣)ノ
 
-你有两个方法让 AI 帮你搞定：
+There are two ways to have AI do it for you:
 
-### 方法一：用 Yumina 内置的 Studio AI
+### Method 1: Use Yumina's built-in Studio AI
 
-编辑器里点 **进入 Studio（Enter Studio）**，打开 **AI Assistant** 面板，直接用大白话告诉它你想要什么。比如：
+In the editor, click **Enter Studio**, open the **AI Assistant** panel, and just describe what you want in plain language. For example:
 
 ```
-帮我改一下消息的显示方式。
+Change how messages are displayed for me.
 
-我想要每条消息上面有一个暗色的状态栏，里面显示：
-- 一个红色的血条，显示 health 变量，满血是 100
-- 一个蓝色的蓝条，显示 mp 变量，满蓝是 50
-- 右边用金色文字显示金币数量，读 gold 变量
+I want a dark status bar above each message containing:
+- A red health bar showing the health variable, max 100
+- A blue mana bar showing the mp variable, max 50
+- Gold text on the right showing gold coin count from the gold variable
 
-状态栏背景用深灰色，带一点蓝色的发光边框，看起来有奇幻RPG的感觉。
-状态栏下面正常显示AI的回复文字就行。
+Give the status bar a dark gray background with a slight blue glowing border,
+like a fantasy RPG aesthetic.
+Display the AI's reply text normally below the status bar.
 ```
 
-AI 会生成代码，右边的 Canvas 面板实时预览效果。满意就点 **批准（Approve）**，不满意继续说"血条再粗一点"、"加个角色等级显示"。
+The AI generates the code, and the Canvas panel on the right shows a live preview. Satisfied? Click **Approve**. Not quite? Keep talking — "make the health bar thicker," "add a character level display."
 
-![Studio AI 生成渲染器](./images/beginner-studio-renderer.png)
-![Studio AI 生成渲染器](./images/beginner-studio-renderer2.png)
-<!-- 需要截图：Studio 界面全貌——左侧 AI Assistant 有上面的对话，右侧 Canvas 显示生成的状态栏效果（暗色背景、红色血条、蓝色蓝条、金币数字） -->
+![Studio AI generating a renderer](./images/beginner-studio-renderer.png)
+![Studio AI generating a renderer](./images/beginner-studio-renderer2.png)
+<!-- Screenshot needed: Studio full view — left AI Assistant with the above conversation, right Canvas showing the generated status bar (dark background, red health bar, blue mana bar, gold coin text) -->
 
-### 方法二：用外部 AI（Claude、ChatGPT 等）
+### Method 2: Use an external AI (Claude, ChatGPT, etc.)
 
-把你想要的效果告诉外部 AI，但要多加一段 Yumina 的技术信息（因为外部 AI 不了解 Yumina），让它能写出对的代码，并且外部ai不能帮忙改variable，你需要先自己设置好对应的variable哦ヾ(•ω•`)o。
+Describe what you want to an external AI, but add the Yumina technical context (since external AIs don't know the platform) so it can write valid code. Also note that external AI can't create variables for you — you'll need to set those up yourself first ヾ(•ω•`)o.
 
 ```
-我在用一个叫 Yumina 的AI互动平台做世界。帮我写一段代码，改变消息的显示方式。
+I'm building a world on an AI interactive platform called Yumina.
+Help me write code to change how messages are displayed.
 
-我想要的效果：
-每条消息上面有一个暗色的状态栏（深灰底色，蓝色发光边框，圆角），里面显示：
-- 红色的血条，显示 health 变量，满血 100
-- 蓝色的蓝条，显示 mp 变量，满蓝 50
-- 金色文字显示金币数量，读 gold 变量
-状态栏下面正常显示消息文字。整体奇幻RPG暗色风格。
+What I want:
+A dark status bar above each message (dark gray background, blue glowing border, rounded corners) showing:
+- A red health bar for the health variable, max 100
+- A blue mana bar for the mp variable, max 50
+- Gold text showing coin count from the gold variable
+Normal message text below the status bar. Dark fantasy RPG aesthetic.
 
-下面是 Yumina 的技术信息，你写代码的时候需要遵守这些规则：
-- 代码格式是 TSX，用 export default function Renderer({ content, renderMarkdown }) { ... } 导出
-- 用 useYumina() 可以拿到游戏变量，比如 useYumina().variables.health
-- 平台内置了 YUI 组件库（不用 import 直接用），其中 YUI.StatBar 可以做血条
-- 平台内置了 Icons 图标库（不用 import），比如 Icons.Coins 是金币图标
-- renderMarkdown(content) 可以把文字渲染成带格式的 HTML
-- 支持 Tailwind CSS 和 React hooks
+Here's the Yumina technical info — your code must follow these rules:
+- TSX format, exported as: export default function Renderer({ content, renderMarkdown }) { ... }
+- Use useYumina() to access game variables, e.g. useYumina().variables.health
+- The YUI component library is built-in (no import needed): YUI.StatBar can make health bars
+- The Icons icon library is built-in (no import), e.g. Icons.Coins is the coin icon
+- renderMarkdown(content) renders text to formatted HTML
+- Supports Tailwind CSS and React hooks
 ```
 
-拿到代码后 → 编辑器 → 消息渲染器（Message Renderer）→ 自定义 TSX（Custom TSX）→ 粘贴 → 看到 **编译状态：OK（Compile Status: OK）** 就成功了。
+Once you have the code → editor → Message Renderer → Custom TSX → paste it in → if you see **Compile Status: OK** at the bottom, you're good.
 
-
-::: tip 报错了怎么办
-如果粘贴后底部显示红色错误信息，把错误信息原封不动发回给 AI 说"这段代码报错了，帮我修一下"就行。来回两三轮就能搞定 ∠( ᐛ 」∠)＿
+::: tip What if there's an error?
+If you see a red error message at the bottom after pasting, send the error back to the AI verbatim: "This code has an error, please fix it." A couple of back-and-forth exchanges usually sorts it out ∠( ᐛ 」∠)＿
 :::
 
-Yumina 还内置了一套叫 **YUI** 的组件库（血条、对话框、物品格子、场景背景等），AI 生成代码的时候会自动用上这些。你不用了解这些组件怎么写，AI 知道就行了。
+Yumina also includes a built-in component library called **YUI** (health bars, dialogue boxes, item grids, scene backgrounds, etc.). When AI generates code, it'll automatically use these. You don't need to know how these components work — the AI knows.
 
-::: tip Studio 是什么
-Studio 是编辑器的"进阶模式"。除了 AI 助手，还有代码编辑器、实时预览、测试面板。点编辑器顶部的 **进入 Studio（Enter Studio）** 就能进去。后面的 [自定义前端指南](./07-components.md) 会详细讲。
+::: tip What is Studio?
+Studio is the editor's "advanced mode." Besides the AI assistant, it has a code editor, live preview, and a test panel. Click **Enter Studio** at the top of the editor to get there. The [Custom Frontend Guide](./07-components.md) covers it in detail.
 :::
 
-::: info 详细参考
-完整的前端定制教学（更多示例 prompt、YUI 组件库、Studio 用法）→ [自定义前端指南](./07-components.md)
-渲染器技术细节和 API → [自定义消息渲染器](./08-message-renderer.md)
-:::
-
----
-
-## 音频（Audio）
-
-给你的世界加上 BGM、音效和环境音。支持三种音频类型：
-
-| 类型 | 用途 | 例子 |
-|------|------|------|
-| BGM | 背景音乐 | 主题曲、战斗音乐 |
-| SFX | 音效 | 开门声、爆炸声 |
-| Ambient | 环境音 | 雨声、人群嘈杂 |
-
-最简单的使用方法：先在 **素材（Assets）** 区域上传音频文件，然后在 **音频（Audio）** 区域点 **添加音轨（Add Track）**，选择音频来源，就可以使用了。
-
-你可以设置：
-- 简单的循环播放
-- 根据游戏状态自动切歌（比如进入战斗换成战斗 BGM）
-- 让 AI 在回复中触发音效（`[audio: explosion play]`）
-
-::: info 详细参考
-播放列表、条件 BGM、AI 音频指令 → [音频系统](./09-audio.md)
+::: info Detailed reference
+Full frontend customization tutorial (more example prompts, YUI component library, Studio usage) → [Custom Frontend Guide](./07-components.md)
+Renderer technical details and API → [Custom Message Renderer](./08-message-renderer.md)
 :::
 
 ---
 
-## 素材（Assets）
+## Audio
 
-上传图片和音频素材的地方。角色立绘、场景图、道具图标、BGM……传上来之后可以在渲染器或音频里引用。
+Add BGM, sound effects, and ambient audio to your world. Three audio types are supported:
 
-![素材管理界面](./images/assets.png)
-<!-- 需要截图：Assets 区域，能看到已上传的几张图片缩略图 -->
+| Type | Use case | Examples |
+|------|----------|---------|
+| BGM | Background music | Theme song, battle music |
+| SFX | Sound effects | Door opening, explosion |
+| Ambient | Atmosphere | Rain, crowd noise |
 
----
+The simplest approach: upload audio files in the **Assets** section, then in the **Audio** section click **Add Track**, choose your audio source, and you're set.
 
-## 概览（Overview）
+You can configure:
+- Simple looping playback
+- Auto track-switching based on game state (e.g., switch to battle BGM when entering combat)
+- AI-triggered sound effects via `[audio: explosion play]` in the AI's replies
 
-世界的"个人信息页"。在这里设置：
-
-- **封面图（Cover Image）** — 玩家在社区列表里第一眼看到的图
-- **画廊（Gallery Images）** — 最多 8 张展示图
-- **描述（Description）** — 详细介绍你的世界
-- **标签（Tags）** — 帮助别人发现你的世界，最多 7 个
-- **公告（Announcement）** — 置顶消息，适合写更新日志
-- **预计时长（Approx. Time）** — 告诉玩家大概要玩多久
-- **语言（Language）** — 设置你的世界的语言（支持中/英/日/韩等 10 种语言）
-- **多人模式（Allow Multiplayer）** — 是否允许多人一起玩
-
-### 多语言支持
-
-设置了语言之后，会出现 **语言变体（Language Variants）** 区域。你可以把同一个世界的不同语言翻译版链接在一起——比如你做了一个中文版和一个英文版，把它们链起来之后，玩家在开始游戏时会看到语言切换标签页，可以选择自己喜欢的语言来玩。
-
-操作方法：
-1. 先给当前世界设置语言（比如 `中文`）
-2. 点 **添加语言版本（Add Language Version）**
-3. 上传翻译版的世界 JSON 文件
-4. 选择翻译版的语言（比如 `English`）
-5. 导入后两个世界就自动链接了
-
-做完世界、测试没问题之后，回到 **发现（Discover）** 页面，点顶部的 **发布（Publish）** 按钮就能把世界上线。
-
-::: info 详细参考
-发布流程、Bundle 导出、多人模式、多语言支持 → [发布、导出与 Bundle](./11-publish-and-share.md)
+::: info Detailed reference
+Playlists, conditional BGM, AI audio directives → [Audio](./09-audio.md)
 :::
 
 ---
 
-## 测试你的世界
+## Assets
 
-编辑器左侧导航栏最底部有一个大大的金色 **PLAY** 按钮——点它就能开始测试。会弹出会话选择界面，点 **新建会话（New Session）** 就能进入你的世界开始玩了。
+Where you upload image and audio files. Character sprites, scene backgrounds, item icons, BGM tracks — once uploaded, you can reference them in your renderer or audio settings.
 
-测试中觉得哪里不对？随时回编辑器改，改完点 **保存（Save）**，再 PLAY 一次。
-
----
-
-## 引擎在背后做了什么
-
-好奇玩家发一条消息后，背后到底发生了什么？完整的流水线（词条→提示词→AI→指令→变量→规则→渲染）在 [核心概念速览](./01-core-concepts.md#运行流程) 里有详细图解，这里不重复了。
-
-一句话版本：引擎把词条组装成提示词发给 AI → AI 回复带指令 → 引擎提取指令更新变量 → 触发规则 → 渲染给玩家。每次发消息都跑一遍，玩家完全无感 ∠( ᐛ 」∠)＿
+![Asset management interface](./images/assets.png)
+<!-- Screenshot needed: Assets section showing thumbnails of several uploaded images -->
 
 ---
 
-## 下一步
+## Overview
 
-编辑器的每个角落你都认识了。接下来跟着 [手把手教程](./02-tutorial-basic.md)，从零做一个完整的生存恐怖世界出来。做一遍比看十遍文档有用 ᕕ( ᐛ )ᕗ
+The world's "profile page." Set up:
+
+- **Cover Image** — the first thing players see in the community listing
+- **Gallery Images** — up to 8 showcase images
+- **Description** — a detailed introduction to your world
+- **Tags** — help others discover your world (up to 7)
+- **Announcement** — a pinned message, great for update notes
+- **Approx. Time** — let players know roughly how long a session takes
+- **Language** — the language your world is written in (supports 10 languages including English, Chinese, Japanese, Korean, and more)
+- **Allow Multiplayer** — whether to enable multiplayer
+
+### Multi-language support
+
+Once you set a language, a **Language Variants** section appears. You can link different language versions of the same world — for example, if you made a Chinese version and an English version, link them together and players will see a language tab when starting the game, letting them pick their preferred language.
+
+How to do it:
+1. Set the current world's language (e.g., `Chinese`)
+2. Click **Add Language Version**
+3. Upload the translated world's JSON file
+4. Select the translated world's language (e.g., `English`)
+5. After import, the two worlds are automatically linked
+
+When you've finished the world and it's tested and ready, go back to the **Discover** page and click the **Publish** button at the top to make it live.
+
+::: info Detailed reference
+Publishing flow, Bundle export, multiplayer mode, multi-language support → [Publish, Export & Bundle](./11-publish-and-share.md)
+:::
+
+---
+
+## Testing your world
+
+At the very bottom of the editor's left navigation panel is a big gold **PLAY** button — click it to start testing. A session picker will appear; click **New Session** to enter your world and start playing.
+
+See something that needs fixing? Head back to the editor, make changes, click **Save**, and PLAY again.
+
+---
+
+## What the engine does in the background
+
+Curious about what actually happens after a player sends a message? The full pipeline (entries → prompt → AI → directives → variables → rules → rendering) is illustrated in detail in [Core Concepts](./01-core-concepts.md#the-runtime-flow) — no need to repeat it here.
+
+TL;DR: The engine assembles entries into a prompt and sends it to the AI → the AI replies with embedded directives → the engine extracts the directives and updates variables → rules trigger → the player sees the result. This runs every single turn, completely invisibly ∠( ᐛ 」∠)＿
+
+---
+
+## Next step
+
+You've seen every corner of the editor. Now follow the [step-by-step tutorial](./02-tutorial-basic.md) and build a complete survival horror world from scratch. Doing it once is worth more than reading the docs ten times ᕕ( ᐛ )ᕗ

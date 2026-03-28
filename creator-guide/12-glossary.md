@@ -1,91 +1,83 @@
 <div v-pre>
 
-# 术语表
+# Glossary
 
-按拼音/首字母排序的 Yumina 创作术语速查。
+A quick-reference guide to Yumina creator terminology, sorted alphabetically.
 
 ---
 
-**背包格子（Inventory Grid）** — 一种组件类型，绑定 JSON 数组变量后以网格形式展示物品列表，玩家获得或失去物品时格子自动更新。
+**Action** — the DO part of a behavior; what the engine actually executes when conditions are met. Includes modifying variables, injecting directives, notifying the player, playing audio, starting timers, and more.
 
-**变量（Variable）** — 存储游戏状态数据的命名容器，支持数字、文字、布尔和 JSON 四种类型，是指令和规则读写的核心对象。
+**Audio Directive** — a special directive the AI embeds in replies using `[audio: trackId action]` syntax to control audio playback. Supports play, stop, crossfade, volume, and chain operations.
 
-**播放列表（Playlist）** — BGM 播放列表配置，可将多首背景音乐按顺序、循环或随机模式串联播放，并控制是否自动播放和曲间间隔。
+**Behavior** — a WHEN/ONLY IF/DO automation rule: when to check, what conditions to require, and what to do. The core mechanism that makes a world feel alive. Configured in the Behaviors section of the editor.
 
-**词条（Entry）** — 世界中的一个内容片段，包含文本和触发条件，是构建角色设定、世界观、剧情线索的基本单元。
+**Bundle** — a package of selected world content (entries, variables, rules, components, etc.) exported as a shareable JSON file. Others can install it into their own worlds with one click.
 
-**触发器（Trigger）** — 行为的 WHEN 部分，决定引擎什么时候来检查这条行为，比如"每当变量变化时"、"每 N 回合"、"出现关键词时"或"计时器到时"。
+**Conditional BGM** — a mechanism for automatically switching background music based on variable state, keywords, or turn count. E.g., auto-switching to battle music when entering a combat zone.
 
-**递归触发（Recursion）** — 词条 A 被触发后，其内容中的关键词会再次扫描并触发词条 B，形成连锁激活，深度由 `lorebookRecursionDepth` 控制（0-10 层）。
+**Cooldown** — the number of turns a behavior must wait after firing before it can fire again. Prevents the same behavior from triggering too frequently.
 
-**动作（Action）** — 行为的 DO 部分，条件满足后引擎实际执行的操作，包括修改变量、注入指令、通知玩家、播放音频、启动计时器等。
+**Custom Component** — a TSX-coded independent UI panel that adds alongside the chat interface (rather than replacing message rendering). Good for character creation screens, game sidebars, and similar.
 
-**二级关键词（Secondary Keywords）** — 在主关键词命中后做进一步筛选的关键词列表，支持 AND_ANY、AND_ALL、NOT_ANY、NOT_ALL 四种组合逻辑。
+**Depth Injection** — a technique for inserting entry content at a specific position within chat history. The `depth` value indicates how many messages from the end to insert at, making the AI more naturally "aware" of context information.
 
-**行为（Behavior）** — WHEN/ONLY IF/DO 三段式的自动化逻辑：何时检查、满足什么条件、执行什么操作，是让世界"活"起来的核心机制。在编辑器的 Behaviors 区域配置。
+**Directive** — the AI's way of changing game state, using `[variableName: operation value]` syntax in replies. Automatically parsed and executed by the engine; players only see clean narrative text.
 
-**后历史（Post-History）** — 提示词四大区域之一，放在所有聊天消息之后、AI 开始生成之前，适合放"最后强调一遍"的指令，因为 AI 对最后看到的内容印象最深。
+**Entry** — a content fragment in a world. Character profiles, scene descriptions, writing style instructions, example dialogue, world lore — all are entries. Each has a `role` tag telling the engine what kind of content it is.
 
-**回合（Turn）** — 一次完整的对话往返，即玩家发送一条消息加上 AI 生成一条回复算作一个回合。
+**Full-Screen Component** — a setting that makes custom components take over the entire screen when enabled, hiding the chat window completely. Good for character creation screens, maps, or fully custom experiences.
 
-**会话（Session）** — 一次游戏对话的实例，每个会话独立维护自己的聊天历史和游戏状态，互不干扰。
+**Fuzzy Match** — typo-tolerant matching based on Levenshtein edit distance. Allows a small number of spelling errors in keywords to still trigger a match. Only effective for Latin alphabet characters — not supported for CJK.
 
-**角色（Character）** — 世界中由 AI 扮演的虚构人物，通过词条定义其外貌、性格、说话方式等设定。
+**Image Panel** — a component type for displaying character sprites or scene backgrounds. Can bind to a variable so the AI can dynamically switch images via directives, or use a fixed URL.
 
-**结构化输出（Structured Output）** — 一项 AI 设置，开启后通过 `response_format: { type: "json_object" }` 强制 AI 以 JSON 格式回复，适合需要前端严格解析输出的场景。
+**Inventory Grid** — a component type that displays an item list in grid form after binding to a JSON array variable. Updates automatically when items are added or removed.
 
-**开场白（Greeting）** — 玩家进入世界时看到的第一条 AI 消息，决定了整个体验的第一印象。
+**Language Variant** — a different language translation of the same world. Multiple language versions can be linked together in Overview so players see a language tab when starting the game.
 
-**冷却（Cooldown）** — 行为触发后需要等待的回合数，防止同一条行为被过于频繁地反复触发。
+**Lorebook** — a collection of keyword-triggered entries. When matching keywords appear in chat, the corresponding entries automatically inject into the AI context — feeding information on demand to conserve token budget.
 
-**模糊匹配（Fuzzy Match）** — 基于 Levenshtein 编辑距离的容错匹配，允许关键词有少量拼写错误仍能命中，仅对拉丁字母有效，不支持中日韩文字。
+**Macro** — a `{{name}}` placeholder in entry text, automatically replaced with real content (like a variable value or system info) before being sent to the AI. E.g. `{{char}}`, `{{user}}`, `{{turnCount}}`.
 
-**全屏组件（Full Screen Component）** — 一项设置，启用后自定义组件占据整个屏幕、聊天窗口完全隐藏，适合角色创建界面、地图或全屏游戏等沉浸式场景。
+**Message Renderer** — a custom component written in TSX that replaces the default Markdown chat bubbles to give AI messages a personalized look: speech bubbles, visual novel dialogue boxes, battle logs, and more.
 
-**渲染器（Renderer）** — 用 TSX 代码完全接管消息或界面展示方式的机制，是让世界从"聊天机器人"升级为"互动体验"的关键。
+**Playlist** — a BGM playlist configuration that chains multiple background music tracks and controls whether to loop, shuffle, or play sequentially, plus autoplay behavior and gap between tracks.
 
-**深度插入（Depth Injection）** — 将词条内容插入聊天历史特定位置的技术，depth 值表示从末尾往回数第几条消息处插入，让 AI 更自然地"注意到"上下文信息。
+**Post-History** — one of the four prompt sections, placed after all chat messages and before the AI starts generating. Good for "last emphasis" instructions since the AI pays closest attention to what it just read.
 
-**世界（World）** — Yumina 中一个完整的互动体验，是把角色、故事、规则、组件、音频等所有要素打包在一起的顶层容器。
+**Priority** — a numeric weight on behaviors or conditional BGM. Higher numbers get evaluated and executed first when multiple rules trigger simultaneously.
 
-**世界书（Lorebook）** — 由关键词触发的词条集合，当聊天中出现匹配关键词时对应词条自动注入 AI 上下文，实现按需投喂信息、节约 token 预算。
+**Recursive Triggering** — after entry A is triggered, its content is scanned again as "new text" to check if it can trigger entry B — a chain activation. Depth controlled by `lorebookRecursionDepth` (0–10).
 
-**条件（Condition）** — 基于游戏变量当前值的判断表达式，由变量 ID、运算符（eq/neq/gt/gte/lt/lte/contains）和目标值三部分组成。
+**Renderer** — the mechanism of using TSX code to fully take over how messages or interfaces are displayed. The key step from "chatbot" to "interactive experience."
 
-**条件BGM（Conditional BGM）** — 根据变量状态、关键词或回合数等条件自动切换背景音乐的机制，比如进入战斗区域时自动换成战斗曲。
+**Rule** — synonymous with Behavior (the formal term used in the underlying schema). See Behavior.
 
-**图片面板（Image Panel）** — 一种组件类型，用于展示角色立绘或场景图，可绑定变量让 AI 通过指令动态换图，也可以写死一个固定 URL。
+**Secondary Keywords** — a keyword list for additional filtering after a primary keyword matches. Supports four combination logics: AND_ANY, AND_ALL, NOT_ANY, NOT_ALL.
 
-**温度（Temperature）** — 控制 AI 回复随机性的核心参数，范围 0-2；值越低输出越稳定可预测，值越高越有创造力但也越可能偏离主题。
+**Session** — an instance of a game conversation. Each session independently maintains its own chat history and game state.
 
-**文字面板（Text Display）** — 一种组件类型，用于显示格式化文本信息（如当前位置、天气），支持模板字符串和图标。
+**SFX** — a short one-shot sound effect like a door opening, explosion, or item pickup chime. Can be triggered by AI audio directives or rules.
 
-**物品（Item）** — 背包格子组件中的单个元素，对应 JSON 数组变量里的一个条目，通过 push 添加、delete 移除。
+**Stat Bar** — a component type that displays a number variable as a progress bar. Great for HP, MP, experience — any value that benefits from a visual ratio representation.
 
-**系统预设（System Preset）** — 提示词四大区域之一，位于最顶部，AI 最先看到，适合放核心角色描述、世界观和写作风格等必须时刻生效的内容。
+**Structured Output** — an AI setting that when enabled, forces the AI to reply in JSON format via `response_format: { type: "json_object" }`. For mechanic-heavy worlds that need strict output parsing.
 
-**消息渲染器（Message Renderer）** — 用 TSX 编写的自定义组件，替换默认的 Markdown 聊天气泡，实现气泡对话、视觉小说、战斗日志等个性化消息外观。
+**System Preset** — one of the four prompt sections, located at the very top. The AI sees this first. Best for core character descriptions, world lore, and writing style — content that needs to be in effect at all times.
 
-**音效（SFX）** — 一次性播放的短音频，如开门声、爆炸声、获得物品的提示音，可由 AI 音频指令或规则触发。
+**Temperature** — the core parameter controlling AI reply randomness. Range 0–2: lower values make output more stable and predictable; higher values make it more creative but potentially off-topic.
 
-**音频指令（Audio Directive）** — AI 在回复中通过 `[audio: trackId action]` 格式控制音频播放的特殊指令，支持 play、stop、crossfade、volume 和 chain 操作。
+**Text Display** — a component type for displaying formatted text information (like current location or weather). Supports template strings and icons.
 
-**优先级（Priority）** — 行为或条件 BGM 上的数值权重，数字越大越先被评估和执行，当多条行为同时触发时决定谁先跑。
+**Trigger** — the WHEN part of a behavior; determines when the engine checks whether to act. Examples: "on every variable change," "every N turns," "when a keyword appears," "when a timer fires."
 
-**指令（Directive）** — AI 在回复中通过 `[变量名: 操作 值]` 格式改变游戏状态的方式，由引擎自动解析并执行，玩家只看到干净的叙事文本。
+**Turn** — one complete exchange: the player sends a message and the AI generates a reply.
 
-**状态条（Stat Bar）** — 一种组件类型，绑定数字变量后以进度条形式展示数值，适合 HP、MP、经验值等需要直观呈现比例的场景。
+**Variable** — a named container storing game state data. Supports number, string, boolean, and JSON types. The core object that directives and rules read from and write to.
 
-**自定义组件（Custom Component）** — 用 TSX 编写的独立 UI 面板，不替换消息渲染而是在聊天界面旁边额外添加，适合角色创建界面、游戏侧边栏等。
+**Web Panel** — a component type that runs custom HTML/CSS/JS in an iframe sandbox. The most flexible wildcard component — can implement mini-maps, skill trees, or any custom UI.
 
-**组件（Component）** — 游戏面板中绑定变量的可视化 UI 控件，变量值一变控件就自动更新，包括状态条、文字面板、图片面板、背包格子和 Web 面板五种内置类型。
-
-**宏（Macro）** — `{{名称}}` 格式的占位标记，在提示词构建时自动替换为对应变量的值或系统信息（如 `{{char}}`、`{{user}}`、`{{turnCount}}`）。
-
-**Bundle** — 将世界中的部分内容（词条、变量、规则、组件等）打包为可分享的 JSON 文件，别人可以一键安装到自己的世界中。
-
-**语言变体（Language Variant）** — 同一个世界的不同语言翻译版本。通过编辑器 Overview 里的语言设置可以把多个语言版本链接在一起，玩家开始游戏时会看到语言切换标签页。
-
-**Web面板（Web Panel）** — 一种组件类型，在 iframe 沙箱中运行自定义 HTML/CSS/JS，是最灵活的万能组件，可实现小地图、技能树等任意自定义 UI。
+**World** — a complete, self-contained interactive experience in Yumina. The top-level container that packages characters, story, rules, components, audio, and everything else together.
 
 </div>

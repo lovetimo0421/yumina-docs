@@ -1,106 +1,101 @@
-# 开始游戏
+# Start Playing
 
-找到想玩的世界后，点 **Start Playing**，你的冒险就开始了。
+Once you've found a world you want to play, click **Start Playing** and your adventure begins.
 
-## 选择会话
+## Choosing a session
 
-点开始后会弹出一个会话选择窗口：
+After clicking Start Playing, a session picker will appear:
 
-- 如果是第一次玩，点 **+ New Session** 创建新存档
-- 如果之前玩过，可以选一个已有的会话继续
-- 每个会话显示消息数量和上次游玩时间
-- 同一个世界可以开多个会话，互不影响
+- If it's your first time, click **+ New Session** to create a new save
+- If you've played before, you can pick an existing session to continue
+- Each session shows the number of messages and the last time you played
+- You can have multiple sessions for the same world — they're completely independent
 
-如果世界支持多语言，顶部还会有语言切换标签。
+If the world supports multiple languages, you'll also see language tabs at the top.
 
-![会话选择弹窗，展示已有会话列表和新建按钮](./images/session-selector.png)
+![Session picker dialog showing existing sessions and the new session button](./images/session-selector.png)
 
-## 聊天界面
+## The chat interface
 
-进入游戏后，你会看到聊天界面：
+Once you're in the game, you'll see the chat interface:
 
+**AI messages (Narrator):**
+- Labeled as **Narrator**
+- The AI narrates the story and plays the characters based on the world's setup
+- Hover over a message to see generation time, token count, and the model used
 
-**AI 消息（叙述者）：**
-- 标注为 **Narrator**
-- AI 会根据世界设定讲述故事、扮演角色
-- 悬停可以看到生成耗时、token 数量和使用的模型
+**Your messages:**
+- Labeled as **You**
+- Type in the input box at the bottom, hit Enter to send (Shift+Enter for a new line)
+- You can describe any action — "I open the door," "I talk to her," "I sneak away"
 
-**你的消息：**
-- 标注为 **You**
-- 在底部输入框打字，Enter 发送（Shift+Enter 换行）
-- 你可以描述任何行动，比如"我打开门"、"我跟她说话"、"我偷偷溜走"
+**Game panel:**
+- If the creator set up a custom UI, you might see all sorts of cool visuals
+- This can include backgrounds, custom fonts, health bars, inventories, stat panels, and other game components
 
-**游戏面板：**
-- 如果创作者设置了自定义 UI，可能会有各种各样的美化
-- 可能包含背景，字体，血条、背包、属性面板等各种游戏组件
+## Swipe: cycling through AI responses
 
+Not happy with what the AI said? Use the Swipe feature:
 
+At the bottom of the last AI message, you'll see a control like `< 1/1 >`:
 
-## Swipe：切换 AI 回复
+- **Click the right arrow `>`** — ask the AI to generate a new response
+- **Click the left arrow `<`** — go back to a previous version
+- The middle shows `current/total`, e.g. `2/3` means you're viewing the second of three versions
 
-不满意 AI 的回复？用 Swipe 功能：
+You can generate several versions and pick your favorite to continue with ✧(≖ ◡ ≖✿)
 
-在最后一条 AI 消息底部，你会看到 `< 1/1 >` 这样的控件：
+## Message actions
 
-- **点右箭头 `>`** — 让 AI 重新生成一个新回复
-- **点左箭头 `<`** — 切换回之前的版本
-- 中间显示 `当前/总数`，比如 `2/3` 表示第三个版本中看第二个
+Hover over any message and a row of action buttons appears:
 
-你可以生成好几个版本，挑最喜欢的那个继续玩 ✧(≖ ◡ ≖✿)
+| Action | Description |
+|--------|-------------|
+| **Copy** | Copy the message content |
+| **Edit** | Modify the message (click Save when done) |
+| **Regenerate** | Ask the AI to re-write this message (last AI message only) |
+| **Rewind to here** | Delete all messages after this one and return to this point |
+| **Delete** | Remove this message |
 
+## More input box features
 
-## 消息操作
+There are a few buttons to the left of the input box:
 
-鼠标悬停在任意消息上，会出现一排操作按钮：
+### The + menu
+- **Continue** — have the AI keep writing without you saying anything
+- **Restart Chat** — clear all messages and start over (confirmation required)
+- **Attach Image** — upload an image attachment
 
-| 操作 | 说明 |
-|------|------|
-| **复制** | 复制消息内容 |
-| **编辑** | 修改消息内容（改完点 Save） |
-| **重新生成** | 让 AI 重新回复这条（仅最后一条 AI 消息） |
-| **撤回到这里** | 删除这条之后的所有消息，回到这个节点 |
-| **删除** | 删掉这条消息 |
+### Checkpoints (bookmark icon)
+- **Save Checkpoint** — save your current progress
+- **Load Checkpoint** — load a previously saved checkpoint
 
-## 输入框的更多功能
+Checkpoints are perfect for key decision moments — save before a branch, and if things go sideways you can always come back ( •̀ω•́ )σ
 
-输入框左边有几个按钮：
+## The top control bar
 
-### + 菜单
-- **Continue** — 让 AI 继续写，不需要你说话
-- **Restart Chat** — 清空所有消息，重新开始（会确认）
-- **Attach Image** — 上传图片附件
+A row of control buttons runs across the top of the chat interface:
 
-### 存档点（书签图标）
-- **Save Checkpoint** — 保存当前进度
-- **Load Checkpoint** — 读取之前保存的进度
+| Button | Description |
+|--------|-------------|
+| **↩ Undo** | Undo the last exchange (your message + the AI's reply) |
+| **Export** | Export the chat history as a Markdown or JSON file |
+| **Sessions** | View, switch, or create sessions for this world |
+| **Immersive mode** | Full-screen view with all UI hidden — just focus on the story |
+| **Component panel** | Show/hide the right-side game panel (if one exists) |
 
-存档点特别适合"关键分支"前使用——先存一个，选错了可以回来重选 ( •̀ω•́ )σ
+## Zoom control
 
-## 顶部控制栏
+There's a magnifying glass icon in the bottom left of the input area. Click it to adjust the game interface zoom level (20%–200%) — handy for different screen sizes.
 
-聊天界面顶部有一排控制按钮：
+## What if a world gets taken down?
 
-| 按钮 | 说明 |
-|------|------|
-| **↩ 撤回** | 撤回最后一轮对话（你的消息 + AI 的回复） |
-| **导出** | 导出聊天记录为 Markdown 或 JSON 文件 |
-| **会话列表** | 查看/切换/新建这个世界的所有会话 |
-| **沉浸模式** | 全屏显示，隐藏所有 UI，专注阅读 |
-| **组件面板** | 显示/隐藏右侧游戏面板（如果有） |
+If a creator unpublishes their world, your sessions won't disappear:
 
-
-## 缩放控制
-
-输入框左下角有个放大镜图标，点击可以调整游戏界面的缩放比例（20% - 200%），方便不同屏幕大小使用。
-
-## 世界下架了怎么办？
-
-如果创作者下架了世界，你的会话不会丢失：
-
-- 消息历史仍然可以阅读
-- 可以导出聊天记录
-- 但不能继续发送新消息
+- Your message history is still readable
+- You can export the chat log
+- But you won't be able to send new messages
 
 ---
 
-玩了几个世界了？下一篇看看怎么管理你的收藏 ᕕ( ᐛ )ᕗ
+Played through a few worlds? The next page covers how to manage your collection ᕕ( ᐛ )ᕗ

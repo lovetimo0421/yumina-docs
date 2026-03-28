@@ -1,160 +1,160 @@
-# 核心概念速览
+# Core Concepts at a Glance
 
-在 Yumina 里创作互动体验，你只需要理解下面这七个核心概念。不多不少，刚刚好。
-
----
-
-## 世界（World）
-
-一个完整的互动体验包。
-
-如果 Yumina 是一个游戏平台，那世界就是平台上的一个"游戏"。它不是单独的某个角色或某段剧情——它是把角色、故事、规则、UI、音乐全部打包在一起的整体。玩家点开一个世界，就进入了一段完整的沉浸式体验。
-
-从技术层面看，一个世界包含：词条、变量、规则、组件、渲染器、音频轨道、各种设置……所有你需要的东西都在这一个包里。你可以把它理解成一个自给自足的小宇宙。
+Creating interactive experiences in Yumina comes down to understanding seven core concepts. No more, no less — just right.
 
 ---
 
-## 词条（Entry）
+## World
 
-世界的内容碎片。
+A complete, self-contained interactive experience.
 
-角色人设、场景描写、写作风格要求、示例对话、世界观设定——这些全都是词条。每条词条有一个"角色"标签（`character`、`lore`、`plot`、`style`、`example` 等等），告诉引擎这段内容是干什么用的。
+If Yumina is a game platform, then a world is one "game" on that platform. It's not just a single character or a plot excerpt — it's everything bundled together: characters, story, rules, UI, music, all in one package. When a player opens a world, they step into a fully immersive experience.
 
-词条有两种工作模式：
-
-- **常驻型**：标记了"总是发送"的词条，每次 AI 生成回复时都会被塞进提示词里。适合核心人设、基础世界观这类必须时刻生效的内容。
-- **触发型**：设置了关键词的词条，只在最近的对话中出现了匹配的关键词时才会被激活。比如你写了一条关于"黑市"的设定，只有当对话提到"黑市"时，这条内容才会被发给 AI。
-
-打个比方：词条就像剧本的不同页面。AI 不会一次把整个剧本读完，而是根据当前情节需要，翻到对应的那一页。这样既保证了 AI 拥有足够的上下文，又不会浪费宝贵的 token 预算。
+Technically speaking, a world contains entries, variables, rules, components, a renderer, audio tracks, settings… everything you need is in this one bundle. Think of it as a self-sufficient little universe.
 
 ---
 
-## 变量（Variable）
+## Entry
 
-世界的记忆。
+A fragment of your world's content.
 
-HP、金币、好感度、当前所在地点、背包里的物品列表……任何需要在回合之间"记住"的数据，都用变量来存。
+Character profiles, scene descriptions, writing style instructions, example dialogue, world-building lore — all of these are entries. Every entry has a "role" tag (`character`, `lore`, `plot`, `style`, `example`, etc.) that tells the engine what kind of content it is.
 
-变量支持四种类型：
-- **数字**（`number`）：生命值、金币、回合数
-- **文字**（`string`）：当前地点名、角色状态描述
-- **布尔值**（`boolean`）：门有没有开、任务完成了没有
-- **JSON 对象**（`json`）：背包物品列表、复杂的人际关系网
+Entries work in two modes:
 
-每个变量还可以设分类标签（`stat`、`inventory`、`resource`、`flag`、`relationship`、`custom`），方便在编辑器里分组管理。数字变量可以设最小值和最大值，引擎会自动帮你夹在范围内。
+- **Always-on**: Entries marked "always send" are included in the prompt every time the AI generates a reply. Use these for core character profiles and foundational world-building that needs to be in effect at all times.
+- **Triggered**: Entries with keywords are only activated when matching keywords appear in recent chat messages. If you write a piece of lore about a "black market," that content is only sent to the AI when the conversation mentions "black market."
 
-变量就像游戏的存档数据。没有变量，AI 生成的每一段回复都是"失忆"的——不知道玩家上回合做了什么、角色还剩多少血。有了变量，世界才有了连续性。
+Think of entries like pages in a script. The AI doesn't read the whole script at once — it flips to the relevant page based on what's happening right now. This way the AI has enough context without wasting precious token budget.
 
 ---
 
-## 指令（Directive）
+## Variable
 
-AI 改变世界状态的方式。
+The world's memory.
 
-只要你的世界里有变量，引擎会自动教 AI 用指令来改变状态——你不需要手动写格式说明。AI 会在回复末尾用 `[health: -10]` 这样的格式来报告变化，引擎检测到后自动更新对应的变量。
+HP, gold, affection, current location, inventory items… any data that needs to persist between turns goes into a variable.
 
-你要做的只是在变量的"行为规则"里用大白话写清楚"什么情况下该改这个变量"，AI 会根据这些规则自己判断什么时候输出指令。
+Variables support four types:
+- **Number** (`number`): health, gold, turn count
+- **String** (`string`): current location name, character status description
+- **Boolean** (`boolean`): whether a door is open, whether a quest is complete
+- **JSON object** (`json`): inventory item list, complex relationship networks
 
-常见的指令长这样：
+Each variable can also have a category tag (`stat`, `inventory`, `resource`, `flag`, `relationship`, `custom`) to help organize them in the editor. Number variables can have min and max values — the engine automatically clamps values within range.
 
-| 写法 | 含义 |
-|------|------|
-| `[health: -10]` | 生命值减 10 |
-| `[health: +20]` | 生命值加 20 |
-| `[gold: 500]` | 金币设为 500 |
-| `[location: 酒馆]` | 当前位置设为"酒馆" |
-| `[quest_complete: true]` | 标记任务完成 |
-
-创作者不需要写任何代码。变量 + 行为规则 + 引擎自动注入的格式说明，三者配合就搞定了。
+Variables are like a game's save data. Without them, every AI response is "amnesiac" — it doesn't know what the player did last turn or how much health the character has left. Variables give the world continuity.
 
 ---
 
-## 规则（Rule）
+## Directive
 
-世界的自动化行为。
+The AI's way of changing world state.
 
-"当 HP 降到 0 时，触发死亡结局"、"每 3 回合饥饿度加 1"、"进入森林时播放森林背景音乐"——这些都是规则。
+As long as your world has variables, the engine automatically teaches the AI to use directives to change state — you don't need to write any format instructions yourself. The AI will include updates like `[health: -10]` at the end of its replies, and the engine automatically applies them.
 
-每条规则由三部分组成，像一个微型的因果链：
+All you need to do is write plain-language behavior rules in each variable explaining "when should this variable change," and the AI figures out when to emit the right directives.
 
-- **WHEN（什么时候检查）**：触发时机。可以是"每当变量变化时"、"每 N 回合"、"出现特定关键词时"、"会话开始时"等等。这是规则开始工作的"闹钟"。
-- **IF（满足什么条件）**：可选的前置条件。比如"HP 小于等于 0"、"金币大于 100"。条件之间可以是"全部满足"或"满足任一"。如果不设条件，WHEN 一触发就直接执行。
-- **THEN（做什么）**：具体的动作列表。可以修改变量、注入临时提示词给 AI、开关其他词条或规则、给玩家弹通知、播放音效……一条规则可以串联多个动作。
+Common directives look like this:
 
-规则是让世界"活"起来的核心机制。没有规则，状态变化全靠 AI 自觉；有了规则，你就有了一张可靠的安全网——哪怕 AI 偶尔"忘了"扣血，规则也能帮你兜底。
+| Syntax | Meaning |
+|--------|---------|
+| `[health: -10]` | Subtract 10 from health |
+| `[health: +20]` | Add 20 to health |
+| `[gold: 500]` | Set gold to 500 |
+| `[location: Tavern]` | Set current location to "Tavern" |
+| `[quest_complete: true]` | Mark quest as complete |
 
----
-
-## 组件（Component）
-
-玩家看到的 UI 面板。
-
-组件是绑定在变量上的可视化控件，显示在聊天界面旁边或上方。Yumina 内置了五种组件类型：
-
-| 类型 | 用途 | 绑定的变量类型 |
-|------|------|----------------|
-| **血条**（stat-bar） | 进度条，适合 HP、MP、耐力 | 数字 |
-| **文字面板**（text-display） | 显示格式化文本，适合当前地点、状态 | 数字/文字/布尔 |
-| **图片面板**（image-panel） | 显示图片，适合场景图、角色立绘 | 文字（URL） |
-| **背包格子**（inventory-grid） | 物品网格，适合道具栏 | 文字（JSON） |
-| **Web 面板**（web-panel） | 自定义 HTML/CSS/JS 内容 | 无需绑定 |
-
-组件绑定到变量后，变量一变，组件就自动更新。玩家被砍了一刀，HP 变量减少，血条立刻跟着缩短——不需要你写任何刷新逻辑。
-
-你可以把组件理解成仪表盘上的仪表。引擎在后台默默更新数据，组件负责把数据变成玩家看得懂的画面。
+Creators don't write any code. Variables + behavior rules + the engine's auto-injected format instructions — these three working together is all you need.
 
 ---
 
-## 渲染器（Renderer）
+## Rule
 
-聊天消息长什么样。
+Automated behavior in your world.
 
-默认情况下，AI 的回复就是普通的 Markdown 文本——和你在 ChatGPT 里看到的差不多。但这对于沉浸式体验来说太素了。
+"When HP drops to 0, trigger the death ending." "Every 3 turns, increase hunger by 1." "When the player enters the forest, play forest background music." These are all rules.
 
-渲染器（`messageRenderer`）让你用 TSX 代码完全接管消息的展示方式。你可以把 AI 的文字回复变成：
+Every rule has three parts, like a micro cause-and-effect chain:
 
-- 带角色头像的气泡对话
-- 视觉小说风格的立绘 + 对话框
-- 像素风战斗日志
-- 全屏的互动场景
-- ……任何你能想象的样子
+- **WHEN (trigger)**: What sets it off. Could be "when a variable changes," "every N turns," "when a specific keyword appears," "when a session starts," etc. This is the rule's "alarm clock."
+- **IF (condition)**: An optional prerequisite. Like "HP ≤ 0" or "gold > 100." Multiple conditions can be combined with AND or OR logic. If no condition is set, the rule fires immediately when triggered.
+- **THEN (action)**: The actual work. Can modify variables, inject a temporary prompt for the AI, toggle entries or rules on/off, send a player notification, play a sound effect… A single rule can chain multiple actions.
 
-渲染器拿到的是 AI 的原始回复文本和当前的游戏状态，输出的是一段自定义的 React 界面。这意味着你可以根据变量值动态调整显示效果——比如角色濒死时让文字颜色变红，或者在不同场景显示不同的背景图。
-
-渲染器是让你的世界从"聊天机器人"升级为"互动体验"的关键一步。
+Rules are the core mechanism that makes a world feel alive. Without rules, all state changes depend on the AI being "mindful" about them. With rules, you have a reliable safety net — even if the AI occasionally forgets to deduct health, the rule will catch it.
 
 ---
 
-## 运行流程
+## Component
 
-当玩家发送一条消息后，引擎内部会依次经历以下阶段：
+The UI panels the player sees.
+
+Components are visual widgets bound to variables, displayed alongside or above the chat interface. Yumina has five built-in component types:
+
+| Type | Use case | Variable type |
+|------|----------|---------------|
+| **Stat Bar** (`stat-bar`) | Progress bar for HP, MP, stamina | Number |
+| **Text Display** (`text-display`) | Formatted text for current location, status | Number / String / Boolean |
+| **Image Panel** (`image-panel`) | Show images — scene backgrounds, character sprites | String (URL) |
+| **Inventory Grid** (`inventory-grid`) | Item grid for equipment / items | String (JSON) |
+| **Web Panel** (`web-panel`) | Custom HTML/CSS/JS content | No binding needed |
+
+Once a component is bound to a variable, it updates automatically when the variable changes. The player gets hit, HP goes down, and the health bar shrinks instantly — you don't write any refresh logic.
+
+Think of components as the gauges on a dashboard. The engine quietly updates the data in the background; components turn that data into something the player can see and understand.
+
+---
+
+## Renderer
+
+How chat messages look.
+
+By default, AI replies are displayed as plain Markdown text — similar to what you'd see in ChatGPT. That works, but it's not very immersive.
+
+The renderer (`messageRenderer`) lets you use TSX code to completely take over how messages are presented. You can turn the AI's text into:
+
+- Speech bubbles with character avatars
+- Visual novel-style sprites and dialogue boxes
+- Pixel-art battle logs
+- Full-screen interactive scenes
+- …anything you can imagine
+
+The renderer receives the AI's raw reply text and the current game state, and outputs a custom React interface. This means you can dynamically adjust the display based on variable values — like turning text red when a character is near death, or showing different backgrounds in different scenes.
+
+The renderer is the key step in elevating your world from "chatbot" to "interactive experience."
+
+---
+
+## The Runtime Flow
+
+When a player sends a message, the engine runs through these phases in sequence:
 
 ```
-词条 --> 构建提示词 --> AI 生成回复 --> 解析指令 --> 更新变量 --> 触发规则 --> 渲染给玩家
+Entries --> Build prompt --> AI generates reply --> Parse directives --> Update variables --> Trigger rules --> Render to player
 ```
 
-拆开来看每一步：
+Breaking it down:
 
-1. **词条 --> 构建提示词**：引擎扫描所有词条，把常驻词条和被关键词激活的词条按优先级和分区（system-presets、examples、chat-history、post-history）组装成完整的提示词，发给 AI。
+1. **Entries → Build prompt**: The engine scans all entries, assembles always-on entries and keyword-triggered entries by priority and section (system-presets, examples, chat-history, post-history) into a complete prompt, then sends it to the AI.
 
-2. **构建提示词 --> AI 生成回复**：提示词连同聊天历史一起发给大语言模型，AI 生成一段回复文本。回复以流式（SSE）方式逐字返回，玩家可以实时看到 AI 在"打字"。
+2. **Build prompt → AI generates reply**: The prompt and chat history are sent to the language model. The AI generates a reply. The reply is streamed back token by token (SSE), so the player can watch the AI "type" in real time.
 
-3. **AI 生成回复 --> 解析指令**：引擎用正则表达式扫描 AI 的回复，找出所有 `[变量名: 操作 值]` 格式的指令，提取出来。
+3. **AI generates reply → Parse directives**: The engine uses regex to scan the AI's reply for all `[variableName: operation value]` format directives and extracts them.
 
-4. **解析指令 --> 更新变量**：引擎按照指令逐条更新游戏状态中的变量值。数字会被夹在 min/max 范围内，类型会被校验。
+4. **Parse directives → Update variables**: The engine applies the directives one by one to update variable values in the game state. Numbers are clamped to their min/max range, types are validated.
 
-5. **更新变量 --> 触发规则**：变量变化后，引擎遍历所有规则，检查哪些规则的 WHEN 条件被满足了、IF 条件是否通过，然后执行对应的 THEN 动作。动作可能会进一步修改变量，引发更多规则——但引擎会控制递归深度，防止无限循环。
+5. **Update variables → Trigger rules**: After variables change, the engine scans all rules to see which ones' WHEN conditions are met and IF conditions pass, then executes the corresponding THEN actions. Actions may modify further variables, which can trigger more rules — but the engine limits recursion depth to prevent infinite loops.
 
-6. **触发规则 --> 渲染给玩家**：最终的回复文本和更新后的游戏状态一起交给前端。如果世界定义了自定义渲染器，就用渲染器来展示消息；否则按普通 Markdown 渲染。组件面板同步刷新，反映最新的变量值。
+6. **Trigger rules → Render to player**: The final reply text and updated game state are handed to the frontend. If the world has a custom renderer, it uses that to display the message; otherwise it renders as plain Markdown. The component panel refreshes to reflect the latest variable values.
 
-整个流程在每次玩家发消息时都会跑一遍。对玩家来说，他们只看到 AI 回复了一段精彩的文字、血条动了一下、背景音乐切换了——背后的这套流水线完全透明。
+This entire flow runs every time a player sends a message. From the player's perspective, they just see the AI write back something great, the health bar ticks down a bit, and the background music shifts — the whole pipeline is completely transparent.
 
 ---
 
-## 小结
+## Summary
 
-不需要一口气全记住。
+No need to memorize all of this at once.
 
-这七个概念之间是层层递进的关系：世界是容器，词条和变量是内容，指令是 AI 与引擎的桥梁，规则是自动化，组件和渲染器是展示层。先有个整体印象就够了。
+These seven concepts build on each other in layers: the world is the container, entries and variables are the content, directives are the bridge between AI and engine, rules are the automation, and components and the renderer are the presentation layer. Having this big picture in your head is enough for now.
 
-后面的章节会逐个深入讲解每个概念的细节、最佳实践和常见坑点。遇到不确定的地方，随时可以翻回这一页对照全局。
+The following chapters go deep on each concept — the details, best practices, and common pitfalls. Whenever something's unclear, flip back here for the overview.

@@ -1,79 +1,79 @@
-# 探索世界
+# Exploring Worlds
 
-登录后你会进入 **Hub**——Yumina 的世界发现中心。这里能浏览社区里所有公开的世界。
+After logging in you'll land in the **Hub** — Yumina's world discovery center, where you can browse every publicly available world in the community.
 
-![Hub 主页全景，展示 Featured 精选区和推荐世界卡片网格](./images/hub-overview.png)
+![Hub homepage overview showing the Featured section and recommended world card grid](./images/hub-overview.png)
 
-## Hub 的三个 Tab
-页面顶部有三个标签页：
+## The three Hub tabs
+At the top of the page you'll find three tabs:
 
-| Tab | 干嘛的 |
-|-----|--------|
-| **推荐** | 默认首页，展示推荐和热门世界 |
-| **关注** | 你关注的创作者发布的世界（没关注过人就是空的） |
-| **Bundles** | 资源包市场，创作者用的素材包（玩家一般用不到） |
+| Tab | What it does |
+|-----|-------------|
+| **Recommended** | The default home view, showing recommended and trending worlds |
+| **Following** | Worlds published by creators you follow (empty if you haven't followed anyone yet) |
+| **Bundles** | The resource pack marketplace — asset packs for creators (most players won't need this) |
 
-## Featured 精选区
+## The Featured section
 
-Hub 顶部有一个精选轮播区，编辑推荐的优质世界，会自动轮播。点击任何一个卡片就能查看详情。
+At the top of the Hub there's a featured carousel showcasing editor-picked quality worlds. It cycles automatically. Click any card to see the details.
 
-## 世界卡片
+## World cards
 
-每个世界显示为一张卡片，上面能看到：
+Each world appears as a card showing:
 
-- **封面图** — 世界的缩略图
-- **标题** — 世界名称
-- **作者** — 创作者头像和名字
-- **下载量和评论数** — 左下角的小图标
-- **语言标签** — 左上角（如果有的话）
-- **标签** — 鼠标悬停时右上角会显示
+- **Cover image** — the world's thumbnail
+- **Title** — the world's name
+- **Author** — the creator's avatar and name
+- **Download count and comment count** — small icons in the bottom left
+- **Language tag** — top left corner (if present)
+- **Tags** — appear in the top right corner when you hover
 
-鼠标放上去卡片会微微抬起，还能看到世界的简介 ✨
+Hover over a card and it lifts slightly, plus you'll see the world's short description ✨
 
-## 筛选和排序
+## Filtering and sorting
 
-点顶部的 **Filters** 按钮，打开筛选面板：
+Click the **Filters** button at the top to open the filter panel:
 
-**排序方式：**
-- **Recommended** — 推荐排序（默认）
-- **Popular** — 按热度
-- **Newest** — 按发布时间
+**Sort by:**
+- **Recommended** — recommended ordering (default)
+- **Popular** — by popularity
+- **Newest** — by publish date
 
-**标签筛选：**
-可以选一个或多个标签来过滤，比如：角色卡、世界卡、恋爱、恐怖、科幻、悬疑、搞笑……
+**Tag filters:**
+Pick one or more tags to filter by, such as: character cards, world cards, romance, horror, sci-fi, mystery, comedy…
 
-**NSFW 开关：**
-默认关闭。打开后会显示成人内容（需要 18 岁以上，在设置里调）。
+**NSFW toggle:**
+Off by default. Turn it on to show adult content (requires age 18+, adjustable in Settings).
 
-![筛选面板展开状态，展示排序按钮和标签选择](./images/filters-panel.png)
+![Filter panel open, showing sort buttons and tag selection](./images/filters-panel.png)
 
-## 世界详情
+## World details
 
-点击一个世界卡片，会弹出详情弹窗：
+Click a world card to open the details dialog:
 
-![世界详情弹窗，展示封面、介绍、评分和按钮](./images/world-detail-dialog.png)
+![World details dialog showing the cover, description, ratings, and buttons](./images/world-detail-dialog.png)
 
-**能看到：**
-- 封面大图和画廊
-- 标题、标签、创作者信息
-- 星级评分和下载量
-- 世界介绍（About This Game）
-- 创作者公告（如果有的话）
+**You can see:**
+- A large cover image and gallery
+- Title, tags, and creator info
+- Star rating and download count
+- World description (About This Game)
+- Creator announcements (if any)
 
-**能做的操作：**
-- **Start Playing** — 开始游戏（金色大按钮）
-- **Add to Library** — 加入我的库
-- **收藏（心形图标）** — 收藏到最爱
-- **分享** — 复制链接
-- **举报** — 如果有不当内容
+**Actions available:**
+- **Start Playing** — start the game (big gold button)
+- **Add to Library** — add to your library
+- **Favorite (heart icon)** — save to your favorites
+- **Share** — copy the link
+- **Report** — flag inappropriate content
 
-**评论 Tab：**
-切到评论标签页可以看到其他玩家的评分和评价，也可以自己写一条。
+**Reviews tab:**
+Switch to the reviews tab to read ratings and comments from other players — and write your own.
 
-## 分类浏览
+## Browsing by category
 
-除了主 Tab，Hub 还支持按分类浏览精选合集，比如"今日推荐"、"关注作者的作品"等。
+Beyond the main tabs, the Hub also supports browsing featured curated collections, like "Today's Picks" or "From Creators You Follow."
 
 ---
 
-找到感兴趣的世界了？下一篇教你怎么开始游戏 (•̀ᴗ•́)و
+Found something you want to play? The next page will show you how to get started (•̀ᴗ•́)و

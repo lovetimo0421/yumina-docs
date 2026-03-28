@@ -1,33 +1,33 @@
-# 什么是 Yumina
+# What is Yumina
 
-## 一句话版本（其实是 3 句话）
+## One Sentence Version (okay, it's 3 sentences)
 
-你是否看完一本书，一部电影后还沉浸在其中？觉得剧情太蠢，想象着如果你能穿越进去当主角，或者跟里面的人物聊聊天来决定故事走向该多有意思？这就是 Yumina 存在的意义~ 它能让你像玩游戏一样来去体验这一切！
+Ever finished a book or movie and just couldn't let go? Wished the plot wasn't so dumb, or that you could jump in as the main character and actually talk to the people inside — deciding where the story goes? That's exactly what Yumina is for~ It lets you live out all of that like you're playing a game!
 
-## 稍微展开说
+## A bit more detail
 
-想象一下：你打开一个"末日生存"的世界，AI 会扮演叙述者和里面的角色，根据你的选择推进剧情。你说"我要打开那扇门"，AI 就会描述门后的场景——可能是一间空荡荡的仓库，也可能是一群丧尸 (((ﾟДﾟ;)))
+Imagine this: you open up a "post-apocalyptic survival" world, and the AI plays the narrator and all the characters inside, pushing the story forward based on your choices. You say "I'm opening that door," and the AI describes what's behind it — maybe an empty warehouse, maybe a horde of zombies (((ﾟДﾟ;)))
 
-和传统视觉小说不同，这里没有写死的剧情分支。AI 会根据世界的设定（创作者定义的规则、角色、变量等）实时生成内容，每次玩都不一样。
+Unlike a traditional visual novel, there are no hard-coded story branches here. The AI generates content in real time based on the world's setup (creator-defined rules, characters, variables, and more), so every playthrough feels different.
 
-和普通的 AI 聊天也不一样——Yumina 的世界有**游戏状态**。你的血量会掉、金币会涨、好感度会变化，这些都会影响剧情走向。创作者还可以给世界加上自定义界面，比如血条、背包、地图，甚至视觉小说风格的立绘和对话框。
+It's also not like regular AI chat — Yumina worlds have **game state**. Your health drops, your gold goes up, your relationship meters shift, and all of that affects where the story goes. Creators can even add custom interfaces to their worlds — health bars, inventories, maps, even visual-novel-style character sprites and dialogue boxes.
 
-## 你能拿 Yumina 做什么
+## What you can do with Yumina
 
-**当玩家：**
-- 浏览社区里几百个世界，各种题材都有——恋爱、恐怖、悬疑、科幻、搞笑……
-- 直接开玩，AI 实时生成剧情
-- 给喜欢的世界打分、收藏、关注创作者
-- 和朋友一起多人联机玩同一个世界
+**As a player:**
+- Browse hundreds of community worlds across every genre imaginable — romance, horror, mystery, sci-fi, comedy…
+- Jump right in and let the AI generate the story in real time
+- Rate, favorite, and follow the creators of worlds you love
+- Play through the same world together with friends in multiplayer
 
-**当创作者：**
-- 用编辑器从零搭建你自己的互动世界
-- 设定角色、规则、变量、自定义 UI
-- 发布到社区让其他人来玩
-- 详见 [创作者指南](/creator-guide/00-welcome)
+**As a creator:**
+- Build your own interactive world from scratch in the editor
+- Set up characters, rules, variables, and custom UI
+- Publish to the community for others to play
+- See the [Creator Guide](/creator-guide/00-welcome) for the full details
 
-![Hub 主页全景，展示推荐世界卡片和 Featured 精选区](./images/hub-overview.png)
+![Hub homepage overview showing recommended world cards and the Featured section](./images/hub-overview.png)
 
-## 准备好了？
+## Ready to jump in?
 
-下一篇教你怎么注册账号 ᕕ( ᐛ )ᕗ
+The next page will walk you through creating an account ᕕ( ᐛ )ᕗ

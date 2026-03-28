@@ -1,188 +1,192 @@
-# 懒人教程：让 AI 帮你做整个世界
+# Lazy Tutorial: Let AI Build Your Whole World
 
-> 上一篇教程手把手教你填了每个字段。这篇教程告诉你——其实不用自己填，让 Yumina 的 AI 助手帮你搞定就行 (￣▽￣)ノ
+> The previous tutorial had you fill in every field by hand. This one shows you that you don't actually have to — just let Yumina's AI assistant handle it (￣▽￣)ノ
 
-我们要做的还是同一个游戏：**"伪人"**——末日恐怖生存，判断敲门者是人是怪，活过14天。但这次，我们只靠 Studio 里的 AI Agent 来完成。
-
----
-
-## 什么是 Studio AI Agent
-
-Studio 里的 AI Assistant 不只是聊天——它是一个能**直接修改你世界**的 AI 助手。你用大白话说"帮我加一个生命值变量"，它就真的帮你创建好了。
-
-它的工作方式：
-1. 你描述需求
-2. AI 分析后提出修改方案（会告诉你它要做什么）
-3. 你点 **批准（Approve）** → 修改生效
-4. 不满意就点 **拒绝（Reject）**，AI 会调整方案
-
-所有修改都有快照备份，随时可以回滚，不用怕搞坏 ∠( ᐛ 」∠)＿
+We're building the same game: **"The Imposters"** — post-apocalyptic horror survival, judging whether the person at the door is human or monster, surviving 14 nights. But this time, we're doing it entirely through Studio's AI Agent.
 
 ---
 
-## 第一步：创建世界 + 进入 Studio
+## What is the Studio AI Agent?
 
-这一步还是要自己来：
+The AI Assistant in Studio isn't just a chatbot — it's an AI assistant that can **directly modify your world**. Tell it "add a health variable for me" in plain language, and it actually creates it.
 
-1. 点左侧导航栏的 **创建（Create）** 按钮
-2. 选 **空白项目（Blank Project）**
-3. 左上角填个名字：`伪人`
-4. 点编辑器顶部的 **进入 Studio（Enter Studio）**
+Here's how it works:
+1. You describe what you need
+2. The AI analyzes and proposes changes (it tells you what it's about to do)
+3. You click **Approve** → changes take effect
+4. Not happy? Click **Reject** and the AI adjusts its approach
 
-进入 Studio 后，你会看到左侧有 **AI Assistant** 面板。这就是你接下来的主要工作区。
+Every modification is snapshot-backed, so you can roll back at any time — no fear of breaking anything ∠( ᐛ 」∠)＿
 
 ---
 
-## 第二步：告诉 AI 你想做什么
+## Step 1: Create world + enter Studio
 
-在 AI Assistant 的输入框里，把你的游戏构想一口气告诉它。越详细越好——AI 拿到的信息越多，出来的东西越对。
+This part you still do yourself:
 
-复制下面这段发给它：
+1. Click the **Create** button in the left navigation
+2. Select **Blank Project**
+3. Type a name in the top left: `The Imposters`
+4. Click **Enter Studio** at the top of the editor
+
+Once in Studio, you'll see the **AI Assistant** panel on the left. That's your main workspace from here on.
+
+---
+
+## Step 2: Tell the AI what you want
+
+In the AI Assistant's input box, give it your full game concept in one go. The more detail you provide, the better the output.
+
+Copy and paste this to get started:
 
 ```
-帮我做一个末日恐怖生存游戏，类似 "No, I'm not a Human"。
+Build me a post-apocalyptic horror survival game similar to "No, I'm not a Human".
 
-设定：末日降临，城市中出现了外表酷似人类的"访客"。玩家独自在家，每晚会有人来敲门。玩家需要判断来者是人是怪，决定是否开门。
+Setting: The apocalypse has begun. The city is overrun with "Visitors" — entities that look
+exactly like humans. The player is alone at home, and every night someone comes knocking.
+The player must judge whether the visitor is human or monster and decide whether to open the door.
 
-游戏规则：
-- 游戏持续14天（14个夜晚）
-- 夜晚：有2-3个敲门者，玩家通过猫眼观察、隔门对话来判断
-- 白天：自由探索房间、使用物品
-- 访客的特征：牙齿过于整齐、瞳孔不正常、皮肤纹理异样
-- 人类有正常的不完美特征：龋齿、黑眼圈、伤疤
+Game rules:
+- Game lasts 14 days (14 nights)
+- Night: 2–3 visitors per night, player judges through peephole observation and door conversation
+- Day: freely explore rooms and use items
+- Visitor traits: unnaturally uniform teeth, abnormal pupils, strange skin texture
+- Human traits: normal imperfections — cavities, dark circles, scars
 
-我需要这些变量：
-- player_hp（生命值，0-5，默认3）：被访客攻击 -1，让 Pale Stranger 进门直接归零
-- energy_current（体力，0-8，默认3）：检查访客和射击消耗 1 点，猫眼观察和对话免费，白天恢复到上限
-- game_day（天数，1-14）：每完成一个夜晚-白天周期 +1
-- game_phase（阶段）："Night" 或 "Day"
-- player_has_gun（有枪，默认true）：射击消耗 1 点体力
+I need these variables:
+- player_hp (health, 0–5, default 3): take -1 when attacked by a Visitor; drop to 0 if Pale Stranger enters
+- energy_current (energy, 0–8, default 3): body checks and shooting cost 1 point; peephole and talking are free; restores to max during the day
+- game_day (day count, 1–14): increase by 1 after each complete night-day cycle
+- game_phase (phase): "Night" or "Day"
+- player_has_gun (has gun, default true): shooting costs 1 energy
 
-帮我写好系统设定词条、开场白，还有关键词触发的世界书词条（敲门事件、猫眼观察、房间搜索）。
+Write me a system setup entry, an opening message, and keyword-triggered lorebook entries
+(knocking event, peephole observation, room search).
 
-再帮我做一个 CRT 监控器风格的消息渲染器：
-- 夜晚/白天相位标题（从 AI 回复中提取 "🌑 **NIGHT X**" 或 "☀️ **DAY X**"，做成 CRT 绿色发光 / 琥珀色标题，带扫描线效果）
-- 敲门动画（从回复中提取 ***三星号文字***，做成红色抖动大字）
-- 可点击选择按钮（提取 "Suggested Choices:" 后面的 A/B/C/D/E 选项，点击自动发送）
-- 底部 HUD 状态栏（等宽字体，显示体力/HP/武装状态）
-- 整体黑绿色末日风格
+Also build me a CRT monitor-style message renderer:
+- Night/day phase title (extract "🌑 **NIGHT X**" or "☀️ **DAY X**" from AI replies, render as CRT
+  green glow / amber title with scanline effect)
+- Knocking animation (extract ***triple-asterisk text***, render as red shaking large text)
+- Clickable choice buttons (extract A/B/C/D/E options after "Suggested Choices:", click to auto-send)
+- Bottom HUD status bar (monospace font, show energy/HP/armed status)
+- Overall black-green end-of-world aesthetic
 ```
 
 ---
 
-## 第三步：审核 AI 的方案
+## Step 3: Review the AI's plan
 
-AI 会开始工作。你会看到它一步步思考，然后提出修改方案。每次它要修改你的世界时，会弹出一张 **审核卡片**，列出它要做的操作。
+The AI gets to work. You'll watch it think through the changes, then propose a plan. Every time it wants to modify your world, it shows an **approval card** listing what it's about to do.
 
-比如：
-- `create_variable` — 创建 health 变量
-- `create_entry` — 创建系统设定词条
-- `write_message_renderer` — 写渲染器代码
+For example:
+- `create_variable` — create the health variable
+- `create_entry` — create the system setup entry
+- `write_message_renderer` — write the renderer code
 
-看一眼操作列表，觉得没问题就点 **批准（Approve）**。AI 会继续下一步。
+Scan the list of operations, and if everything looks right, click **Approve**. The AI continues to the next step.
 
-::: tip 不用一次搞定
-AI 可能需要好几轮审核才能完成所有内容。每轮它会做一批操作，你批准后它继续。整个过程可能有 3-5 轮审核——耐心点，让它做完 (•̀ᴗ•́)و
+::: tip You won't finish in one round
+The AI may need several approval rounds to complete everything. Each round it does a batch of changes; you approve and it continues. The whole process might have 3–5 rounds — be patient and let it finish (•̀ᴗ•́)و
 :::
 
-::: tip 不满意怎么办
-如果你觉得某个操作不对（比如变量默认值设错了），点 **拒绝（Reject）**，然后告诉 AI 哪里要改："health 的默认值应该是 100 不是 50"。它会调整方案重新提交。
-:::
-
----
-
-## 第四步：检查和微调
-
-AI 做完之后，退出 Studio 回到编辑器看看它帮你创建了什么。逐个检查：
-
-- **词条（Lorebook）** — 系统设定写得对不对？世界书词条够不够？
-- **变量（Variables）** — 类型、默认值、行为规则是否合理？
-- **开场白（First Message）** — 开场白氛围到位吗？
-- **消息渲染器（Message Renderer）** — 预览效果满意吗？
-
-如果有需要调整的地方，你有两个选择：
-1. **回 Studio 继续聊** — 告诉 AI "把开场白改短一点"、"血条颜色换成暗红"
-2. **直接手动改** — 在编辑器里自己改字段，就像上一篇教程教的那样
-
-别忘了去 **概览（Overview）** 把发布信息填好：封面图、描述、标签、语言。
-
----
-
-## 第五步：测试和发布
-
-点 **保存（Save）**，然后开个新会话测试。检查清单和手动教程一样：
-
-| 检查项 | 怎么验证 |
-|---|---|
-| 开场白显示 | 进入后自动出现第一条消息 |
-| 状态面板 | 消息上方有血条、体力条、天数 |
-| 指令生效 | 互动后变量会跟着变 |
-| 世界书触发 | 提到"猫眼"后 AI 按规则描述 |
-
-测试中发现问题？回 Studio 告诉 AI："测试的时候发现 AI 不扣血，帮我检查一下 health 变量的行为规则"。AI 会帮你诊断和修复。
-
-测试没问题了？回到 **发现（Discover）** 页面，点顶部的 **发布（Publish）** 按钮，选你的世界，设好年龄分级和可见性，发布！
-
----
-
-## 跟 Agent 聊天的技巧
-
-### 1. 第一条消息尽量详细
-
-AI 拿到的上下文越多，越不需要反复修改。在第一条消息里尽量包含：
-- 游戏类型和核心玩法
-- 需要哪些变量，每个变量的含义
-- 风格和氛围描述
-- 你想要什么样的 UI
-
-### 2. 分步迭代比一步到位更靠谱
-
-如果你的世界很复杂，不要试图在一条消息里说完所有需求。可以分步来：
-
-```
-第一轮："帮我做一个恐怖生存游戏，先把系统设定、变量和开场白搞定"
-→ 审核、批准
-
-第二轮："现在帮我加世界书词条，需要敲门事件、猫眼观察、房间搜索这几个"
-→ 审核、批准
-
-第三轮："最后帮我做一个暗色恐怖风格的消息渲染器，显示血条和天数"
-→ 审核、批准
-```
-
-### 3. 给反馈要具体
-
-❌ "渲染器不好看" — AI 不知道哪里不好看
-✅ "渲染器的血条太细了，加粗一倍。背景颜色太亮，换成纯黑 #000" — AI 知道该改什么
-
-### 4. 善用 Canvas 预览
-
-Studio 右侧的 Canvas 面板可以实时预览渲染器效果。AI 修改完渲染器后，去 Canvas 看看效果，不满意就继续说。
-
----
-
-## 手动 vs Agent 对比
-
-| | 手动教程 | Agent 教程 |
-|---|---|---|
-| 耗时 | 30-60 分钟 | 5-15 分钟 |
-| 学到什么 | 每个字段的含义和用法 | 如何跟 AI 高效协作 |
-| 适合谁 | 想深入理解引擎的人 | 想快速出活的人 |
-| 灵活度 | 完全控制每个细节 | AI 帮你做大部分，你微调 |
-| 建议 | 第一次做世界先走手动 | 熟悉之后用 Agent 提效 |
-
-::: tip 最佳实践
-先跟着手动教程做一遍，理解引擎的核心概念。之后再用 Agent——你知道"它在做什么"才能给出好的指令，也更容易发现它做错的地方。
+::: tip What if you're not happy?
+If something looks off (like a variable's default value is wrong), click **Reject**, then tell the AI what to fix: "health's default should be 100 not 50." It'll adjust and resubmit.
 :::
 
 ---
 
-## 下一步
+## Step 4: Review and tweak
 
-你已经掌握了两种做世界的方式。接下来：
+Once the AI is done, exit Studio and go back to the editor to see what it built. Check each section:
 
-- 想深入了解某个功能？翻 [功能参考](./00-welcome.md#功能参考) 部分
-- 想看更复杂的世界怎么做？**进阶教程**（以"壺中の毒 · 大逃杀"为蓝本）即将推出
-- 想让世界更好看？看 [自定义前端指南](./07-components.md)
+- **Lorebook** — is the system setup right? Are there enough lorebook entries?
+- **Variables** — are the types, default values, and behavior rules reasonable?
+- **First Message** — does the opening message have the right atmosphere?
+- **Message Renderer** — is the preview effect satisfying?
 
-现在去做你自己的世界吧 ᕕ( ᐛ )ᕗ
+If anything needs adjusting, you have two options:
+1. **Go back to Studio and keep chatting** — tell the AI "make the opening message shorter" or "change the health bar color to dark red"
+2. **Edit directly** — change fields in the editor yourself, just like in the manual tutorial
+
+Don't forget to go to **Overview** and fill in the publish info: cover image, description, tags, and language.
+
+---
+
+## Step 5: Test and publish
+
+Click **Save**, then open a new session to test. Same checklist as the manual tutorial:
+
+| Check item | How to verify |
+|-----------|---------------|
+| Opening message appears | First message shows automatically on entry |
+| Status panel | Health bar, energy bar, and day count visible above messages |
+| Directives working | Variables change after interactions |
+| Lorebook triggers | Mentioning "peephole" makes AI follow the rules |
+
+Found an issue during testing? Go back to Studio and tell the AI: "During testing I noticed the AI isn't deducting health — can you check the health variable's behavior rules?" The AI will diagnose and fix it.
+
+Once testing passes, go to the **Discover** page, click **Publish**, select your world, set the age rating and visibility, and publish!
+
+---
+
+## Tips for chatting with the Agent
+
+### 1. Make your first message as detailed as possible
+
+The more context the AI has, the fewer revisions you'll need. Try to include in your first message:
+- Game type and core mechanics
+- Which variables you need and what each one means
+- Style and atmosphere description
+- What kind of UI you want
+
+### 2. Iterating step by step beats trying to nail it in one shot
+
+If your world is complex, don't try to cram everything into one message. Break it up:
+
+```
+Round 1: "Build me a horror survival game — start with the system setup, variables, and opening message"
+→ Review, approve
+
+Round 2: "Now add lorebook entries: knocking event, peephole observation, and room search"
+→ Review, approve
+
+Round 3: "Finally, build a dark horror-style message renderer showing health and day count"
+→ Review, approve
+```
+
+### 3. Give specific feedback
+
+❌ "The renderer doesn't look good" — the AI doesn't know what's wrong
+✅ "The health bar is too thin, double the height. The background is too bright, change it to pure black #000" — the AI knows exactly what to fix
+
+### 4. Use the Canvas preview
+
+The Canvas panel on the right side of Studio gives live renderer previews. After the AI modifies the renderer, check Canvas to see the effect. If it's not right, keep talking.
+
+---
+
+## Manual vs. Agent: the comparison
+
+| | Manual tutorial | Agent tutorial |
+|--|-----------------|---------------|
+| Time required | 30–60 minutes | 5–15 minutes |
+| What you learn | What every field means and how to use it | How to collaborate effectively with AI |
+| Best for | People who want deep engine understanding | People who want to ship fast |
+| Control | Full control over every detail | AI does most of it, you fine-tune |
+| Recommendation | Do manual first, the first time | Use Agent for speed once you're comfortable |
+
+::: tip Best practice
+Do the manual tutorial once first to understand the engine's core concepts. Then use the Agent — knowing "what it's doing" lets you give better instructions and catch mistakes more easily.
+:::
+
+---
+
+## Next steps
+
+You now know two ways to build a world. From here:
+
+- Want to go deep on a specific feature? Check the [Feature Reference](./00-welcome.md#feature-reference) section
+- Want to see how more complex worlds are built? **The advanced tutorial** (based on "Poison in the Cup · Battle Royale") is coming soon
+- Want to make your world look better? See the [Custom Frontend Guide](./07-components.md)
+
+Now go build something of your own ᕕ( ᐛ )ᕗ

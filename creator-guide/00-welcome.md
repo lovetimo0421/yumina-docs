@@ -1,33 +1,33 @@
-# 欢迎来到创作者指南
+# Welcome to the Creator Guide
 
-嗨，既然你打开了这份文档，说明你已经不满足于只当玩家了——你想自己做一个世界出来 (๑•̀ㅂ•́)و✧
+Hey — if you're reading this, it means playing other people's worlds isn't enough for you anymore. You want to build one yourself (๑•̀ㅂ•́)و✧
 
-这份指南会教你怎么用 Yumina 的编辑器，从一个空白世界开始，一步步搭出你脑海中的互动体验。不管你想做恋爱模拟、恐怖生存、还是硬核大逃杀，看完这份文档你都能搞定。
+This guide will walk you through Yumina's editor, taking you from a blank canvas to a fully realized interactive experience. Whether you're making a romance sim, a horror survival game, or a hardcore battle royale — by the end of this guide, you'll know how to pull it off.
 
-## 这份文档怎么读
+## How to read this guide
 
-文档分成三块，根据你的情况选一个起点就行：
+The docs are split into three sections. Pick your starting point:
 
-**第一次做世界？** 从 [新手指南](./01-beginner-guide.md) 开始看。会带你认识编辑器的每个角落，搞清楚各个功能是干嘛的。看完之后跟着 [手把手教程](./02-tutorial-basic.md) 做一个完整的世界出来，做完你就出师了 ∠( ᐛ 」∠)＿
+**First-time creator?** Start with the [Beginner's Guide](./01-beginner-guide.md). It'll take you on a tour of every corner of the editor so you understand what each section does. After that, follow along with the [step-by-step tutorial](./02-tutorial-basic.md) to build a complete world from scratch. Finish that and you're ready to fly solo ∠( ᐛ 」∠)＿
 
-**已经上手了，想查具体功能？** 直接翻 [功能参考](#功能参考) 部分。每章都分了两层——简单版帮你快速回忆，详细版把所有细节和边界情况讲透。
+**Already familiar, just looking something up?** Jump straight to the [Feature Reference](#feature-reference) section. Each chapter has two layers — a quick summary for a fast refresh, and a detailed version that covers every edge case.
 
-**遇到问题了？** 去 [常见问题](./13-faq.md) 看看有没有你的情况，或者查 [术语表](./12-glossary.md) 搞清楚某个词是什么意思。
+**Running into issues?** Check the [FAQ](./13-faq.md) to see if your situation is covered, or look up terms in the [Glossary](./12-glossary.md).
 
 ---
 
-## 功能参考
+## Feature Reference
 
-| 章节 | 一句话说明 |
-|------|-----------|
-| [词条与世界书](./03-entries-and-lorebook.md) | 给 AI 喂设定的地方 |
-| [变量系统](./04-variables.md) | 追踪血量、金币、好感度这些会变的东西 |
-| [AI 指令与宏](./05-directives-and-macros.md) | AI 怎么改变游戏状态 |
-| [行为规则引擎](./06-rules-engine.md) | 自动化逻辑，不用写代码的事件系统 |
-| [自定义前端指南](./07-components.md) | 用 AI 生成游戏界面（血条、背包、视觉小说等） |
-| [自定义消息渲染器](./08-message-renderer.md) | 彻底改造聊天消息的外观 |
-| [音频系统](./09-audio.md) | BGM、音效、环境音 |
-| [AI 模型与设置](./10-ai-settings.md) | 调 AI 的参数 |
-| [发布、导出与 Bundle](./11-publish-and-share.md) | 做完了怎么发出去 |
+| Chapter | One-line summary |
+|---------|-----------------|
+| [Entries & Lorebook](./03-entries-and-lorebook.md) | Where you feed your settings and lore to the AI |
+| [Variables](./04-variables.md) | Track things that change — health, gold, affection meters |
+| [AI Directives & Macros](./05-directives-and-macros.md) | How the AI changes game state |
+| [Rules Engine](./06-rules-engine.md) | Automation logic — an event system without code |
+| [Custom Frontend Guide](./07-components.md) | AI-generated game interfaces (health bars, inventories, visual novels, etc.) |
+| [Custom Message Renderer](./08-message-renderer.md) | Completely restyle how chat messages look |
+| [Audio](./09-audio.md) | BGM, sound effects, ambient audio |
+| [AI Model & Settings](./10-ai-settings.md) | Tune the AI's behavior |
+| [Publish, Export & Bundle](./11-publish-and-share.md) | How to ship your finished world |
 
-好了，废话不多说。翻到下一页，我们开始 ᕕ( ᐛ )ᕗ
+Alright, enough preamble. Turn to the next page and let's get started ᕕ( ᐛ )ᕗ

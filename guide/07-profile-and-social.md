@@ -1,92 +1,92 @@
-# 个人主页与社交
+# Profile & Social
 
-## 你的主页
+## Your profile
 
-点击右上角头像或导航栏进入个人主页。
+Click your avatar in the top right or navigate to your profile page.
 
-![个人主页全景，展示横幅、头像、统计和最近游玩](./images/profile-overview.png)
+![Profile overview showing banner, avatar, stats, and recently played](./images/profile-overview.png)
 
-### 头部区域
-- **横幅图** — 顶部大图，可以自定义
-- **头像** — 左下角，带金色小徽章
-- **昵称和用户名** — @username 格式
+### Header area
+- **Banner image** — the large image at the top, fully customizable
+- **Avatar** — bottom left, with a small gold badge
+- **Display name and username** — in @username format
 
-### 侧边栏（左侧）
-- **About** — 你的简介、位置、网站链接、加入日期
-- **成就** — 在各个世界里获得的成就（分为传说、史诗、稀有、普通四个等级）
-- **Creator Hub** — 快速跳转到创作页面
+### Sidebar (left)
+- **About** — your bio, location, website link, and join date
+- **Achievements** — achievements earned across different worlds (four tiers: Legendary, Epic, Rare, and Common)
+- **Creator Hub** — quick link to jump to the creator section
 
-### 主内容区
+### Main content area
 
-**平台统计：**
-- 总游玩时长
-- 关注数和粉丝数（可点击查看列表）
-- 互动次数
+**Platform stats:**
+- Total playtime
+- Following and follower counts (click to see the full list)
+- Interaction count
 
-**最近游玩：**
-- 你最近玩过的世界网格，点击可以直接继续玩
+**Recently played:**
+- A grid of worlds you've played recently — click any to jump back in
 
-**我的创作：**
-- 你发布的世界，分草稿和已发布
+**My Creations:**
+- Your published worlds, split between drafts and published
 
-**收藏与合集：**
-- 快速跳转到你的收藏列表
+**Favorites & Collections:**
+- Quick access to your favorites list
 
-## 编辑个人资料
+## Editing your profile
 
-点主页上的 **Edit Profile** 按钮，弹出编辑弹窗：
+Click **Edit Profile** on your profile page to open the edit dialog:
 
-![编辑资料弹窗](./images/edit-profile-dialog.png)
+![Edit profile dialog](./images/edit-profile-dialog.png)
 
-**可以修改：**
-- **头像** — 点击上传新图片（支持 JPEG、PNG、GIF、WebP）
-- **横幅** — 点击上传（推荐 1500x500px）
-- **Display Name** — 显示昵称
-- **Username** — 用户名（字母、数字、下划线，最长 30 位）
-- **About You** — 简介（最多 300 字）
-- **Location** — 所在地
-- **Website Link** — 个人网站
+**What you can change:**
+- **Avatar** — click to upload a new image (JPEG, PNG, GIF, WebP supported)
+- **Banner** — click to upload (recommended 1500x500px)
+- **Display Name** — your visible name
+- **Username** — your @handle (letters, numbers, underscores, up to 30 characters)
+- **About You** — bio (up to 300 characters)
+- **Location** — where you're from
+- **Website Link** — your personal site
 
-改完点 **Save Changes** 保存。
+Click **Save Changes** when you're done.
 
-## 关注系统
+## Following system
 
-### 关注别人
-- 在别人的主页上点 **Follow** 按钮
-- 关注后按钮变成 **Following**，再点一次可以取关
-- 你关注的人发布新世界时，Hub 的"关注"标签页会显示
+### Following others
+- Click the **Follow** button on someone's profile
+- After following, the button changes to **Following** — click again to unfollow
+- When people you follow publish new worlds, they'll show up in the Following tab in the Hub
 
-### 查看关注列表
-- **Following** — 你关注的人
-- **Followers** — 关注你的人
-- 在主页的统计区域点数字就能跳转
+### Viewing your follow lists
+- **Following** — people you follow
+- **Followers** — people who follow you
+- Click the numbers in the stats area on your profile to navigate there
 
-## 评分和评论
+## Ratings and reviews
 
-你可以给玩过的世界打分和写评论：
+You can rate and review worlds you've played:
 
-- 在世界详情弹窗里切到 **Reviews** 标签页
-- 选 1-5 星评分
-- 可以写一段评论（也可以只打分不写）
-- 你写过的所有评论可以在主页的 Reviews 标签页查看
+- In the world details dialog, switch to the **Reviews** tab
+- Choose a 1–5 star rating
+- Optionally write a comment (rating only is fine too)
+- All your reviews are visible on the Reviews tab of your profile
 
-## 查看别人的主页
+## Viewing other people's profiles
 
-点击任何地方出现的用户名或头像，都可以跳到他们的公开主页。
+Click any username or avatar you see anywhere to jump to their public profile.
 
-你能看到：
-- 他们的简介和统计数据
-- 最近玩过的世界
-- 他们创作和发布的世界
-- 他们的成就
-- 他们的评论
+You can see:
+- Their bio and stats
+- Worlds they've played recently
+- Worlds they've created and published
+- Their achievements
+- Their reviews
 
-看不到的：
-- 他们的设置和配置
-- 如果开了私密主页，非粉丝看不到活动和作品
+You can't see:
+- Their settings and configuration
+- Activity and creations if they have a private profile and you're not following them
 
-![别人的公开主页，展示 Follow 按钮](./images/other_profile.png)
+![Another user's public profile showing the Follow button](./images/other_profile.png)
 
 ---
 
-最后一篇，来看看设置里都有啥 (•̀ᴗ•́)و
+Last one — let's see what's in Settings (•̀ᴗ•́)و

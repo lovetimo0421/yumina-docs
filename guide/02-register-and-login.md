@@ -1,58 +1,57 @@
-# 注册与登录
+# Register & Login
 
-## 创建账号
+## Creating an account
 
-打开 Yumina，你会看到登录页面。注册有两种方式：
+When you open Yumina, you'll land on the login page. There are two ways to sign up:
 
-### 方式一：社交账号一键注册
+### Option 1: Sign up with a social account
 
-点页面上的按钮，选一个你有的平台：
+Click one of the buttons on the page and pick a platform you already use:
 
-- **Continue with Google** — 用谷歌账号
-- **Continue with Discord** — 用 Discord 账号
-- **Continue with X** — 用 X（推特）账号
+- **Continue with Google** — sign in with your Google account
+- **Continue with Discord** — sign in with your Discord account
+- **Continue with X** — sign in with your X (Twitter) account
 
-点完就跳转授权，完了自动登录，最省事 ✧(≖ ◡ ≖✿)
+Click and you'll be redirected to authorize — once done, you're logged in automatically. Easiest option ✧(≖ ◡ ≖✿)
 
-### 方式二：邮箱注册
+### Option 2: Email sign-up
 
-如果你不想用社交账号，也可以用邮箱：
+If you'd rather not use a social account, email works too:
 
-1. 填 **Name**（你的昵称）、**Email**（邮箱）、**Password**（密码，至少 8 位）
-2. 点 **Create account**
-3. 跳到验证页面，提示你去邮箱查收验证邮件
-4. 打开邮件里的链接，验证完成
+1. Fill in your **Name** (your display name), **Email**, and **Password** (at least 8 characters)
+2. Click **Create account**
+3. You'll be taken to a verification page telling you to check your inbox
+4. Open the link in the email to complete verification
 
-没收到邮件？点 **Resend verification email** 再发一封。
+Didn't get the email? Click **Resend verification email** to try again.
 
-![邮箱验证页面，"Check your email" 提示](./images/email-verification.png)
+![Email verification page showing the "Check your email" prompt](./images/email-verification.png)
 
-## 首次登录：新手引导
+## First login: onboarding
 
-第一次登录成功后，会弹出一个欢迎弹窗，需要你完成两件事：
+After your very first login, a welcome dialog will pop up asking you to do two things:
 
-1. **选择出生年份** — 从下拉菜单选。Yumina 要求至少 13 岁才能使用
-2. **同意使用条款** — 勾选"I agree to the Terms of Use and Privacy Policy"
+1. **Choose your birth year** — pick from the dropdown. Yumina requires you to be at least 13 years old
+2. **Agree to the Terms of Use** — check the "I agree to the Terms of Use and Privacy Policy" box
 
-都搞定后点 **Let's Go!** 就正式进入了 ᕕ( ᐛ )ᕗ
+Once both are done, click **Let's Go!** and you're officially in ᕕ( ᐛ )ᕗ
 
-![新手引导弹窗，展示出生年份下拉和条款勾选框](./images/onboarding-dialog.png)
+![Onboarding dialog showing the birth year dropdown and terms checkbox](./images/onboarding-dialog.png)
 
-## 登录
+## Logging in
 
-已经有账号了？在登录页面：
+Already have an account? On the login page:
 
-- **Identifier** — 填邮箱或用户名都行
-- **Password** — 你的密码
-- 点 **Sign in** 就完事了
+- **Identifier** — enter your email or username
+- **Password** — your password
+- Click **Sign in** and you're done
 
-也可以用 Google / Discord / X 一键登录，和注册时一样的按钮。
+You can also use the Google / Discord / X buttons for a one-click login, same as when you signed up.
 
-## 忘记密码
+## Forgot your password?
 
-1. 在登录页面点 **Forgot password?**
-2. 输入你的注册邮箱，点 **Send reset link**
-3. 去邮箱找重置链接
-4. 点链接后设置新密码（至少 8 位），确认一遍
-5. 重置成功，点 **Sign in** 用新密码登录
-
+1. Click **Forgot password?** on the login page
+2. Enter your registration email and click **Send reset link**
+3. Check your inbox for the reset link
+4. Click the link, set a new password (at least 8 characters), and confirm it
+5. Reset complete — click **Sign in** to log in with your new password

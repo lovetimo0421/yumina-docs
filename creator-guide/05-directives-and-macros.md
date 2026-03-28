@@ -1,109 +1,109 @@
 <div v-pre>
 
-# AI指令与宏
+# AI Directives & Macros
 
-> AI通过指令改变游戏世界，宏让你的词条文本活起来——这是Yumina世界创作的两大核心机制。
-
----
-
-## 简单版
-
-### 指令是什么？
-
-你可以把指令理解成AI给游戏引擎下的"命令"。当AI写完一段故事叙述之后，它会在回复的末尾悄悄塞上几条方括号包裹的指令，告诉引擎："嘿，这个变量该变了。"
-
-格式长这样：`[变量名: 操作 值]`
-
-最常用的三种场景：
-
-- **扣血**：`[health: -10]` — 玩家被砍了一刀，生命值减10
-- **加金币**：`[gold: +50]` — 打败怪物，捡到50金
-- **切场景**：`[location: set "森林"]` — 角色走进了森林
-
-你不需要写任何代码。只要你在世界编辑器里定义好变量（比如 `health`、`gold`、`location`），AI就会在合适的时机自动使用指令来更新它们。引擎会把指令从AI的回复里"摘掉"，玩家看到的只有干净的故事文本，状态面板上的数字却已经悄悄变了。
-
-### 宏是什么？
-
-宏是你在词条里写的占位符，引擎在发给AI之前会自动替换成真实内容。最常用的两个：
-
-- `{{char}}` — 自动替换成当前角色的名字
-- `{{user}}` — 自动替换成玩家的名字
-
-比如你在角色词条里写"{{char}}注意到{{user}}走了进来"，如果角色叫小月、玩家叫阿凯，AI实际收到的就是"小月注意到阿凯走了进来"。
-
-这样一来，你的词条就变成了"模板"——换个角色名字，整套词条自动适配，不用一个个改。
+> Directives are how the AI changes the game world. Macros make your entry text come alive — these are two of the core mechanisms of Yumina world creation.
 
 ---
 
-## 详细版
+## The short version
 
-### 指令完全手册
+### What are directives?
 
-#### 基本语法
+Think of directives as "commands" the AI issues to the game engine. After writing a story passage, the AI quietly tacks a few bracket-wrapped directives onto the end of its reply, telling the engine: "Hey, this variable needs to change."
+
+The format looks like this: `[variableName: operation value]`
+
+The three most common scenarios:
+
+- **Deducting health**: `[health: -10]` — the player takes a hit, health drops by 10
+- **Adding gold**: `[gold: +50]` — defeated a monster, picked up 50 gold
+- **Changing scene**: `[location: set "forest"]` — the character walks into the forest
+
+You don't need to write any code. As long as you define variables in the world editor (like `health`, `gold`, `location`), the AI will automatically use directives to update them at the right moments. The engine strips the directives out of the AI's reply before showing it to the player — all they see is clean story text, while the numbers in the status panel have already quietly shifted.
+
+### What are macros?
+
+Macros are placeholders you write in entries, which the engine automatically replaces with real content before sending to the AI. The two most common:
+
+- `{{char}}` — automatically replaced with the current character's name
+- `{{user}}` — automatically replaced with the player's name
+
+For example, if you write "{{char}} notices {{user}} walking in," and the character is named Luna and the player is named Kai, the AI actually receives "Luna notices Kai walking in."
+
+This turns your entries into "templates" — swap in a different character name and the whole entry adapts automatically, no manual editing required.
+
+---
+
+## The detailed version
+
+### Directives — the complete reference
+
+#### Basic syntax
 
 ```
 [variableId: operation value]
 ```
 
-方括号里写三样东西：变量ID、操作、值。变量ID就是你在编辑器里定义的那个标识符。
+Three things inside the brackets: the variable ID, the operation, and the value. The variable ID is the identifier you defined in the editor.
 
-#### 所有操作一览表
+#### All operations at a glance
 
-| 操作 | 完整写法 | 简写 | 示例 | 说明 |
-|------|----------|------|------|------|
-| 赋值 | `[var: set value]` | `[var: value]` | `[location: set "城堡"]` 或 `[location: "城堡"]` | 直接把变量设为某个值。省略 `set` 也行，引擎会自动理解为隐式赋值 |
-| 加法 | `[var: add N]` | `[var: +N]` | `[gold: add 50]` 或 `[gold: +50]` | 给数值变量加上 N |
-| 减法 | `[var: subtract N]` | `[var: -N]` | `[health: subtract 10]` 或 `[health: -10]` | 给数值变量减去 N |
-| 乘法 | `[var: multiply N]` | `[var: *N]` | `[damage: multiply 2]` 或 `[damage: *2]` | 把数值变量乘以 N |
-| 开关 | `[var: toggle]` | 无 | `[hasKey: toggle]` | 布尔值翻转，true变false，false变true。不需要填值 |
-| 追加 | `[var: append "text"]` | 无 | `[log: append "找到了钥匙"]` | 在字符串末尾追加文本 |
-| 合并 | `[var: merge {json}]` | 无 | `[stats: merge {"level": 2}]` | 把一个JSON对象合并进变量（适合复杂状态） |
-| 推入 | `[var: push value]` | 无 | `[inventory: push "magic_sword"]` | 往数组变量里推入一个元素 |
-| 删除 | `[var: delete key]` | 无 | `[stats: delete "buff"]` | 从对象变量里删除某个键 |
+| Operation | Full form | Shorthand | Example | Description |
+|-----------|-----------|-----------|---------|-------------|
+| Assign | `[var: set value]` | `[var: value]` | `[location: set "castle"]` or `[location: "castle"]` | Sets the variable to a value directly. Omitting `set` works too — treated as implicit assignment |
+| Add | `[var: add N]` | `[var: +N]` | `[gold: add 50]` or `[gold: +50]` | Add N to a number variable |
+| Subtract | `[var: subtract N]` | `[var: -N]` | `[health: subtract 10]` or `[health: -10]` | Subtract N from a number variable |
+| Multiply | `[var: multiply N]` | `[var: *N]` | `[damage: multiply 2]` or `[damage: *2]` | Multiply a number variable by N |
+| Toggle | `[var: toggle]` | none | `[hasKey: toggle]` | Flip a boolean — true becomes false, false becomes true. No value needed |
+| Append | `[var: append "text"]` | none | `[log: append "found key"]` | Append text to a string variable |
+| Merge | `[var: merge {json}]` | none | `[stats: merge {"level": 2}]` | Merge a JSON object into a variable (for complex state) |
+| Push | `[var: push value]` | none | `[inventory: push "magic_sword"]` | Push an element onto an array variable |
+| Delete | `[var: delete key]` | none | `[stats: delete "buff"]` | Delete a key from an object variable |
 
-#### 值的写法
+#### Value syntax
 
-- **数字**：直接写，比如 `10`、`3.5`
-- **字符串**：用双引号包起来，比如 `"森林"`、`"magic_sword"`
-- **布尔值**：`true` 或 `false`
-- **JSON**：直接写JSON对象或数组，比如 `{"level": 2}` 或 `["a", "b"]`
+- **Numbers**: write as-is, e.g. `10`, `3.5`
+- **Strings**: wrap in double quotes, e.g. `"forest"`, `"magic_sword"`
+- **Booleans**: `true` or `false`
+- **JSON**: write the object or array directly, e.g. `{"level": 2}` or `["a", "b"]`
 
-#### 嵌套路径
+#### Nested paths
 
-变量ID支持用点号表示嵌套路径，就像访问JavaScript对象属性一样：
+Variable IDs support dot-notation for nested paths, just like accessing JavaScript object properties:
 
 ```
 [gameState.factions.fire.affinity: +5]
 ```
 
-这条指令的意思是：在 `gameState` 这个变量里，找到 `factions` 下面的 `fire` 下面的 `affinity`，给它加5。很适合管理复杂的游戏状态树。
+This means: in the `gameState` variable, navigate to `factions` → `fire` → `affinity`, and add 5. Great for managing complex game state trees.
 
-#### 音频指令
+#### Audio directives
 
-除了状态变量，还有一套专门控制音频的指令语法：
+Besides state variables, there's also a dedicated syntax for controlling audio:
 
 ```
 [audio: trackId action]
 ```
 
-| 动作 | 示例 | 说明 |
-|------|------|------|
-| play | `[audio: battle_bgm play]` | 播放音轨 |
-| stop | `[audio: tavern_ambient stop]` | 停止音轨 |
-| crossfade | `[audio: forest_bgm crossfade 2.0]` | 渐变切换，后面的数字是过渡秒数 |
-| volume | `[audio: rain volume 0.5]` | 调节音量（0到1之间） |
+| Action | Example | Description |
+|--------|---------|-------------|
+| play | `[audio: battle_bgm play]` | Play a track |
+| stop | `[audio: tavern_ambient stop]` | Stop a track |
+| crossfade | `[audio: forest_bgm crossfade 2.0]` | Crossfade to this track over N seconds |
+| volume | `[audio: rain volume 0.5]` | Set volume (0–1) without stopping |
 
-还支持chain语法，用来串联音轨：
+Also supports chain syntax for sequencing tracks:
 
 ```
 [audio: intro_bgm play chain:loop_bgm]
 ```
 
-意思是：播放 `intro_bgm`，播完之后自动接上 `loop_bgm`。
+Meaning: play `intro_bgm`, and when it finishes, automatically continue with `loop_bgm`.
 
-#### JSON Patch 兼容格式
+#### JSON Patch compatibility format
 
-如果你的卡片是从SillyTavern迁移过来的，可能用的是XML包裹的JSON Patch格式。Yumina也能识别：
+If your card was migrated from SillyTavern, it might use the XML-wrapped JSON Patch format. Yumina recognizes this too:
 
 ```xml
 <UpdateVariable>
@@ -111,130 +111,130 @@
 [
   {"op": "replace", "path": "/health/current", "value": 80},
   {"op": "delta", "path": "/gold", "value": 50},
-  {"op": "insert", "path": "/inventory/newItem", "value": "圣剑"},
+  {"op": "insert", "path": "/inventory/newItem", "value": "holy sword"},
   {"op": "remove", "path": "/debuffs/poison"}
 ]
 </JSONPatch>
 </UpdateVariable>
 ```
 
-支持四种JSON Patch操作：`replace`（赋值）、`delta`（加减，正数加负数减）、`insert`（新增键值）、`remove`（删除键值）。路径里的斜杠会被自动转换成点号。
+Four JSON Patch operations supported: `replace` (assign), `delta` (add/subtract — positive adds, negative subtracts), `insert` (add a key-value pair), `remove` (delete a key). Slashes in paths are automatically converted to dots.
 
-#### 解析流程
+#### Parsing pipeline
 
-AI的回复从发出到玩家看到，中间经过了这么几步：
+From the AI's reply to what the player sees, several steps happen:
 
-1. **剥离思考标签** — 有些模型（比如Gemini）会输出 `<thinking>...</thinking>` 之类的内部推理，引擎先把它们去掉
-2. **提取JSON Patch** — 扫描 `<UpdateVariable>` 块，转换成标准指令
-3. **提取音频指令** — 扫描 `[audio: ...]` 格式
-4. **提取JSON指令** — 扫描带JSON值的 `[var: merge/push/set/delete {...}]` 格式
-5. **提取标准指令** — 扫描 `[var: op value]` 格式
-6. **清理文本** — 把所有指令从回复里去掉，整理多余空行，返回干净文本 + 效果列表
+1. **Strip thinking tags** — some models (like Gemini) output internal reasoning in `<thinking>...</thinking>` tags; the engine removes these first
+2. **Extract JSON Patch** — scan for `<UpdateVariable>` blocks and convert to standard directives
+3. **Extract audio directives** — scan for `[audio: ...]` format
+4. **Extract JSON directives** — scan for `[var: merge/push/set/delete {...}]` format
+5. **Extract standard directives** — scan for `[var: op value]` format
+6. **Clean text** — remove all directives from the reply, tidy up extra blank lines, return clean text + list of effects
 
-玩家看到的是干净文本，引擎拿到效果列表去更新游戏状态。各司其职，互不干扰。
-
----
-
-### 宏完全手册
-
-#### 完整宏列表
-
-| 宏 | 说明 | 示例输出 |
-|----|------|----------|
-| `{{char}}` | 当前角色名 | 小月 |
-| `{{user}}` | 玩家名 | 阿凯 |
-| `{{turnCount}}` | 当前回合数 | 42 |
-| `{{random::a::b::c}}` | 随机选一个（每次展开结果可能不同） | b |
-| `{{pick::a::b::c}}` | 稳定哈希选取（同一回合、同一位置结果始终不变） | a |
-| `{{roll::NdS+M}}` | 掷骰子，N个S面骰加修正值M | `{{roll::2d6+1}}` 可能输出 8 |
-| `{{time}}` | 当前时间（HH:MM格式） | 14:30 |
-| `{{date}}` | 当前日期（本地格式） | 2026/3/23 |
-| `{{weekday}}` | 当前星期几（英文） | Sunday |
-| `{{isodate}}` | ISO日期格式 | 2026-03-23 |
-| `{{isotime}}` | ISO时间格式 | 14:30:00 |
-| `{{idle}}` | 玩家距上次发消息过了多久 | 5 minutes |
-| `{{lastMessage}}` | 上一条消息的内容 | （上一条消息的完整文本） |
-| `{{lastUserMessage}}` | 玩家的上一条消息 | （玩家最后说的话） |
-| `{{lastCharMessage}}` | 角色的上一条消息 | （角色最后说的话） |
-| `{{model}}` | 当前使用的AI模型名 | claude-opus-4-6 |
-| `{{// 注释内容}}` | 注释，展开后消失（不会发送给AI） | （空字符串） |
-| `{{trim}}` | 吃掉前后空白（用来精确控制排版） | （消除相邻空白） |
-
-#### `random` 和 `pick` 的区别
-
-这两个很容易混淆，打个比方：
-
-- `{{random::猫::狗::兔子}}` 就像每次都重新抽签，同一条词条被展开两次，可能一次是"猫"一次是"狗"
-- `{{pick::猫::狗::兔子}}` 就像在签上刻了你的名字，同一回合里无论展开多少次，结果都一样。但下一回合可能就变了
-
-`pick` 背后用的是稳定哈希算法，输入是宏在模板里的位置序号和当前回合数。所以同一个词条里第一个 `pick` 和第二个 `pick` 的结果通常不同（位置不同），但同一个 `pick` 在同一回合里结果恒定。
-
-#### 变量回落
-
-如果宏名不匹配任何内置宏，但恰好和某个游戏变量的ID一样，引擎会用那个变量的当前值来替换。比如你定义了一个叫 `mood` 的变量，当前值是"开心"，那 `{{mood}}` 就会被替换成"开心"。
-
-如果既不是内置宏、也不是变量名，引擎会原样保留 `{{xxx}}`，不会报错也不会崩溃。
+The player sees clean text. The engine gets the effects list to update game state. Each does its own job.
 
 ---
 
-## 实用例子
+### Macros — the complete reference
 
-### 例子1：战斗场景
+#### Full macro list
 
-假设你定义了三个变量：`health`（玩家血量，初始100）、`enemy_hp`（敌人血量，初始80）、`location`（当前地点）。
+| Macro | Description | Example output |
+|-------|-------------|----------------|
+| `{{char}}` | Current character's name | Luna |
+| `{{user}}` | Player's name | Kai |
+| `{{turnCount}}` | Current turn count | 42 |
+| `{{random::a::b::c}}` | Pick one randomly (may differ each time the macro expands) | b |
+| `{{pick::a::b::c}}` | Stable hash selection (same turn, same position = same result) | a |
+| `{{roll::NdS+M}}` | Roll dice: N dice with S sides plus modifier M | `{{roll::2d6+1}}` might output 8 |
+| `{{time}}` | Current time (HH:MM format) | 14:30 |
+| `{{date}}` | Current date (local format) | 2026/3/23 |
+| `{{weekday}}` | Current day of the week (English) | Sunday |
+| `{{isodate}}` | ISO date format | 2026-03-23 |
+| `{{isotime}}` | ISO time format | 14:30:00 |
+| `{{idle}}` | How long since the player last sent a message | 5 minutes |
+| `{{lastMessage}}` | Content of the last message | (full text of the last message) |
+| `{{lastUserMessage}}` | The player's last message | (last thing the player said) |
+| `{{lastCharMessage}}` | The character's last message | (last thing the character said) |
+| `{{model}}` | Name of the current AI model | claude-opus-4-6 |
+| `{{// comment text}}` | Comment — expands to nothing (not sent to AI) | (empty string) |
+| `{{trim}}` | Eats surrounding whitespace (for precise formatting control) | (collapses adjacent whitespace) |
 
-AI可能会这样回复：
+#### The difference between `random` and `pick`
 
-> 你挥剑砍向哥布林，剑刃划过它的肩膀，绿色的血溅了出来。哥布林痛叫一声，举起木棒反击，狠狠敲在你的手臂上，一阵剧痛传来。
+These two are easy to mix up. An analogy:
+
+- `{{random::cat::dog::rabbit}}` is like drawing a new lot each time — the same entry expanded twice might give "cat" once and "dog" once
+- `{{pick::cat::dog::rabbit}}` is like a lot with your name engraved on it — within the same turn, no matter how many times it expands, the result is identical. But it might change on the next turn
+
+`pick` uses a stable hash algorithm. The input is the macro's positional index in the template and the current turn number. So the first `pick` and second `pick` in the same entry usually give different results (different positions), but the same `pick` is constant within a turn.
+
+#### Variable fallback
+
+If a macro name doesn't match any built-in macro but happens to match a game variable's ID, the engine uses that variable's current value. For example, if you define a variable called `mood` with a current value of "happy," `{{mood}}` gets replaced with "happy."
+
+If it's neither a built-in macro nor a variable name, the engine leaves `{{xxx}}` as-is — no errors, no crashes.
+
+---
+
+## Practical examples
+
+### Example 1: Combat scene
+
+Say you have three variables: `health` (player HP, starting at 100), `enemy_hp` (enemy HP, starting at 80), `location` (current location).
+
+The AI might reply:
+
+> You swing your sword at the goblin, the blade cutting across its shoulder. Green blood spurts out. The goblin shrieks and swings its club back, hitting your arm hard — a sharp pain shoots through you.
 >
 > [health: -15]
 > [enemy_hp: -30]
 
-玩家看到的是纯粹的故事文本，但状态面板上，血量从100变成了85，哥布林的血量从80降到了50。引擎在后台默默完成了这一切。
+The player sees pure story text. But on the status panel, health changed from 100 to 85 and the goblin's HP dropped from 80 to 50. The engine handled it all quietly in the background.
 
-### 例子2：物品获取与交易
+### Example 2: Item pickup and trading
 
-变量：`inventory`（数组类型）、`gold`（数值类型，当前500）。
+Variables: `inventory` (array type), `gold` (number type, current value 500).
 
-> 铁匠把一柄泛着蓝光的长剑递到你面前："这是我的得意之作，附魔霜刃，一百金币。"你掏出钱袋付了钱，接过剑的瞬间感到一股寒意从掌心蔓延开来。
+> The blacksmith hands you a sword glowing with blue light: "This is my masterpiece — the Frost Blade, enchanted, one hundred gold." You pull out your coin purse and pay, and the moment you grip the sword you feel a chill spreading through your palm.
 >
 > [inventory: push "frost_blade"]
 > [gold: -100]
 
-玩家的背包里多了一把霜刃剑，钱袋少了100金。
+The player's inventory gains a Frost Blade and the coin purse loses 100 gold.
 
-### 例子3：宏在词条中的应用
+### Example 3: Macros in entries
 
-在角色人设词条里这样写：
-
-```
-{{char}}是一个性格冷淡的剑士，但对{{user}}有一种说不清的好感。
-当回合数超过20时（当前回合：{{turnCount}}），{{char}}会逐渐敞开心扉。
-```
-
-如果角色叫"叶霜"、玩家叫"旅人"、当前第25回合，AI实际收到的就是：
+Write this in a character profile entry:
 
 ```
-叶霜是一个性格冷淡的剑士，但对旅人有一种说不清的好感。
-当回合数超过20时（当前回合：25），叶霜会逐渐敞开心扉。
+{{char}} is a cold-natured swordsman, but feels something inexplicable toward {{user}}.
+When the turn count exceeds 20 (current turn: {{turnCount}}), {{char}} will gradually open up.
 ```
 
-### 例子4：用 `random` 增加变化
-
-在世界观词条里加点随机元素：
+If the character is "Ye Shuang," the player is "Traveler," and it's currently turn 25, the AI actually receives:
 
 ```
-今天的天气是{{random::晴朗::阴沉::微雨::大雾}}，街上{{random::行人稀少::熙熙攘攘::偶有行人经过}}。
+Ye Shuang is a cold-natured swordsman, but feels something inexplicable toward Traveler.
+When the turn count exceeds 20 (current turn: 25), Ye Shuang will gradually open up.
 ```
 
-每次这条词条被展开，天气和街景都可能不同，让故事更有变化感。
+### Example 4: Using `random` for variety
 
-### 例子5：用 `roll` 做技能检定
+Add some random elements to a world lore entry:
 
 ```
-{{char}}尝试开锁。掷骰结果：{{roll::1d20+2}}（需要12以上才能成功）。
+Today's weather is {{random::clear::overcast::light rain::heavy fog}}, and the streets are {{random::sparse::bustling::occasionally passing}}.
 ```
 
-AI收到的可能是"掷骰结果：17（需要12以上才能成功）"，然后它就可以根据这个结果来叙述开锁成功还是失败了。把判定权从AI的"自由发挥"交给骰子，更公平。
+Every time this entry is expanded, the weather and street scene might be different, adding a sense of variety to the story.
+
+### Example 5: Using `roll` for skill checks
+
+```
+{{char}} attempts to pick the lock. Roll result: {{roll::1d20+2}} (12 or above succeeds).
+```
+
+The AI receives something like "Roll result: 17 (12 or above succeeds)" and can then describe whether the lock-picking succeeds or fails. Shifting the judgment from "AI's discretion" to dice rolls is fairer.
 
 </div>

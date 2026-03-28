@@ -1,119 +1,119 @@
 <div v-pre>
 
-# 常见问题
+# FAQ
 
-> 创作过程中最常遇到的问题，这里都有答案。
-
----
-
-## 入门问题
-
-### Q: 我从来没写过角色卡，能用Yumina吗？
-
-完全可以。Yumina的编辑器是可视化的，不需要编程基础。最简单的世界只需要填一段角色描述和一句开场白就能跑起来。建议你先去 [yumina.io](https://yumina.io) 玩几个别人做好的世界，感受一下成品效果，然后跟着教程一步步来。详见 [欢迎](./00-welcome.md) 和 [核心概念速览](./01-core-concepts.md)。
-
-### Q: 创建一个最简单的世界需要哪些步骤？
-
-三步就够了：1）点 **创建（Create）** 新建一个世界；2）在 **词条（Lorebook）** 里创建一个 `character` 角色词条，写上角色的人设，打开 **始终发送（Always Send）**；3）在 **开场白（First Message）** 里写一条开场白。点 **保存（Save）** 之后就能开始聊了。变量、行为、渲染器这些都是可选的进阶功能，后面再加不迟。
-
-### Q: Yumina支持哪些AI模型？
-
-Yumina通过 OpenRouter 接入模型，基本上 OpenRouter 上有的模型都能用——包括 Claude、GPT、Gemini、DeepSeek、Llama 等主流模型。你需要在设置里配置自己的 API Key。不同模型对指令格式的遵从度不同，建议在世界设置里调好 temperature 等参数来适配你选的模型。详见 [AI 模型与设置](./10-ai-settings.md)。
-
-### Q: 我的世界数据保存在哪里？会丢吗？
-
-你的世界数据保存在 Yumina 的服务器数据库里，正常使用不会丢失。但养成备份习惯总是好的——在编辑器的 **概览（Overview）** 里可以导入导出世界 JSON 文件，存到本地当离线备份。如果你改坏了什么东西，还能从备份导入恢复。详见 [发布、导出与 Bundle](./11-publish-and-share.md)。
+> Answers to the most common questions you'll run into while creating.
 
 ---
 
-## 词条与世界书
+## Getting started
 
-### Q: 词条太多了，怎么组织？
+### Q: I've never made a character card before. Can I use Yumina?
 
-用文件夹。编辑器支持创建文件夹，按逻辑分组管理词条——比如按角色、按场景、按功能分。文件夹纯粹是组织工具，不影响词条的运行时行为。另外善用 `tags` 标签字段，方便筛选和查找。详见 [词条与世界书](./03-entries-and-lorebook.md) 的"文件夹组织"部分。
+Absolutely. Yumina's editor is visual — no programming required. The simplest world only needs a character description and an opening line to run. We recommend playing a few worlds that others have built at [yumina.io](https://yumina.io) first, to get a feel for what a finished product looks like, then following the tutorials step by step. See [Welcome](./00-welcome.md) and [Core Concepts](./01-core-concepts.md).
 
-### Q: 关键词触发不生效怎么办？
+### Q: What's the minimum I need to create a world?
 
-排查几个常见原因：1）检查词条的 `enabled` 是不是 `true`；2）确认 `lorebookScanDepth` 够大——默认只扫描最近 2 条消息，如果关键词出现在更早的消息里就扫不到；3）如果用了二级关键词（`secondaryKeywords`），检查逻辑是不是设对了；4）如果开了 `matchWholeWords`，注意中文一般不需要全词匹配。详见 [词条与世界书](./03-entries-and-lorebook.md) 的"关键词匹配"部分。
+Three steps: 1) click **Create** to make a new world; 2) in **Lorebook**, create a `character` entry with the character's profile and turn on **Always Send**; 3) in **First Message**, write an opening line. Click **Save** and you're ready to chat. Variables, behaviors, and renderers are all optional advanced features — you can add them later.
 
-### Q: alwaysSend的词条和关键词触发的词条有什么区别？
+### Q: Which AI models does Yumina support?
 
-`alwaysSend: true` 的词条每次对话都会被塞进提示词里，不管玩家说了什么——适合核心人设、基础世界观这类必须时刻生效的内容。关键词触发的词条只有在最近消息中出现匹配词时才激活——适合特定场景、地点、NPC 等按需投放的内容。两者的区别本质上是"常驻"还是"按需"，合理搭配可以节省大量 token 预算。详见 [词条与世界书](./03-entries-and-lorebook.md)。
+Yumina connects to models through OpenRouter, which means basically anything available on OpenRouter — including Claude, GPT, Gemini, DeepSeek, Llama, and other major models. You'll need to configure your own API Key in settings. Different models vary in how well they follow directive format. We recommend tuning settings like temperature to match the model you choose. See [AI Model & Settings](./10-ai-settings.md).
 
-### Q: 示例对话要怎么写才有效？
+### Q: Where is my world data stored? Can it get lost?
 
-用 `<START>` 分隔不同的对话段落，用 `{{user}}:` 和 `{{char}}:` 标记发言者。每段示例应该展示角色独特的说话方式、语气和反应模式，而不是单纯的信息传递。两到三段高质量示例比十段平庸的示例有效得多。词条的 role 设为 `example`，section 放在 `examples` 区域。详见 [词条与世界书](./03-entries-and-lorebook.md) 的"示例对话格式"部分。
-
----
-
-## 变量与指令
-
-### Q: AI不按格式写指令怎么办？
-
-引擎已经自动告诉 AI 指令格式了，所以问题通常不是"AI 不知道格式"，而是"AI 不确定什么时候该用"。几个办法：1）在变量的 `behaviorRules` 里把触发条件写得更具体——比如"玩家受到攻击时扣减，每次扣 10-30"比"受伤时扣减"更好；2）在 `post-history` 区域加一条词条提醒 AI 别忘了输出指令；3）降低 `temperature`（比如 0.5-0.7），让 AI 更老实地遵循规则；4）不同模型对指令的遵从度差异很大，换个模型试试也是思路。详见 [AI 指令与宏](./05-directives-and-macros.md) 和 [AI 模型与设置](./10-ai-settings.md)。
-
-### Q: 变量值突然变成奇怪的值，怎么排查？
-
-先看 AI 的原始回复里写了什么指令——有时候 AI 会写出你没预想到的操作。然后检查是不是有规则在后台悄悄修改了这个变量（规则的 `modify-variable` 动作）。对于 number 类型变量，确认你设了合理的 `min` 和 `max`，引擎会自动钳制超出范围的值。如果还是找不到原因，在编辑器里逐条检查引用了这个变量的所有规则和词条。
-
-### Q: JSON类型的变量怎么用？
-
-JSON 变量可以存复杂数据结构——对象、数组、嵌套结构都行。最常见的用法是做背包（JSON 数组）和角色关系网（JSON 对象）。操作方式包括 `merge`（合并对象）、`push`（数组追加）、`delete`（删除键或元素），还支持点号路径深入操作嵌套结构，比如 `[relationships.aria.trust: +10]`。详见 [变量系统](./04-variables.md) 的"嵌套 JSON 路径"部分。
-
-### Q: 我能有多少个变量？有限制吗？
-
-引擎层面没有硬性数量限制。但每个变量的当前值都会被写进发给 AI 的提示词里，变量太多会占用大量 token 预算，导致 AI 能"看到"的对话历史变短。实际上大多数世界用 5-20 个变量就够了。如果你需要存大量数据，考虑用一个 JSON 类型变量把相关数据打包在一起，比一堆零散变量更高效。
+Your world data is saved in Yumina's server database and won't be lost under normal circumstances. That said, building a backup habit is always wise — you can export a world JSON file from the **Overview** section of the editor and save it locally as an offline backup. If something goes wrong, you can restore from the backup. See [Publishing, Exporting & Bundles](./11-publish-and-share.md).
 
 ---
 
-## 行为引擎
+## Entries & Lorebook
 
-### Q: 行为没有触发，怎么排查？
+### Q: I have too many entries. How do I organize them?
 
-按顺序检查这几项：1）行为是不是启用状态，有没有被其他行为禁用了；2）WHEN 触发器类型对不对——比如你选了"变量穿过阈值"但变量根本没变化过那个阈值；3）ONLY IF 条件是不是全部满足（注意 `conditionLogic` 是 `all` 还是 `any`）；4）是不是在冷却期（`cooldownTurns`）；5）是不是已经达到最大触发次数（`maxFireCount`）。详见 [行为规则引擎](./06-rules-engine.md) 的"评估流程"部分。
+Use folders. The editor supports creating folders to group entries by logic — by character, by scene, by function. Folders are purely an organizational tool and don't affect runtime behavior. Also make good use of the `tags` field for filtering and searching. See the "Folder organization" section in [Entries & Lorebook](./03-entries-and-lorebook.md).
 
-### Q: 多个行为同时触发时，执行顺序是什么？
+### Q: Keyword triggering isn't working. How do I debug?
 
-按 `priority` 字段从高到低排序。数字越大的行为越先被评估和执行。比如一条 priority 为 100 的"死亡判定"行为会比 priority 为 50 的"低血量警告"行为先执行。如果两条行为 priority 相同，则按它们在列表中的定义顺序执行。建议给重要行为分配更高的 priority 值。详见 [行为规则引擎](./06-rules-engine.md) 的"优先级"部分。
+Check these common causes: 1) verify the entry's `enabled` is `true`; 2) check that `lorebookScanDepth` is large enough — the default only scans the last 2 messages, so keywords in earlier messages won't be found; 3) if you're using secondary keywords (`secondaryKeywords`), make sure the logic is set correctly; 4) if `matchWholeWords` is on, note that Chinese text generally doesn't need whole-word matching. See the "Keyword matching" section in [Entries & Lorebook](./03-entries-and-lorebook.md).
 
-### Q: 行为可以互相控制吗？
+### Q: What's the difference between alwaysSend entries and keyword-triggered ones?
 
-可以，这是行为引擎最强大的特性之一。用"启用/禁用行为"动作可以启用或禁用其他行为。典型场景：行为 A 监听"进入地下城"关键词，触发后启用一个初始状态为禁用的怪物遭遇行为 B；离开地下城时再禁用它。你可以做出"平时休眠、被激活后才开始工作"的行为链。详见 [行为规则引擎](./06-rules-engine.md) 的"规则互控"部分。
+`alwaysSend: true` entries are included in every prompt no matter what the player says — good for core character profiles and foundational world rules that need to be in effect at all times. Keyword-triggered entries only activate when matching words appear in recent messages — good for specific scenes, locations, NPCs, and other on-demand content. The fundamental difference is "always-on" vs. "on-demand." Using both strategically can save a huge amount of token budget. See [Entries & Lorebook](./03-entries-and-lorebook.md).
 
-### Q: cooldownTurns和maxFireCount怎么配合使用？
+### Q: How do I write effective example dialogue?
 
-`cooldownTurns` 控制触发间隔——行为触发一次后要冷却几个回合才能再次触发，适合"不要太频繁"的场景，比如每隔至少 5 回合才提醒一次饥饿。`maxFireCount` 控制总次数上限——行为一生最多触发这么多次，之后永远不再触发，适合一次性事件，比如教程提示设 `maxFireCount: 1`。两者可以同时使用：比如一个"隐藏剧情提示"行为设 `cooldownTurns: 10` + `maxFireCount: 3`，意思是最多提示 3 次，每次之间至少间隔 10 回合。
-
----
-
-## 组件与渲染
-
-### Q: 不会写TSX，能用自定义渲染器吗？
-
-可以试试。几个入手方式：1）用编辑器里的 **进入 Studio（Enter Studio）**，让 AI Assistant 帮你生成代码；2）把你想要的效果用文字描述给外部 AI（比如 Claude），让它帮你生成 TSX 代码，粘贴到编辑器里；3）从文档里的模板例子复制粘贴，改改颜色和文字。编辑器会实时编译并提示错误（底部显示 **Compile Status**），可以边改边调。详见 [自定义前端指南](./07-components.md) 和 [自定义消息渲染器](./08-message-renderer.md)。
-
-### Q: 组件显示在哪里？能自定义位置吗？
-
-内置组件（stat-bar、text-display 等）显示在聊天窗口上方的 header 横栏里，目前 `placement` 只支持 `"header"` 这一个位置。如果你需要更灵活的布局——比如侧边栏、全屏面板——可以用 `customComponents` 写自定义 TSX 组件，或者开启 `fullScreenComponent: true` 让自定义组件占据整个屏幕。组件之间的排列顺序由 `order` 字段控制，数字越小越靠前。详见 [组件系统](./07-components.md)。
-
-### Q: messageRenderer和customComponents有什么区别？
-
-`messageRenderer` 替换的是每条聊天消息的显示方式——它接管 AI 回复的渲染，让你把纯文本变成气泡对话、视觉小说对话框、战斗日志等。`customComponents` 是在聊天界面旁边额外添加的独立 UI 面板，比如角色创建界面、游戏侧边栏、地图。简单说：messageRenderer 改的是"消息长什么样"，customComponents 加的是"消息旁边还有什么"。两者可以同时使用，底层数据结构都是 `CustomComponent`。详见 [自定义消息渲染器](./08-message-renderer.md)。
+Use `<START>` to separate different dialogue segments, and `{{user}}:` and `{{char}}:` to mark speakers. Each example should demonstrate the character's unique speech style, tone, and reactions — not just information exchange. Two or three high-quality examples are worth far more than ten mediocre ones. Set the entry's role to `example` and section to `examples`. See the "Example dialogue format" section in [Entries & Lorebook](./03-entries-and-lorebook.md).
 
 ---
 
-## 发布与分享
+## Variables & Directives
 
-### Q: 发布后还能修改吗？
+### Q: The AI isn't writing directives in the right format. What do I do?
 
-可以。发布后你随时可以回到编辑器修改世界内容，保存即生效——新玩家会立刻看到最新版本。如果你想暂时下架，可以把状态改为 `unpublished`，已经在玩的用户会看到只读提示。不过要注意：如果你修改了变量定义（比如删掉了某个变量），引擎会自动处理老玩家的存档兼容——新增的变量用默认值补上，删掉的变量会被过滤掉，不会搞坏老玩家的存档。详见 [发布、导出与 Bundle](./11-publish-and-share.md)。
+The engine already automatically tells the AI the directive format, so the problem usually isn't "the AI doesn't know the format" — it's "the AI isn't sure when to use it." A few fixes: 1) make the trigger conditions in `behaviorRules` more specific — "subtract when the player takes damage; deduct 10–30 per hit" is better than "subtract when hurt"; 2) add a reminder entry in the `post-history` section telling the AI not to forget to output directives; 3) lower `temperature` (e.g., 0.5–0.7) to make the AI follow rules more reliably; 4) different models vary significantly in directive compliance — switching models is also worth trying. See [AI Directives & Macros](./05-directives-and-macros.md) and [AI Model & Settings](./10-ai-settings.md).
 
-### Q: 怎么让更多人发现我的世界？
+### Q: A variable suddenly has a weird value. How do I debug?
 
-几个关键点：1）上传一张好看的缩略图——没图的世界在 Hub 里几乎不会被点开；2）写一段吸引人的描述，讲清楚这个世界是什么、有什么好玩的；3）加 3-5 个相关标签，想想玩家会搜什么词；4）写一个精彩的开场白（greeting），第一印象决定玩家会不会继续玩下去；5）发布前自己从头玩一遍，确保体验流畅。详见 [发布、导出与 Bundle](./11-publish-and-share.md) 的"发布前检查清单"。
+First look at what directives the AI wrote in its raw reply — sometimes the AI writes operations you didn't anticipate. Then check if any rules are quietly modifying this variable in the background (via `modify-variable` actions). For number variables, confirm you've set reasonable `min` and `max` values — the engine auto-clamps out-of-range values. If you still can't find it, check every rule and entry in the editor that references this variable.
 
-### Q: Bundle和完整世界导出有什么区别？
+### Q: How do I use JSON-type variables?
 
-完整世界导出是整个 `WorldDefinition` 的 JSON 文件——包含所有词条、变量、规则、组件、设置，一个不漏，适合做备份或把整个世界分享给别人。Bundle 是世界的"零件包"——你可以只挑选一部分内容（比如一套战斗规则 + 相关变量 + 组件）打包出来，别人可以把这个零件包安装到自己的世界里。简单说：世界导出是"整辆车"，Bundle 是"发动机总成"。详见 [发布、导出与 Bundle](./11-publish-and-share.md) 的"Bundle 系统"部分。
+JSON variables can store complex data structures — objects, arrays, nested structures. The most common uses are inventory (JSON array) and character relationship networks (JSON object). Operations include `merge` (merge object), `push` (append to array), `delete` (remove a key or element), and dot-notation for deep nested paths like `[relationships.aria.trust: +10]`. See the "Nested JSON paths" section in [Variables](./04-variables.md).
+
+### Q: How many variables can I have? Is there a limit?
+
+No hard limit at the engine level. But every variable's current value is included in the prompt sent to the AI, so too many variables eat up token budget and shorten the conversation history the AI can "see." In practice, most worlds work fine with 5–20 variables. If you need to store a lot of data, consider packing related data into one JSON variable — more efficient than a pile of individual variables.
+
+---
+
+## Rules engine
+
+### Q: A behavior isn't triggering. How do I debug?
+
+Check these in order: 1) is the behavior enabled — was it disabled by another behavior? 2) is the WHEN trigger type correct — e.g., if you chose "variable crosses threshold" but the variable never crossed that threshold; 3) do all the ONLY IF conditions pass (check whether `conditionLogic` is `"all"` or `"any"`); 4) is it in cooldown (`cooldownTurns`); 5) has it reached max fire count (`maxFireCount`). See the "Evaluation flow" section in [Rules Engine](./06-rules-engine.md).
+
+### Q: When multiple behaviors trigger at once, what order do they execute in?
+
+Sorted by `priority` from highest to lowest. Behaviors with higher numbers are evaluated and executed first. For example, a "death check" behavior at priority 100 runs before a "low health warning" at priority 50. If two behaviors have the same priority, they execute in their definition order. Give important behaviors higher priority values. See the "Priority" section in [Rules Engine](./06-rules-engine.md).
+
+### Q: Can behaviors control each other?
+
+Yes — this is one of the most powerful features of the rules engine. The "enable/disable behavior" action can turn other behaviors on or off. Typical pattern: Behavior A listens for a "enter dungeon" keyword and, when triggered, enables Behavior B (a monster encounter rule that starts disabled). When the player leaves the dungeon, Behavior A disables B again. You can build "dormant until activated" behavior chains. See the "Rule cross-control" section in [Rules Engine](./06-rules-engine.md).
+
+### Q: How do cooldownTurns and maxFireCount work together?
+
+`cooldownTurns` controls the interval — after a behavior fires, it waits this many turns before it can fire again. Good for "shouldn't trigger too often" scenarios, like reminding about hunger no more than once every 5 turns. `maxFireCount` controls the total — a behavior can fire at most this many times ever, then never again. Good for one-time events like tutorial hints. Both can be used simultaneously: a "hidden plot hint" behavior set to `cooldownTurns: 10` + `maxFireCount: 3` means it hints at most 3 times, with at least 10 turns between hints.
+
+---
+
+## Components & Rendering
+
+### Q: I can't code TSX. Can I still use a custom renderer?
+
+You can try. A few starting points: 1) use **Enter Studio** in the editor, and have the AI Assistant generate code for you; 2) describe your desired effect to an external AI (like Claude) and have it generate the TSX code, then paste it into the editor; 3) copy-paste from the template examples in the docs and adjust colors and text. The editor compiles in real time and shows errors at the bottom (**Compile Status**), so you can adjust as you go. See [Custom Frontend Guide](./07-components.md) and [Custom Message Renderer](./08-message-renderer.md).
+
+### Q: Where do components display? Can I customize their position?
+
+Built-in components (stat-bar, text-display, etc.) display in a header bar above the chat window. Currently `placement` only supports `"header"`. If you need a more flexible layout — like a sidebar or full-screen panel — use `customComponents` to write custom TSX, or enable `fullScreenComponent: true` to let custom components take over the full screen. Component order is controlled by the `order` field — lower numbers appear first. See [Components Guide](./07-components.md).
+
+### Q: What's the difference between messageRenderer and customComponents?
+
+`messageRenderer` replaces how each chat message is displayed — it takes over AI reply rendering, letting you turn plain text into speech bubbles, visual novel dialogue boxes, battle logs, etc. `customComponents` adds independent UI panels alongside the chat interface — like character creation screens, game sidebars, and maps. Simply put: messageRenderer changes "what messages look like"; customComponents adds "what else is alongside messages." Both can be used simultaneously, and both share the same underlying `CustomComponent` data structure. See [Custom Message Renderer](./08-message-renderer.md).
+
+---
+
+## Publishing & sharing
+
+### Q: Can I still make changes after publishing?
+
+Yes. After publishing, you can go back to the editor and modify world content at any time — saving takes effect immediately and new players see the latest version. To temporarily take it down, change status to `unpublished` and active players will see a read-only notice. Note: if you modify variable definitions (like deleting a variable), the engine automatically handles backward compatibility for existing players' saves — new variables get filled with default values, deleted ones are filtered out. Nothing breaks for existing players. See [Publishing, Exporting & Bundles](./11-publish-and-share.md).
+
+### Q: How do I get more players to discover my world?
+
+Key points: 1) upload an attractive thumbnail — worlds without covers almost never get clicked in Hub; 2) write a compelling description explaining what the world is and what makes it fun; 3) add 3–5 relevant tags — think about what players would search for; 4) write a great opening message (greeting) — first impressions determine whether players keep playing; 5) play through it yourself before publishing to make sure the experience is smooth. See the "Pre-publish checklist" in [Publishing, Exporting & Bundles](./11-publish-and-share.md).
+
+### Q: What's the difference between a Bundle and a full world export?
+
+A full world export is the complete `WorldDefinition` JSON — every entry, variable, rule, component, and setting, nothing left out. Good for backups or sharing an entire world with someone. A Bundle is a "component pack" — you cherry-pick a subset of content (like a combat rules system + related variables + components) and package it. Others can install this package into their own worlds. Simply: a full export is "the whole car"; a Bundle is "the engine assembly." See the "Bundle system" section in [Publishing, Exporting & Bundles](./11-publish-and-share.md).
 
 </div>

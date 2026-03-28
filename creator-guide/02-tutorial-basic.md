@@ -1,442 +1,443 @@
-# 手把手教程：从零做一个生存恐怖世界
+# Step-by-Step Tutorial: Build a Survival Horror World from Scratch
 
-我们要做一个类似 **"No, I'm not a Human"** 的恐怖生存游戏。玩法很简单：末日降临，外面有伪装成人类的"访客"。你独自在家，每晚都有人来敲门。透过猫眼判断来者是人是怪，做出选择，活过14天。
+We're going to build a horror survival game inspired by **"No, I'm not a Human"**. The premise is simple: the apocalypse has arrived, and outside there are "Visitors" disguised as humans. You're alone at home, and every night someone comes knocking. Peer through the peephole to judge whether they're human or monster, make your choice, and survive 14 nights.
 
-做完这篇教程，你就掌握了 Yumina 最核心的创作技能——词条、变量、指令、组件、世界书。不管以后做什么类型的世界，都从这里起步 (•̀ᴗ•́)و
-
----
-
-## 第一步：创建新世界
-
-点击左侧导航栏的 **创建（Create）** 按钮，选 **空白项目（Blank Project）**。进入编辑器后，在左上角输入框填好世界名称：
-
-- **名称**：`伪人`
-
-如果你还不熟悉编辑器的各个区域，可以先去 [新手指南](./01-beginner-guide.md) 逛一圈再回来。
+Finish this tutorial and you'll have a solid grasp of Yumina's core creation skills — entries, variables, directives, components, and the lorebook. Whatever kind of world you want to build in the future, this is where it starts (•̀ᴗ•́)و
 
 ---
 
-## 第二步：写角色设定词条
+## Step 1: Create a new world
 
-点左侧导航栏的 **词条（Lorebook）**。
+Click the **Create** button in the left navigation, then select **Blank Project**. In the editor, fill in the world name in the top input field:
 
-你会看到左边有几个分组，其中 **PRESETS**（预设区）里已经有一些 Yumina 官方的预设词条（Fiction Mode、Task、Instructions 等）。这些是帮你规范 AI 行为的默认指令，你现在可以先不管它们，等更熟悉之后再按需修改或删除。
+- **Name**: `The Imposters`
 
-我们来创建自己的词条。确保你在 **PRESETS** 分组下，点右上角的 **添加词条（+ Add Entry）**。
-
-在这个游戏里，AI 不是某个角色，而是**游戏主持人（GM）**——负责描述场景、扮演所有 NPC、推动剧情。所以第一个词条就是告诉 AI 它的身份和职责。
-
-![创建角色设定词条](./images/tutorial-system-entry.png)
-<!-- 需要截图：新建词条界面，能看到 Send as 三选一（Instruction 选中）、Content 文本框 -->
-
-| 字段 | 值 |
-|---|---|
-| **名称（Name）** | `游戏主持人设定` |
-| **发送身份（Send as）** | `Instruction`（指令——AI 会把这当成规则来遵守） |
-| **标签（Tags）** | 点 `Preset` |
-
-在 **内容（Content）** 里写：
-
-```
-你是一个公正的恐怖生存游戏GM。游戏持续14天（14个夜晚）。
-
-设定：末日降临，城市中出现了外表酷似人类的”访客”。玩家独自在家，每晚会有人来敲门求助。玩家需要通过门上的猫眼观察、对话盘问等方式判断来者的真实身份，决定是否开门。
-
-你的职责：
-- 每个夜晚描述敲门者的外貌、言行
-- 公平地给出线索，不直接揭露身份
-- 白天让玩家自由探索房间、使用物品、打电话
-- 保持悬疑紧张的氛围
-- 在每次回复末尾给出3-5个建议选项（A/B/C/D/E格式）
-
-每次回复以阶段标题开头，格式：
-- 夜晚：**第X夜**
-- 白天：**第X天**
-```
-
-几个关键点：
-- 词条在 **PRESETS** 分组下 → 它会始终发送给 AI，每次对话都能看到。核心设定必须放这里
-- **Send as = Instruction** → AI 会把这当成系统指令来遵守，不是角色对话
-- **Tag = Preset** → 方便分类管理
-
-这个词条就是你游戏的”宪法”——定义了 AI 的一切行为准则。
+If you're not familiar with the editor's sections yet, take a quick detour to the [Beginner's Guide](./01-beginner-guide.md) first, then come back here.
 
 ---
 
-## 第三步：写开场白
+## Step 2: Write the character setup entry
 
-切换到 **开场白（First Message）** 区域，点 **添加开场白（Add Greeting）**。（或者在 Lorebook 里新建一个 `role: greeting` 的词条，效果一样。）
+Click **Lorebook** in the left navigation.
 
-![编辑开场白](./images/tutorial-greeting.png)
-<!-- 需要截图：First Message 编辑区域，已经写好了开场白内容 -->
+You'll see several groups on the left. **PRESETS** already has some Yumina default entries (Fiction Mode, Task, Instructions, etc.). These are default instructions to help regulate the AI's behavior. You can ignore them for now and revisit once you're more familiar with the system.
+
+Let's create our own entry. Make sure you're under the **PRESETS** group and click **+ Add Entry** in the top right.
+
+In this game, the AI isn't playing a character — it's acting as the **Game Master (GM)**, responsible for narrating scenes, playing all NPCs, and driving the story forward. So the first entry tells the AI its role and responsibilities.
+
+![Creating the character setup entry](./images/tutorial-system-entry.png)
+<!-- Screenshot needed: New entry interface showing the Send as three-way toggle (Instruction selected) and Content text box -->
+
+| Field | Value |
+|-------|-------|
+| **Name** | `Game Master Setup` |
+| **Send as** | `Instruction` (the AI treats this as a rule to follow) |
+| **Tags** | Click `Preset` |
+
+In the **Content** field, write:
 
 ```
-**第1夜**
+You are a fair and impartial horror survival game GM. The game lasts 14 days (14 nights).
 
-电视里的雪花噪点闪烁不停。应急广播用机械般的声音重复着同一段警告："……目前已确认的访客特征：牙齿过于整齐划一，呈瓷白色。请居民注意甄别，切勿轻易开门……"
+Setting: The apocalypse has begun. The city is overrun with "Visitors" — entities that look exactly like humans. The player is alone at home. Every night, someone knocks on the door asking for help. The player must observe through the peephole, talk through the door, and use various methods to judge whether the visitor is human or a monster, then decide whether to open the door.
 
-你独自待在家里。房子不大，有浴室、客厅、卧室、书房、厨房和储物间。门上有一个猫眼，储物间里有一把手枪，书房有一部座机电话。冰箱里还有几天的食物。
+Your responsibilities:
+- Each night, describe the knocker's appearance and behavior
+- Give clues fairly without directly revealing their identity
+- During the day, let the player freely explore the apartment, use items, and make phone calls
+- Maintain a suspenseful and tense atmosphere
+- At the end of each reply, provide 3–5 suggested options (in A/B/C/D/E format)
 
-窗外的街道空无一人。或者说——看上去空无一人。
-
-然后，敲门声响了。
-
-***咚……咚……咚。***
-
-门外传来一个年轻女人的声音，带着哭腔："求求你……让我进去吧……外面有东西在追我……"
-
-**建议选项：**
-A. 打开门让她进来
-B. 隔着门和她说话，问几个问题
-C. 拒绝，让她离开
-D. 通过猫眼仔细观察她
-E. 其他（输入你想做的任何事）
+Begin each reply with a phase header:
+- Night: **Night X**
+- Day: **Day X**
 ```
 
-开场白的要点：
-1. 让玩家立刻知道自己在什么处境
-2. 交代可用的资源和环境
-3. 用一个需要决策的场景结尾，逼玩家马上行动
+A few key points:
+- This entry is under **PRESETS** → it's always sent to the AI, visible in every conversation. Core settings must go here
+- **Send as = Instruction** → the AI treats this as a system directive, not character dialogue
+- **Tag = Preset** → for organizational purposes
+
+This entry is the "constitution" of your game — it defines everything about how the AI behaves.
 
 ---
 
-## 第四步：创建游戏变量
+## Step 3: Write the opening message
 
-切换到 **变量（Variables）** 区域，点 **添加变量（Add Variable）**，创建 5 个变量。
+Switch to the **First Message** section and click **Add Greeting**. (Alternatively, create a new entry with `role: greeting` in the Lorebook — same effect.)
 
-![创建变量](./images/tutorial-variables.png)
-<!-- 需要截图：Variables 区域，能看到创建好的5个变量列表 -->
+![Editing the first message](./images/tutorial-greeting.png)
+<!-- Screenshot needed: First Message editing area with the opening message already written -->
 
-### 1. 生命值
+```
+**Night 1**
 
-| 字段 | 值 |
-|---|---|
+The television screen flickers with static. An emergency broadcast drones on in a mechanical voice, repeating the same warning: "…Currently confirmed Visitor characteristics: teeth that are unnaturally uniform and porcelain white. Residents are advised to exercise caution and avoid opening doors to unknown individuals…"
+
+You're alone in the apartment. It's a modest place — bathroom, living room, bedroom, study, kitchen, and a storage room. There's a peephole on the front door. The storage room has a handgun. The study has a landline telephone. The fridge has a few days' worth of food.
+
+Outside the window, the street is deserted. Or at least — it looks that way.
+
+Then comes the knocking.
+
+***Knock… knock… knock.***
+
+A young woman's voice drifts through the door, trembling and tearful: "Please… let me in… there's something out here chasing me…"
+
+**Suggested choices:**
+A. Open the door and let her in
+B. Talk to her through the door and ask a few questions
+C. Refuse and tell her to leave
+D. Look through the peephole to observe her carefully
+E. Other (type any action you want to take)
+```
+
+The key elements of a good opening:
+1. Immediately tells the player where they are and what's going on
+2. Spells out what resources and environment are available
+3. Ends with a decision that forces the player into action right away
+
+---
+
+## Step 4: Create game variables
+
+Switch to the **Variables** section and click **Add Variable**. Create 5 variables.
+
+![Creating variables](./images/tutorial-variables.png)
+<!-- Screenshot needed: Variables section showing the 5 created variables in a list -->
+
+### 1. Health
+
+| Field | Value |
+|-------|-------|
 | **ID** | `player_hp` |
-| **显示名称（Display Name）** | `Player HP` |
-| **类型（Type）** | `Number` |
-| **默认值（Default Value）** | `3` |
-| **最小值（Min）** | `0` |
-| **最大值（Max）** | `5` |
-| **分类（Category）** | `Stat` |
-| **行为规则（Behavior Rules）** | `被访客攻击或做出致命错误时 -1。让 Pale Stranger 进门或承认自己独自一人时直接归零（即死）。降到 0 游戏结束。` |
+| **Display Name** | `Player HP` |
+| **Type** | `Number` |
+| **Default Value** | `3` |
+| **Min** | `0` |
+| **Max** | `5` |
+| **Category** | `Stat` |
+| **Behavior Rules** | `Decrease by 1 when the player is attacked by a Visitor or makes a fatal mistake. Drop directly to zero if the player lets the Pale Stranger inside or admits to being alone. Game over at 0.` |
 
-### 2. 体力
+### 2. Energy
 
-| 字段 | 值 |
-|---|---|
+| Field | Value |
+|-------|-------|
 | **ID** | `energy_current` |
-| **显示名称（Display Name）** | `Energy` |
-| **类型（Type）** | `Number` |
-| **默认值（Default Value）** | `3` |
-| **最小值（Min）** | `0` |
-| **最大值（Max）** | `8` |
-| **分类（Category）** | `Resource` |
-| **行为规则（Behavior Rules）** | `检查访客（body check）和射击消耗 1 点。猫眼观察和对话免费。白天恢复到上限。体力为 0 时无法执行消耗体力的行动。` |
+| **Display Name** | `Energy` |
+| **Type** | `Number` |
+| **Default Value** | `3` |
+| **Min** | `0` |
+| **Max** | `8` |
+| **Category** | `Resource` |
+| **Behavior Rules** | `Body-checking a visitor and shooting both cost 1 point. Peephole observation and talking are free. Restore to max during the day. Cannot perform energy-consuming actions when energy is 0.` |
 
-### 3. 天数
+### 3. Day count
 
-| 字段 | 值 |
-|---|---|
+| Field | Value |
+|-------|-------|
 | **ID** | `game_day` |
-| **显示名称（Display Name）** | `Game Day` |
-| **类型（Type）** | `Number` |
-| **默认值（Default Value）** | `1` |
-| **最小值（Min）** | `1` |
-| **最大值（Max）** | `14` |
-| **分类（Category）** | `Stat` |
-| **行为规则（Behavior Rules）** | `每完成一个完整的夜晚-白天周期后 +1。到第 14 天结束时游戏结算。` |
+| **Display Name** | `Game Day` |
+| **Type** | `Number` |
+| **Default Value** | `1` |
+| **Min** | `1` |
+| **Max** | `14` |
+| **Category** | `Stat` |
+| **Behavior Rules** | `Increase by 1 after each complete night-day cycle. The game concludes when Day 14 ends.` |
 
-### 4. 阶段
+### 4. Phase
 
-| 字段 | 值 |
-|---|---|
+| Field | Value |
+|-------|-------|
 | **ID** | `game_phase` |
-| **显示名称（Display Name）** | `Game Phase` |
-| **类型（Type）** | `String` |
-| **默认值（Default Value）** | `Night` |
-| **分类（Category）** | `Flag` |
-| **行为规则（Behavior Rules）** | `值为 "Night" 或 "Day"。夜晚处理敲门事件，白天自由探索房间、使用物品。` |
+| **Display Name** | `Game Phase` |
+| **Type** | `String` |
+| **Default Value** | `Night` |
+| **Category** | `Flag` |
+| **Behavior Rules** | `Value is "Night" or "Day". Night is for handling door-knocking events; Day is for freely exploring rooms and using items.` |
 
-### 5. 是否武装
+### 5. Armed status
 
-| 字段 | 值 |
-|---|---|
+| Field | Value |
+|-------|-------|
 | **ID** | `player_has_gun` |
-| **显示名称（Display Name）** | `Has Gun` |
-| **类型（Type）** | `Boolean` |
-| **默认值（Default Value）** | `True` |
-| **分类（Category）** | `Flag` |
-| **行为规则（Behavior Rules）** | `玩家默认有手枪。射击访客消耗 1 点体力，但可能误杀人类。射击后需要描述后果。` |
+| **Display Name** | `Has Gun` |
+| **Type** | `Boolean` |
+| **Default Value** | `True` |
+| **Category** | `Flag` |
+| **Behavior Rules** | `Player starts with a handgun. Shooting a visitor costs 1 energy but may accidentally harm a human. Describe the consequences after a shooting.` |
 
-::: tip 行为规则是什么
-**行为规则（behaviorRules）** 不是代码，是写给 AI 看的自然语言提示。AI 生成回复时会读到这些，知道什么时候该改什么变量。相当于给 AI 的"小抄" φ(>ω<*)
+::: tip What are Behavior Rules?
+**Behavior Rules** aren't code — they're natural language instructions written for the AI. When the AI generates a reply, it reads these to know when to update which variable. Think of it as a "cheat sheet" for the AI φ(>ω<*)
 :::
 
 ---
 
-## 第五步：变量是怎么变化的
+## Step 5: How variables actually change
 
-你可能在想——变量创建好了，AI 怎么知道什么时候该改它们？
+You might be wondering — now that variables are set up, how does the AI know when to change them?
 
-**好消息：你不需要手动教 AI。** 只要你的世界里有变量，Yumina 引擎会自动做两件事：
+**Good news: you don't need to teach the AI manually.** As long as your world has variables, the Yumina engine automatically does two things:
 
-1. **自动告诉 AI 指令格式**：引擎会在每次对话时悄悄塞一段说明给 AI，教它用 `[变量ID: 操作 值]` 的格式来更新状态。你完全不用操心这个。
-2. **自动把你写的行为规则发给 AI**：上一步你在每个变量里填的"行为规则"，AI 每次都能看到。它会根据这些规则自己判断什么时候该改什么变量。
+1. **Automatically tells the AI the directive format**: The engine silently slips a set of instructions to the AI each turn, telling it to use `[variableID: operation value]` syntax to update state. You don't need to do anything for this.
+2. **Automatically sends your behavior rules to the AI**: The rules you wrote for each variable in Step 4 are visible to the AI on every turn. It uses those rules to decide when to update what.
 
-举个例子：你在 `health` 变量的行为规则里写了"被访客攻击或做出危险行为时扣减"。当游戏中玩家被攻击了，AI 自己就会在回复末尾写出 `[health: -20]`，引擎检测到后自动把生命值从 100 减到 80。
+For example: in the `health` variable's behavior rules, you wrote "decrease when attacked by a Visitor or when the player makes a dangerous choice." When a player gets attacked in the game, the AI will include `[health: -20]` at the end of its reply. The engine detects this and automatically drops health from 100 to 80.
 
-**所以行为规则写得越清楚，AI 表现越好。** 回去看看你第四步写的行为规则，确保每个变量都说清楚了"什么情况下会变化、怎么变化"。
+**So the clearer you write the behavior rules, the better the AI performs.** Go back and review the rules you wrote in Step 4. Make sure every variable clearly specifies "when does it change, and how."
 
-::: tip AI 输出的指令长什么样
-AI 回复的末尾会出现类似这样的内容：
+::: tip What do directives look like in the AI's output?
+At the end of the AI's reply you'll see something like:
 
 ```
 [health: -20]
 [energy: -15]
 ```
 
-这些就是指令。引擎会自动提取并执行，玩家看到的回复里不会显示这些方括号内容。
+These are the directives. The engine automatically extracts and applies them, and they never appear in the reply the player sees.
 :::
 
-::: info 更多指令语法
-除了 `+`（加）和 `-`（减），还支持 `set`（设为指定值）、`toggle`（开关取反）等操作。详见 → [AI 指令与宏](./05-directives-and-macros.md)
-:::
-
----
-
-## 第六步：让世界好看一点——用 AI 生成界面
-
-到这一步，你的世界已经能玩了。但玩家只能看到纯文字——没有氛围，没有沉浸感。我们来做一个真正有恐怖游戏感觉的界面。
-
-"写代码？" 不不不，让 AI 帮你写就行 (￣▽￣)ノ
-
-### 方法一：用 Yumina 内置的 Studio AI（推荐）
-
-1. 点编辑器顶部的 **进入 Studio（Enter Studio）**
-2. 打开 **AI Assistant** 面板
-3. 把下面这段发给它（你可以直接复制）：
-
-```
-帮我做一个末日恐怖生存游戏风格的消息渲染器。参考游戏 "No, I'm not a Human" 的风格。
-
-我需要这些效果：
-
-1. 相位标题：
-   - 如果 AI 回复里有 "🌑 **NIGHT X**"，提取出来做成一个 CRT 显示器风格的标题栏（深绿色发光文字、扫描线效果、轻微闪烁）
-   - 如果有 "☀️ **DAY X**"，做成暖色调的标题栏（琥珀色文字）
-   - 标题从消息正文里去掉，单独展示
-
-2. 敲门效果：
-   - 如果回复里有 ***加粗斜体的文字***（三个星号包裹），把它们提取出来做成敲门动画——大号红色文字，有抖动效果
-
-3. 底部 HUD 状态栏：
-   - 用等宽字体，暗绿色背景
-   - 显示：⚡ 体力（energy_current 变量）、❤️ HP（player_hp 变量）、🔫/🚫 武装状态（player_has_gun 变量）
-   - 紧凑的一行显示
-
-4. 叙事文本区域：
-   - 暗色背景（深绿黑色），有微弱的边框发光
-   - 浅绿色文字，行间距大一点，有阅读感
-   - 用 renderMarkdown 渲染
-
-5. 选择按钮：
-   - 如果 AI 回复里有 "Suggested Choices:" 或 "**你的选择：**"，把选项（A. B. C. D. E.）提取出来做成可点击的按钮
-   - 点击后自动发送对应选项
-   - 暗绿色调，hover 变亮
-
-6. 整体氛围：黑绿色 CRT 监控器风格，低饱和度，压抑的末日感
-
-我的变量：
-- player_hp — 生命值，数字，0-5
-- energy_current — 体力，数字，0-8
-- game_day — 第几天，数字，1-14
-- game_phase — "Night" 或 "Day"
-- player_has_gun — 是否有枪，是/否
-```
-
-4. AI 会生成代码并弹出审核卡片，Canvas 面板可以实时看到效果
-5. 满意就点 **批准（Approve）**，不满意就继续说"敲门效果再夸张一点"或"选择按钮间距太大了"
-
-![Studio AI 生成界面](./images/tutorial-studio-ai2.png)
-<!-- 需要截图：Studio 界面，左侧 AI Assistant 面板有上面这段对话，右侧 Canvas 显示预览效果 -->
-
-![生成的效果预览](./images/tutorial-studio-result.png)
-<!-- 需要截图：Canvas 面板的近景，清楚展示生成出来的 CRT 风格渲染器效果 -->
-
-你看，这样一个酷炫的前端就怎么简单的搭建好了！！！
-
-### 方法二：用外部 AI（Claude、ChatGPT 等）
-
-如果你更习惯用其他 AI，也完全可以。把上面的效果描述发给它，末尾加上 Yumina 的技术信息：
-
-```
-Yumina 技术信息（写代码时请遵守）：
-- 代码格式 TSX，用 export default function Renderer({ content, renderMarkdown }) { ... } 导出
-- useYumina() 可以拿到变量，比如 useYumina().variables.player_hp
-- useYumina().sendMessage(text) 可以以玩家身份发送消息（做可点击选项用）
-- 内置 Icons 图标库（不用 import），比如 Icons.Heart, Icons.Zap
-- renderMarkdown(content) 把文字变成带格式的 HTML
-- 支持 Tailwind CSS 和 React hooks
-- 注入动画用 useEffect + document.createElement("style")
-- 用 var 不用 const/let 做顶层声明
-```
-
-AI 给你代码后：
-1. 回到编辑器 → **消息渲染器（Message Renderer）** 区域 → 选 **自定义 TSX（Custom TSX）**
-2. 把代码粘贴进去
-3. 底部显示 **编译状态：OK（Compile Status: OK）** 就说明成功了
-
-
-::: tip 代码不用看懂
-你不需要理解这些代码在干什么。只要粘贴进去后底部显示 **编译状态：OK（Compile Status: OK）** 就说明没问题。如果报错了，把错误信息原封不动发回给 AI 让它修就行 ∠( ᐛ 」∠)＿
-:::
-
-::: tip 不满意怎么办
-效果不是你想要的？直接跟 AI 说"血条太细了加粗一点"、"背景换成纯黑"、"加个闪烁效果"之类的，让它修改再重新粘贴。来回几轮就能调到你满意为止。
+::: info More directive syntax
+Besides `+` (add) and `-` (subtract), there's also `set` (set to a specific value), `toggle` (flip a boolean), and more. See → [AI Directives & Macros](./05-directives-and-macros.md)
 :::
 
 ---
 
-## 第七步：写世界书词条
+## Step 6: Make it look great — AI-generated interface
 
-前面的词条放在 **PRESETS** 分组，始终发送。但有些信息只在相关话题出现时才需要——这就是 **CHAT HISTORY** 分组的用途。
+At this point your world is playable. But all the player sees is plain text — no atmosphere, no immersion. Let's build an interface with a real horror game feel.
 
-回到 **词条（Lorebook）**，展开左侧的 **CHAT HISTORY** 分组，在这个分组下点 **添加词条（+ Add Entry）** 创建几个关键词触发的词条：
+"Write code?" Nope — let AI do it for you (￣▽￣)ノ
 
+### Method 1: Use Yumina's built-in Studio AI (recommended)
 
-### 1. 敲门事件规则
-
-| 字段 | 值 |
-|---|---|
-| **名称（Name）** | `敲门事件` |
-| **发送身份（Send as）** | `Instruction` |
-| **关键词（Keywords）** | `门`, `敲门`, `开门`, `knock` |
+1. Click **Enter Studio** at the top of the editor
+2. Open the **AI Assistant** panel
+3. Send it the following (you can copy this directly):
 
 ```
-敲门事件处理规则：
-- 每个夜晚有2-3个敲门者，依次出现
-- 玩家可以：通过猫眼观察（免费）、隔门对话（免费）、要求身体检查（消耗体力）、开门或拒绝
-- 让人类进来 = 有的能帮忙 | 让访客进来 = 危险
-- 描述敲门场景时保持悬疑，不直接揭露身份
+Build me a message renderer with a post-apocalyptic horror survival aesthetic.
+Reference the style of "No, I'm not a Human".
+
+I need these effects:
+
+1. Phase title:
+   - If the AI reply contains "🌑 **NIGHT X**", extract it and render as a CRT monitor-style title bar
+     (dark green glowing text, scanline effect, subtle flicker)
+   - If it contains "☀️ **DAY X**", render as a warm-toned title bar (amber text)
+   - Remove the title from the message body — display it separately
+
+2. Knocking effect:
+   - If the reply contains ***bold italic text*** (triple asterisks), extract it and render as
+     a knocking animation — large red text with a shaking effect
+
+3. Bottom HUD status bar:
+   - Monospace font, dark green background
+   - Display: ⚡ Energy (energy_current variable), ❤️ HP (player_hp variable),
+     🔫/🚫 armed status (player_has_gun variable)
+   - Compact single-line display
+
+4. Narrative text area:
+   - Dark background (deep green-black), subtle border glow
+   - Light green text, generous line spacing for readability
+   - Rendered with renderMarkdown
+
+5. Choice buttons:
+   - If the AI reply contains "Suggested Choices:" or "**Your choices:**", extract the options
+     (A. B. C. D. E.) and render as clickable buttons
+   - Click to automatically send the corresponding option
+   - Dark green tones, brighter on hover
+
+6. Overall vibe: black-green CRT monitor aesthetic, low saturation, oppressive end-of-world feel
+
+My variables:
+- player_hp — health, number, 0–5
+- energy_current — energy, number, 0–8
+- game_day — current day, number, 1–14
+- game_phase — "Night" or "Day"
+- player_has_gun — whether armed, true/false
 ```
 
-### 2. 猫眼观察
+4. The AI generates the code and shows an approval card; the Canvas panel gives a live preview
+5. Satisfied? Click **Approve**. Want changes? Keep talking — "make the knocking effect more dramatic" or "the choice buttons are too spread out"
 
-| 字段 | 值 |
-|---|---|
-| **名称（Name）** | `猫眼观察` |
-| **发送身份（Send as）** | `Instruction` |
-| **关键词（Keywords）** | `猫眼`, `窥视`, `观察`, `看看` |
+![Studio AI generating the interface](./images/tutorial-studio-ai2.png)
+<!-- Screenshot needed: Studio interface showing the above conversation in the AI Assistant panel on the left, and the preview in Canvas on the right -->
 
-```
-猫眼观察规则：
-- 只能看到门外来者的头部和上半身
-- 重点描述：面部表情、牙齿、眼睛、皮肤质感
-- 访客的伪装有细微破绽（牙齿过于整齐、瞳孔不正常、皮肤纹理异样）
-- 人类有正常的不完美特征（龋齿、黑眼圈、伤疤）
-- 不要直接揭露身份，只描述画面
-```
+![Generated effect preview](./images/tutorial-studio-result.png)
+<!-- Screenshot needed: Close-up of the Canvas panel clearly showing the CRT-style renderer output -->
 
-### 3. 房间搜索
+Just like that — a slick frontend, assembled effortlessly!
 
-| 字段 | 值 |
-|---|---|
-| **名称（Name）** | `搜索房间` |
-| **发送身份（Send as）** | `Instruction` |
-| **关键词（Keywords）** | `搜索`, `检查`, `翻找`, `探索`, `房间` |
+### Method 2: Use an external AI (Claude, ChatGPT, etc.)
+
+If you're more comfortable with another AI, that works too. Send the effect description above along with the Yumina technical info appended at the end:
 
 ```
-房间搜索规则（仅白天可用）：
-- 储物间：可以找到手枪
-- 厨房：食物补给，可以恢复少量体力
-- 书房：电话，可以拨打获取情报
-- 描述环境细节，营造不安氛围
+Yumina technical info (please follow these rules when writing code):
+- TSX format, exported as export default function Renderer({ content, renderMarkdown }) { ... }
+- Use useYumina() to access variables, e.g. useYumina().variables.player_hp
+- useYumina().sendMessage(text) sends a message as the player (for clickable options)
+- Built-in Icons library (no import), e.g. Icons.Heart, Icons.Zap
+- renderMarkdown(content) converts text to formatted HTML
+- Supports Tailwind CSS and React hooks
+- Inject animations with useEffect + document.createElement("style")
+- Use var instead of const/let for top-level declarations
 ```
 
-::: tip 关键词触发的原理
-引擎每次生成回复前，会扫描最近几条消息。出现匹配关键词 → 对应词条临时发给 AI。没人提到 → AI 看不到，不浪费阅读量。又省空间又精准 (≧▽≦)
+Once you have the code:
+1. Go back to the editor → **Message Renderer** → select **Custom TSX**
+2. Paste the code in
+3. If the bottom shows **Compile Status: OK**, you're done
 
-扫描深度在 **词条（Lorebook）** 区域的 **Entry Settings** 里的 `Scan Depth` 设置，默认 2，建议改到 4。
+::: tip You don't need to understand the code
+You don't need to know what this code is doing. As long as the bottom shows **Compile Status: OK** after pasting, it's working. If there's an error, send the error message back to the AI verbatim and ask it to fix it ∠( ᐛ 」∠)＿
+:::
+
+::: tip What if the result isn't what you wanted?
+Tell the AI directly: "the health bar is too thin, make it thicker," "change the background to pure black," "add a flickering effect." A few iterations and it'll match your vision.
 :::
 
 ---
 
-## 第八步：测试
+## Step 7: Write lorebook entries
 
-核心内容都搞定了，测试一下！
+The entries from earlier are in the **PRESETS** group — always sent. But some information only needs to be available when it's relevant — that's what the **CHAT HISTORY** group is for.
 
+Go back to **Lorebook**, expand the **CHAT HISTORY** group on the left, and click **+ Add Entry** under that group to create a few keyword-triggered entries:
 
-先点编辑器顶部的 **保存（Save）**，然后点左侧导航栏底部的金色 **PLAY** 按钮。在弹出的会话界面点 **新建会话（New Session）**，检查以下几项：
+### 1. Door-knocking rules
 
-| 检查项 | 怎么验证 | 没生效的话 |
-|---|---|---|
-| 开场白显示 | 进入后自动出现第一条消息 | 检查 First Message 区域是否写了开场白 |
-| 渲染器生效 | 消息有 CRT 风格的相位标题和 HUD | 检查 Message Renderer 是否选了 Custom TSX 且编译 OK |
-| 指令生效 | 互动后变量会跟着变（HUD 数值变化） | 检查变量的行为规则是否写清楚了 |
-| 世界书触发 | 提到"猫眼"后 AI 按规则描述 | 检查关键词拼写、Scan Depth 设置 |
+| Field | Value |
+|-------|-------|
+| **Name** | `Knocking Event` |
+| **Send as** | `Instruction` |
+| **Keywords** | `door`, `knock`, `open`, `knocking` |
 
+```
+Door-knocking event rules:
+- Each night has 2–3 visitors, appearing one by one
+- Player options: observe through peephole (free), talk through the door (free), request a body check (costs energy), open or refuse
+- Letting a human in = may provide help | Letting a Visitor in = dangerous
+- Keep descriptions suspenseful when portraying knock scenes — never directly reveal identity
+```
 
----
+### 2. Peephole observation
 
-## 第九步：完善概览信息
+| Field | Value |
+|-------|-------|
+| **Name** | `Peephole Observation` |
+| **Send as** | `Instruction` |
+| **Keywords** | `peephole`, `peek`, `observe`, `look` |
 
-测试没问题了，切到 **概览（Overview）** 区域，把发布前的信息填好：
+```
+Peephole observation rules:
+- Can only see the visitor's head and upper body
+- Focus descriptions on: facial expression, teeth, eyes, skin texture
+- Visitors' disguises have subtle flaws (unnaturally uniform teeth, abnormal pupils, strange skin texture)
+- Humans have normal imperfections (cavities, dark circles, scars)
+- Never directly reveal identity — describe only what is seen
+```
 
-1. 上传一张 **封面图（Cover Image）**（能体现恐怖氛围的）
-2. 写一段 **描述（Description）**，让玩家知道这是什么游戏
-3. 加 **标签（Tags）**：`恐怖`, `生存`, `解谜`, `互动小说`
-4. 设置 **语言（Language）**：选择你的世界是什么语言写的（比如 `中文`）
-5. 点编辑器顶部的 **保存（Save）**
+### 3. Room search
 
-![概览信息](./images/tutorial-publish.png)
-<!-- 需要截图：Overview 区域，封面图、描述、标签、语言设置 -->
+| Field | Value |
+|-------|-------|
+| **Name** | `Room Search` |
+| **Send as** | `Instruction` |
+| **Keywords** | `search`, `check`, `rummage`, `explore`, `room` |
 
----
+```
+Room search rules (daytime only):
+- Storage room: can find the handgun
+- Kitchen: food supplies, can restore a small amount of energy
+- Study: telephone, can call for information
+- Describe environmental details to build unease
+```
 
-## 第十步：发布
+::: tip How keyword triggering works
+Before each AI response, the engine scans recent messages. If a matching keyword appears → the corresponding entry is temporarily sent to the AI. If nobody mentioned it → the AI doesn't see it, no token budget wasted. Efficient and precise (≧▽≦)
 
-1. 回到左侧导航栏的 **发现（Discover）** 页面
-2. 点顶部的 **发布（Publish）** 按钮
-3. 在弹出的发布弹窗中选择你的世界
-4. 设置年龄分级、可见性、是否允许别人编辑
-5. 勾选同意条款，点发布
-
-完事了！你的世界上线了 ヽ(✿ﾟ▽ﾟ)ノ
-
----
-
-## 你学到了什么
-
-| 概念 | 你做了什么 |
-|---|---|
-| **词条** | 写了系统设定和开场白——AI 行为的基础 |
-| **变量** | 创建了 HP、体力、天数——游戏状态的骨架 |
-| **指令** | 引擎自动教 AI 用指令更新状态，你只需要写好行为规则 |
-| **自定义界面** | 用 AI 生成了状态面板——不用自己写代码 |
-| **世界书** | 关键词触发的规则词条——按需加载的知识库 |
-
-这五样东西配合起来，就是一个完整的互动世界。
-
-## 还能做什么
-
-这篇教程只用了最基础的功能。Yumina 还有很多好玩的：
-
-- **[行为规则引擎](./06-rules-engine.md)** — HP 降到 0 自动触发死亡结局，不用等 AI 自觉
-- **[自定义渲染器](./08-message-renderer.md)** — 把消息变成气泡对话、视觉小说、战斗日志
-- **[音频系统](./09-audio.md)** — 加 BGM 和音效，进地下室自动切阴间音乐
-- **[条件词条](./03-entries-and-lorebook.md)** — 根据变量值激活词条，比如后期才出现的剧情
-
-**进阶教程**（以"壺中の毒 · 大逃杀"为蓝本）即将推出，会深入讲行为引擎、自定义渲染器和复杂状态管理。
+The scan depth is the `Scan Depth` setting under **Entry Settings** in the **Lorebook** section — default 2, recommend bumping it to 4.
+:::
 
 ---
 
-## 去玩真实版
+## Step 8: Test it
 
-这篇教程做的是简化版——5 个变量、几条词条、一个渲染器。但 Yumina 上的真实 "No, I'm not a Human" 完整卡有：
+The core content is done. Let's test it!
 
-- **20+ 个角色**：8 个人类（收银员 Sarah、退休工程师 Marcus、护士 Elena……）、6 个伪装成人类的访客（送货员 Jake、小女孩 Lily……）、还有特殊角色（Pale Stranger、神秘的 Who、猫婆婆）
-- **25+ 个变量**：不只是血量和体力——还有房间状态、客人记录、FEMA 通报次数、各种库存（咖啡、能量饮料、猫粮……）
-- **完整的猫眼系统**：透过猫眼看到每个角色的立绘，人类有正常瑕疵，访客有细微破绽
-- **CRT 监控器风格渲染器**：夜晚/白天相位动画、敲门抖动效果、可点击选择按钮、底部 HUD
+Click **Save** at the top of the editor, then click the gold **PLAY** button at the bottom of the left navigation. In the session dialog, click **New Session**. Check the following:
 
-去 [yumina.io](https://yumina.io) 搜索 **"No, I'm not a Human"** 体验完整版，感受一下你的世界能做到什么程度。然后回来继续打磨你自己的作品 ᕕ( ᐛ )ᕗ
+| Check item | How to verify | If it's not working |
+|-----------|---------------|---------------------|
+| Opening message appears | First message shows automatically on entry | Check the First Message section for a written greeting |
+| Renderer is active | Messages have a CRT-style phase title and HUD | Check that Message Renderer is set to Custom TSX and Compile Status is OK |
+| Directives working | Variables change after interactions (HUD values update) | Check that each variable's behavior rules are clearly written |
+| Lorebook triggers | Mentioning "peephole" makes AI follow the rules | Check keyword spelling and Scan Depth setting |
+
+---
+
+## Step 9: Fill out the overview info
+
+Once testing passes, switch to **Overview** and fill in the pre-publish details:
+
+1. Upload a **Cover Image** (something that conveys the horror atmosphere)
+2. Write a **Description** so players know what they're getting into
+3. Add **Tags**: `horror`, `survival`, `mystery`, `interactive fiction`
+4. Set **Language**: choose the language your world is written in (e.g., `English`)
+5. Click **Save** at the top
+
+![Overview info](./images/tutorial-publish.png)
+<!-- Screenshot needed: Overview section showing cover image, description, tags, and language setting -->
+
+---
+
+## Step 10: Publish
+
+1. Go back to the **Discover** page in the left navigation
+2. Click the **Publish** button at the top
+3. In the publish dialog, select your world
+4. Set the age rating, visibility, and whether others can edit it
+5. Check the terms agreement and click publish
+
+Done! Your world is live ヽ(✿ﾟ▽ﾟ)ノ
+
+---
+
+## What you've learned
+
+| Concept | What you did |
+|---------|-------------|
+| **Entries** | Wrote system setup and an opening message — the foundation of AI behavior |
+| **Variables** | Created HP, energy, and day counter — the skeleton of game state |
+| **Directives** | The engine teaches the AI automatically; you just write clear behavior rules |
+| **Custom UI** | Had AI generate a status panel — no code written yourself |
+| **Lorebook** | Keyword-triggered rule entries — an on-demand knowledge base |
+
+These five pieces working together make a complete interactive world.
+
+## What else you can do
+
+This tutorial only used the most fundamental features. There's a lot more Yumina can do:
+
+- **[Rules Engine](./06-rules-engine.md)** — auto-trigger a death ending when HP hits 0, no need to rely on the AI remembering
+- **[Custom Renderer](./08-message-renderer.md)** — turn messages into speech bubbles, visual novel scenes, or battle logs
+- **[Audio](./09-audio.md)** — add BGM and sound effects, auto-switch to creepy music when entering the basement
+- **[Conditional Entries](./03-entries-and-lorebook.md)** — activate entries based on variable values, like late-game plot reveals
+
+**The advanced tutorial** (using "Poison in the Cup · Battle Royale" as the example) is coming soon — it dives deep into the rules engine, custom renderer, and complex state management.
+
+---
+
+## Play the real thing
+
+This tutorial built a simplified version — 5 variables, a few entries, and one renderer. But the full "No, I'm not a Human" world on Yumina has:
+
+- **20+ characters**: 8 humans (cashier Sarah, retired engineer Marcus, nurse Elena…), 6 Visitors disguised as humans (delivery guy Jake, little girl Lily…), plus special characters (Pale Stranger, the mysterious Who, the cat lady)
+- **25+ variables**: not just health and energy — room states, visitor records, FEMA report counts, various inventory items (coffee, energy drinks, cat food…)
+- **A full peephole system**: sprite art for every character through the peephole — humans with normal imperfections, Visitors with subtle tells
+- **A CRT monitor-style renderer**: night/day phase animations, knocking shake effects, clickable choice buttons, and a bottom HUD
+
+Head to [yumina.io](https://yumina.io) and search for **"No, I'm not a Human"** to experience the full version — get a feel for what your world can become. Then come back and keep building ᕕ( ᐛ )ᕗ

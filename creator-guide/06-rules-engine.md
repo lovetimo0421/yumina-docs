@@ -1,330 +1,330 @@
-# 行为规则引擎
+# Rules Engine
 
-> 行为（Behavior）是你世界里的自动化管家——你定好条件，它帮你盯着、帮你执行，玩家完全无感。
+> A Behavior is your world's automated assistant — you define the conditions, and it watches and acts, completely invisible to the player.
 >
-> 在编辑器里，这个区域叫 **Behaviors**（行为）。
+> In the editor, this section is called **Behaviors**.
 
 ---
 
-## 简单版
+## The short version
 
-### 规则是什么？
+### What are rules?
 
-想象你雇了一个管家。你跟他说："如果客人到了门口，就开灯；如果冰箱空了，就去买菜。" 然后你就不用管了——管家会一直盯着，条件满足就自动干活。
+Imagine hiring a butler. You tell him: "If a guest arrives at the door, turn on the lights. If the fridge is empty, go grocery shopping." Then you walk away — the butler will keep watching, and when conditions are met, he handles it automatically.
 
-Yumina 的规则引擎就是这个管家。你写好规则，引擎会在每次对话、每次状态变化时自动检查，该触发就触发，该执行就执行。你不需要写代码，不需要手动控制——全部声明式搞定。
+Yumina's rules engine is that butler. Write the rules, and the engine checks them on every message and every state change. When something should trigger, it triggers. When something should execute, it executes. No code, no manual control — it's all declarative.
 
-### WHEN / ONLY IF / DO 三段式
+### WHEN / ONLY IF / DO — the three-part structure
 
-在编辑器里，每条行为都由三个区块组成——对应编辑器里你看到的三个彩色标签：
+In the editor, every behavior is built from three blocks — matching the three colored labels you'll see:
 
-- **WHEN（什么时候检查）**——触发时机。比如"当变量变化时"、"每 3 回合"、"玩家说了某个关键词"。
-- **ONLY IF（条件满足吗，可选）**——检查当前状态。比如"HP 是否小于等于 0"、"location 是否等于 dark_forest"。
-- **DO（做什么）**——执行动作。比如"通知玩家游戏结束"、"修改变量"、"切换背景音乐"。
+- **WHEN (trigger)** — what sets it off. Like "when a variable changes," "every 3 turns," "when the player says a certain keyword."
+- **ONLY IF (condition, optional)** — check the current state. Like "is HP ≤ 0?" or "is location equal to dark_forest?" If left empty, it always executes.
+- **DO (action)** — what actually happens. Like "notify the player that the game is over," "modify a variable," "switch the background music."
 
-WHEN 决定引擎什么时候来看你这条行为，ONLY IF 决定看了之后要不要执行（不填就直接执行），DO 是真正干活的部分。
+WHEN tells the engine when to look at this behavior. ONLY IF determines whether to act (if skipped, it acts immediately). DO is the part that does the work.
 
-### 一个最简单的例子
+### The simplest example
 
-> 当 HP 变化时，如果 HP 降到 0 以下，那么通知玩家"你死了"。
+> When HP changes, if HP drops below 0, notify the player "You died."
 
 ```
-WHEN:    变量穿过阈值（health 降到 0 以下）
-ONLY IF: （不填，直接执行）
-DO:      通知玩家 "你死了"（danger 样式）
+WHEN:    Variable crosses threshold (health drops below 0)
+ONLY IF: (leave blank)
+DO:      Notify player "You died" (danger style)
 ```
 
-就这么简单。在编辑器里点 **Add Behavior**，选触发事件、填条件、加动作，全程点点选选就行。玩家在冒险中 HP 被扣到 0 以下的瞬间，屏幕上弹出一个红色警告。不需要 AI 记住这件事，不需要你在提示词里反复强调——引擎自动搞定。
+That's it. In the editor, click **Add Behavior**, select a trigger event, fill in conditions, add actions — all clicks and dropdowns, no code. The moment a player's HP gets knocked below 0, a red danger notification pops on screen. No need for the AI to remember, no need to write it into every prompt — the engine handles it automatically.
 
 ---
 
-## 详细版
+## The detailed version
 
-### Behavior 全字段一览
+### Behavior — full field reference
 
-| 字段 | 类型 | 必填 | 默认值 | 说明 |
-|------|------|------|--------|------|
-| `id` | string | 是 | — | 唯一标识符 |
-| `name` | string | 是 | — | 行为名称（给你自己看的） |
-| `description` | string | 否 | — | 描述（也是给你自己看的） |
-| `trigger` | TriggerConfig | 是 | — | WHEN：触发器配置 |
-| `conditions` | Condition[] | 否 | `[]` | ONLY IF：条件列表 |
-| `conditionLogic` | `"all"` / `"any"` | 否 | `"all"` | 条件之间的逻辑关系 |
-| `actions` | RuleAction[] | 否 | `[]` | DO：动作列表 |
-| `priority` | number | 否 | `0` | 优先级，数字越大越先评估 |
-| `cooldownTurns` | number | 否 | — | 触发后冷却多少回合才能再次触发 |
-| `maxFireCount` | number | 否 | — | 最多触发几次（之后永远不再触发） |
-| `enabled` | boolean | 否 | `true` | 是否启用 |
-
----
-
-### 触发器 (Trigger) —— WHEN 部分
-
-触发器决定引擎什么时候来"看"你这条规则。你可以把它理解为闹钟——闹钟响了，管家才会起来检查条件。
-
-#### 触发器类型
-
-编辑器把触发器分成几个分组，方便你找：
-
-**消息类（Messages）**
-
-| 编辑器标签 | 内部类型 | 说明 |
-|-----------|---------|------|
-| 每回合 | `every-turn` | 每次玩家和 AI 完成一轮对话后触发 |
-| 玩家说了关键词 | `keyword` | 玩家消息包含关键词时触发 |
-| AI 说了关键词 | `ai-keyword` | AI 回复包含关键词时触发 |
-| 会话开始 | `session-start` | 新会话（对话）开始时触发 |
-
-**游戏状态类（Game State）**
-
-| 编辑器标签 | 内部类型 | 说明 |
-|-----------|---------|------|
-| 变量变化 | `state-change` | 任何变量发生改变时触发 |
-| 变量穿过阈值 | `variable-crossed` | 某个数值变量穿过一个阈值时触发。需要额外填：`variableId`、`threshold`、`direction`（`"rises-above"` 上穿 / `"drops-below"` 下穿） |
-| 动作按钮被按下 | `action` | 自定义动作被执行时触发。需要填 `actionId` |
-
-**时间类（Timing）**
-
-| 编辑器标签 | 内部类型 | 说明 |
-|-----------|---------|------|
-| 每 N 回合 | `turn-count` | 在特定回合（`atTurn`）或每隔 N 回合（`everyNTurns`）时触发 |
-
-**计时器类（Timers）**
-
-| 编辑器标签 | 内部类型 | 说明 |
-|-----------|---------|------|
-| 计时器到时 | `timer:fired` | 由"启动计时器"动作创建的计时器倒计时结束时触发 |
-
-**`state-change` vs `variable-crossed` 的区别：** `state-change` 是"只要有变量动了我就来看看"，非常宽泛。`variable-crossed` 是"我只关心某个变量穿过某条线的那个瞬间"，非常精准。打个比方，`state-change` 是你让管家每次有动静都来看看门，`variable-crossed` 是你让管家只在温度计跌破 0 度的时候来喊你。
-
-**关键词触发的高级配置：** `keyword` 和 `ai-keyword` 触发器支持相当精细的匹配控制：
-
-- `matchWholeWords`——全词匹配（避免 "cat" 匹配到 "category"）
-- `useFuzzyMatch`——模糊匹配（容忍拼写错误）
-- `secondaryKeywords` + `secondaryKeywordLogic`——二级关键词过滤，逻辑有四种：
-  - `AND_ANY`：主关键词匹配后，二级关键词任一匹配即通过
-  - `AND_ALL`：主关键词匹配后，二级关键词全部匹配才通过
-  - `NOT_ANY`：主关键词匹配后，二级关键词全部不匹配才通过
-  - `NOT_ALL`：主关键词匹配后，二级关键词不是全部匹配才通过
+| Field | Type | Required | Default | Description |
+|-------|------|----------|---------|-------------|
+| `id` | string | Yes | — | Unique identifier |
+| `name` | string | Yes | — | Behavior name (for your own reference) |
+| `description` | string | No | — | Description (also for your own reference) |
+| `trigger` | TriggerConfig | Yes | — | WHEN: trigger configuration |
+| `conditions` | Condition[] | No | `[]` | ONLY IF: condition list |
+| `conditionLogic` | `"all"` / `"any"` | No | `"all"` | Logic for combining conditions |
+| `actions` | RuleAction[] | No | `[]` | DO: action list |
+| `priority` | number | No | `0` | Priority — higher numbers evaluate first |
+| `cooldownTurns` | number | No | — | How many turns to wait before this behavior can trigger again |
+| `maxFireCount` | number | No | — | Maximum number of times this can ever trigger |
+| `enabled` | boolean | No | `true` | Whether this behavior is active |
 
 ---
 
-### 条件 (Condition) —— IF 部分
+### Triggers (WHEN)
 
-触发器只是让引擎"看过来"，条件才是真正的门槛。条件检查的是当前游戏状态中变量的值。
+The trigger determines when the engine checks this behavior. Think of it as an alarm clock — when it rings, the butler wakes up to check the conditions.
 
-每个条件由三部分组成：
+#### Trigger types
+
+The editor organizes triggers into groups for easy browsing:
+
+**Messages**
+
+| Editor label | Internal type | Description |
+|-------------|--------------|-------------|
+| Every turn | `every-turn` | Fires after each complete player/AI exchange |
+| Player says keyword | `keyword` | Fires when player's message contains a keyword |
+| AI says keyword | `ai-keyword` | Fires when AI's reply contains a keyword |
+| Session starts | `session-start` | Fires when a new session (conversation) starts |
+
+**Game State**
+
+| Editor label | Internal type | Description |
+|-------------|--------------|-------------|
+| Variable changes | `state-change` | Fires when any variable changes |
+| Variable crosses threshold | `variable-crossed` | Fires when a number variable crosses a threshold. Requires: `variableId`, `threshold`, `direction` (`"rises-above"` or `"drops-below"`) |
+| Action button pressed | `action` | Fires when a custom action is executed. Requires `actionId` |
+
+**Timing**
+
+| Editor label | Internal type | Description |
+|-------------|--------------|-------------|
+| Every N turns | `turn-count` | Fires at a specific turn (`atTurn`) or every N turns (`everyNTurns`) |
+
+**Timers**
+
+| Editor label | Internal type | Description |
+|-------------|--------------|-------------|
+| Timer fires | `timer:fired` | Fires when a countdown created by a "start timer" action completes |
+
+**`state-change` vs `variable-crossed`:** `state-change` is "tell me any time something moves" — very broad. `variable-crossed` is "only tell me when this specific variable crosses this specific line" — very precise. Analogy: `state-change` is asking the butler to check the front door every time there's any noise. `variable-crossed` is asking him to alert you only when the thermometer drops below zero.
+
+**Advanced keyword trigger config:** `keyword` and `ai-keyword` triggers support quite detailed match control:
+
+- `matchWholeWords` — whole-word matching (prevents "cat" from matching "category")
+- `useFuzzyMatch` — fuzzy matching (tolerates typos)
+- `secondaryKeywords` + `secondaryKeywordLogic` — secondary keyword filtering, four logic modes:
+  - `AND_ANY`: primary matches + at least one secondary matches
+  - `AND_ALL`: primary matches + all secondaries match
+  - `NOT_ANY`: primary matches + none of the secondaries match
+  - `NOT_ALL`: primary matches + not all secondaries match
+
+---
+
+### Conditions (ONLY IF)
+
+Triggers just tell the engine to "look." Conditions are the real gatekeepers. Conditions check the current values of game state variables.
+
+Each condition has three parts:
 
 ```
 variableId  +  operator  +  value
 ```
 
-#### 7 种运算符
+#### 7 operators
 
-| 运算符 | 含义 | 适用类型 | 例子 |
-|--------|------|----------|------|
-| `eq` | 等于 | 数字/字符串/布尔 | `health eq 0` |
-| `neq` | 不等于 | 数字/字符串/布尔 | `status neq "dead"` |
-| `gt` | 大于 | 数字 | `gold gt 100` |
-| `gte` | 大于等于 | 数字 | `level gte 5` |
-| `lt` | 小于 | 数字 | `hunger lt 20` |
-| `lte` | 小于等于 | 数字 | `hp lte 0` |
-| `contains` | 包含子串 | 字符串 | `inventory contains "sword"` |
+| Operator | Meaning | Applicable types | Example |
+|----------|---------|-----------------|---------|
+| `eq` | Equal | number/string/boolean | `health eq 0` |
+| `neq` | Not equal | number/string/boolean | `status neq "dead"` |
+| `gt` | Greater than | number | `gold gt 100` |
+| `gte` | Greater than or equal | number | `level gte 5` |
+| `lt` | Less than | number | `hunger lt 20` |
+| `lte` | Less than or equal | number | `hp lte 0` |
+| `contains` | Contains substring | string | `inventory contains "sword"` |
 
-#### 条件组合逻辑
+#### Condition combining logic
 
-- `conditionLogic: "all"`（默认）—— 所有条件都满足才算通过，相当于 AND
-- `conditionLogic: "any"` —— 任何一个条件满足就算通过，相当于 OR
+- `conditionLogic: "all"` (default) — all conditions must pass, equivalent to AND
+- `conditionLogic: "any"` — any one condition passing is enough, equivalent to OR
 
-比如你想表达"HP 低于 20 并且没有药水"，那就两个条件 + `"all"`。想表达"HP 低于 20 或者中了毒"，那就两个条件 + `"any"`。
+For "HP below 20 AND no health potions," use two conditions with `"all"`. For "HP below 20 OR poisoned," use two conditions with `"any"`.
 
-**注意：** 如果 `conditions` 是空数组，条件检查直接通过。也就是说，如果你只写了触发器没写条件，那触发器一响规则就执行。
-
----
-
-### 动作 (Action) —— THEN 部分
-
-条件通过后，引擎就会执行规则里定义的动作。一条规则可以有多个动作，它们会按顺序全部执行。
-
-#### 动作类型
-
-编辑器把动作分成几个分组：
-
-##### 游戏（Game）
-
-**1. `modify-variable` —— 修改变量**
-
-直接改游戏状态里的某个变量。
-
-| 字段 | 说明 |
-|------|------|
-| `variableId` | 要修改的变量 ID |
-| `operation` | 操作：`set`（覆盖）、`add`（加）、`subtract`（减）、`multiply`（乘）、`toggle`（布尔翻转）、`append`（字符串追加）、`merge`（对象合并）、`push`（数组追加）、`delete`（删除键） |
-| `value` | 操作的值 |
-
-##### AI 与故事（AI & Story）
-
-**2. `inject-directive` —— 告诉 AI（注入临时系统提示）**
-
-往 AI 的上下文里塞一段临时指令。这是行为引擎最强大的动作之一——你可以在特定条件下改变 AI 的行为。
-
-| 字段 | 说明 |
-|------|------|
-| `directiveId` | 指令的唯一 ID（用于后续移除） |
-| `content` | 指令内容（纯文本） |
-| `position` | 插入位置：`top`（最顶）、`before_char`（角色描述前）、`after_char`（角色描述后）、`bottom`（最底）、`depth`（按深度）、`auto`（自动，默认） |
-| `persistent` | 是否持久（默认 `true`，跨回合保留） |
-| `duration` | 持续几回合后自动消失（可选） |
-
-**3. `remove-directive` —— 停止告诉 AI（移除指令）**
-
-移除之前通过 `inject-directive` 注入的指令。
-
-| 字段 | 说明 |
-|------|------|
-| `directiveId` | 要移除的指令 ID |
-
-**4. `send-context` —— 让 AI 回复（发送上下文消息）**
-
-给 AI 发一条隐形消息并触发 AI 生成回复。玩家看不见这条消息，但 AI 能看到并据此回复。
-
-| 字段 | 说明 |
-|------|------|
-| `message` | 消息内容 |
-| `role` | 消息角色：`"system"`（默认）或 `"user"` |
-
-**5. `toggle-entry` —— 启用/禁用词条**
-
-控制世界词条（World Entry）的启用状态。
-
-| 字段 | 说明 |
-|------|------|
-| `entryId` | 词条 ID |
-| `enabled` | `true` 启用 / `false` 禁用 |
-
-**6. `toggle-rule` —— 启用/禁用其他行为**
-
-让行为之间互相控制。这是实现复杂行为链的关键。
-
-| 字段 | 说明 |
-|------|------|
-| `ruleId` | 目标行为 ID |
-| `enabled` | `true` 启用 / `false` 禁用 |
-
-##### 玩家（Player）
-
-**7. `notify-player` —— 通知玩家**
-
-在玩家界面弹出一条通知。
-
-| 字段 | 说明 |
-|------|------|
-| `message` | 通知内容 |
-| `style` | 样式：`"info"`（默认，蓝色）、`"achievement"`（成就，金色）、`"warning"`（警告，黄色）、`"danger"`（危险，红色） |
-
-##### 音频（Audio）
-
-**8. `play-audio` —— 播放音频**
-
-控制背景音乐或音效。
-
-| 字段 | 说明 |
-|------|------|
-| `trackId` | 音轨 ID（对应 `audioTracks` 里定义的音轨） |
-| `action` | 操作：`"play"`（播放）、`"stop"`（停止）、`"crossfade"`（渐变切换）、`"volume"`（调节音量） |
-| `volume` | 音量 0~1（可选） |
-| `fadeDuration` | 渐变时长，秒（可选） |
-
-##### 计时器（Timers）
-
-**9. `start-timer` —— 启动计时器**
-
-启动一个倒计时。到时后会触发 `timer:fired` 事件，你可以用另一条行为来响应这个事件。
-
-| 字段 | 说明 |
-|------|------|
-| `id` | 计时器 ID（唯一标识） |
-| `name` | 显示名称 |
-| `duration` | 倒计时时长，秒 |
-| `repeat` | 是否重复（可选，默认不重复） |
-
-**10. `cancel-timer` —— 取消计时器**
-
-取消一个正在运行的计时器。
-
-| 字段 | 说明 |
-|------|------|
-| `id` | 要取消的计时器 ID |
+**Note:** If `conditions` is an empty array, the check automatically passes. In other words, if you only wrote a trigger without any conditions, the trigger firing means the rule immediately executes.
 
 ---
 
-### 高级特性
+### Actions (DO)
 
-#### 优先级 (priority)
+Once conditions pass, the engine executes the actions defined in the rule. A single rule can have multiple actions, all executed in sequence.
 
-数字越大的规则越先被评估和执行。当多条规则同时触发时，优先级决定谁先跑。
+#### Action types
 
-场景举例：你有一条规则在 HP 归零时宣告死亡（priority: 100），另一条规则在 HP 低于 20 时提示危险（priority: 50）。两条可能同时满足，但死亡通知一定先执行。
+The editor organizes actions into groups:
 
-#### 冷却 (cooldownTurns)
+##### Game
 
-规则触发一次之后，要等指定回合数才能再次触发。适合那些不应该每回合都响的规则，比如"每隔至少 5 回合才提醒一次饥饿"。
+**1. `modify-variable` — modify a variable**
 
-#### 最大触发次数 (maxFireCount)
+Directly changes a variable in the game state.
 
-规则一生最多触发这么多次。比如开场教程提示只需要出现一次，设 `maxFireCount: 1` 就好。触发够了之后，这条规则就永远安静了。
+| Field | Description |
+|-------|-------------|
+| `variableId` | ID of the variable to modify |
+| `operation` | Operation: `set`, `add`, `subtract`, `multiply`, `toggle`, `append`, `merge`, `push`, `delete` |
+| `value` | The value for the operation |
 
-#### 规则互控 (toggle-rule)
+##### AI & Story
 
-规则 A 的动作可以启用或禁用规则 B。配合 `manual` 触发器，你可以实现"平时休眠，被激活后才开始工作"的规则。
+**2. `inject-directive` — tell the AI (inject a temporary system prompt)**
 
-举个例子：规则 A 监听玩家是否进入了地下城（keyword 触发）。进入后，规则 A 用 `toggle-rule` 启用规则 B（一个 `every-turn` 触发的怪物遭遇规则）。离开地下城时，再禁用规则 B。这样怪物遭遇只在地下城里发生。
+Inserts a temporary instruction into the AI's context. One of the most powerful actions — you can change the AI's behavior under specific conditions.
+
+| Field | Description |
+|-------|-------------|
+| `directiveId` | Unique ID for this directive (used to remove it later) |
+| `content` | Instruction text |
+| `position` | Where to insert: `top`, `before_char`, `after_char`, `bottom`, `depth`, `auto` (default) |
+| `persistent` | Whether to persist across turns (default `true`) |
+| `duration` | Optional: auto-expire after N turns |
+
+**3. `remove-directive` — stop telling the AI (remove a directive)**
+
+Removes a directive previously injected via `inject-directive`.
+
+| Field | Description |
+|-------|-------------|
+| `directiveId` | ID of the directive to remove |
+
+**4. `send-context` — have the AI reply (send a context message)**
+
+Sends an invisible message to the AI and triggers AI generation. The player can't see this message, but the AI reads it and replies accordingly.
+
+| Field | Description |
+|-------|-------------|
+| `message` | Message content |
+| `role` | Message role: `"system"` (default) or `"user"` |
+
+**5. `toggle-entry` — enable/disable an entry**
+
+Controls whether a world entry is active.
+
+| Field | Description |
+|-------|-------------|
+| `entryId` | Entry ID |
+| `enabled` | `true` to enable / `false` to disable |
+
+**6. `toggle-rule` — enable/disable another behavior**
+
+Lets behaviors control each other. This is key to building complex behavior chains.
+
+| Field | Description |
+|-------|-------------|
+| `ruleId` | Target behavior ID |
+| `enabled` | `true` to enable / `false` to disable |
+
+##### Player
+
+**7. `notify-player` — notify the player**
+
+Pops up a notification in the player's interface.
+
+| Field | Description |
+|-------|-------------|
+| `message` | Notification text |
+| `style` | Style: `"info"` (default, blue), `"achievement"` (gold), `"warning"` (yellow), `"danger"` (red) |
+
+##### Audio
+
+**8. `play-audio` — play audio**
+
+Controls background music or sound effects.
+
+| Field | Description |
+|-------|-------------|
+| `trackId` | Track ID (matching a track in `audioTracks`) |
+| `action` | Operation: `"play"`, `"stop"`, `"crossfade"`, `"volume"` |
+| `volume` | Volume 0–1 (optional) |
+| `fadeDuration` | Fade duration in seconds (optional) |
+
+##### Timers
+
+**9. `start-timer` — start a timer**
+
+Starts a countdown. When it expires, a `timer:fired` event triggers, which you can respond to with another behavior.
+
+| Field | Description |
+|-------|-------------|
+| `id` | Timer ID (unique) |
+| `name` | Display name |
+| `duration` | Countdown duration in seconds |
+| `repeat` | Whether to repeat (optional, defaults to false) |
+
+**10. `cancel-timer` — cancel a timer**
+
+Cancels a running timer.
+
+| Field | Description |
+|-------|-------------|
+| `id` | Timer ID to cancel |
 
 ---
 
-### 评估流程
+### Advanced features
 
-每次玩家发消息或状态变化后，引擎的完整处理流程如下：
+#### Priority
+
+The higher the number, the sooner the rule is evaluated and executed. When multiple rules trigger simultaneously, priority decides who goes first.
+
+Example: you have a rule that announces death when HP hits zero (priority: 100), and another that warns of danger when HP is below 20 (priority: 50). Both may be satisfied simultaneously, but the death notification always runs first.
+
+#### Cooldown (cooldownTurns)
+
+After a rule fires, it must wait this many turns before it can fire again. Good for rules that shouldn't fire every turn — like "remind the player about hunger at most once every 5 turns."
+
+#### Max fire count (maxFireCount)
+
+The rule can fire at most this many times in its lifetime. After reaching the limit, it never fires again. For example, a one-time tutorial hint should fire just once — set `maxFireCount: 1`.
+
+#### Rule cross-control (toggle-rule)
+
+Rule A's actions can enable or disable Rule B. Combined with an initially-disabled rule, you can implement "dormant until activated" behavior chains.
+
+Example: Rule A listens for the player entering a dungeon (keyword trigger). When triggered, Rule A uses `toggle-rule` to enable Rule B (a monster encounter rule with `every-turn` trigger, initially disabled). When the player leaves the dungeon, disable Rule B again. Monster encounters only happen in the dungeon.
+
+---
+
+### Evaluation flow
+
+After each player message or state change, the engine runs this full process:
 
 ```
-收到事件（玩家消息、AI回复、状态变化、回合结束、计时器到时等）
+Receive event (player message, AI reply, state change, turn end, timer fire, etc.)
   |
   v
-按 priority 从高到低排序所有行为
+Sort all behaviors by priority (highest first)
   |
   v
-逐条检查：
-  1. 行为是否启用？（enabled + 运行时未被禁用）
-  2. WHEN 事件类型是否匹配？
-  3. WHEN 的具体条件是否满足？（关键词匹配、阈值穿越等）
-  4. ONLY IF 条件是否通过？
-  5. 是否在冷却中？
-  6. 是否超过最大触发次数？
+Check each in sequence:
+  1. Is the behavior enabled? (enabled + not disabled at runtime)
+  2. Does the WHEN event type match?
+  3. Do the WHEN specifics match? (keyword match, threshold cross, etc.)
+  4. Do the ONLY IF conditions pass?
+  5. Is it in cooldown?
+  6. Has it exceeded max fire count?
   |
   v
-全部通过 → 收集该行为的所有动作
+All pass → collect all actions for this behavior
   |
   v
-所有行为检查完毕 → 按收集顺序执行所有动作
+All behaviors checked → execute all collected actions in order
   |
   v
-动作可能修改变量 → 引发新一轮事件 → 再次评估（有深度限制，防止无限循环）
+Actions may modify variables → triggering new events → re-evaluate (with depth limit to prevent infinite loops)
 ```
 
-整个过程对玩家透明——他们只看到结果。
+The entire process is transparent to the player — they only see the results.
 
 ---
 
-## 实用例子
+## Practical examples
 
-### 例 1：HP 归零，游戏结束
+### Example 1: HP hits zero, game over
 
-玩家角色在战斗中 HP 降到 0 以下时，弹出红色危险通知。
+Player's HP drops below 0 in combat — pop a red danger notification.
 
 ```json
 {
   "id": "rule-death",
-  "name": "死亡判定",
+  "name": "Death check",
   "trigger": {
     "type": "variable-crossed",
     "variableId": "health",
@@ -335,7 +335,7 @@ variableId  +  operator  +  value
   "actions": [
     {
       "type": "notify-player",
-      "message": "你的角色已经死亡。游戏结束。",
+      "message": "Your character has died. Game over.",
       "style": "danger"
     }
   ],
@@ -345,18 +345,18 @@ variableId  +  operator  +  value
 }
 ```
 
-**要点：** 用 `variable-crossed` 而不是 `state-change` + 条件，因为你只想在 HP "穿过" 0 的那个瞬间触发一次，而不是每次 HP 变化都检查一遍。`maxFireCount: 1` 确保死亡通知只弹一次。
+**Key point:** Using `variable-crossed` rather than `state-change` + condition, because you only want to trigger at the exact moment HP "crosses" 0, not every time HP changes. `maxFireCount: 1` ensures the death notification only pops once.
 
 ---
 
-### 例 2：每 3 回合饥饿值 +1
+### Example 2: Hunger increases every 3 turns
 
-模拟生存游戏中的饥饿机制，每过 3 个回合自动增加饥饿值。
+Simulate a survival mechanic where hunger automatically increases every 3 turns.
 
 ```json
 {
   "id": "rule-hunger-tick",
-  "name": "饥饿周期",
+  "name": "Hunger cycle",
   "trigger": {
     "type": "turn-count",
     "everyNTurns": 3
@@ -375,18 +375,18 @@ variableId  +  operator  +  value
 }
 ```
 
-**要点：** `everyNTurns: 3` 意味着第 3、6、9、12... 回合都会触发。不需要条件——只要到了回合就加饥饿。如果你想在饥饿满了之后停止增加，可以加一个条件 `hunger lt 10`。
+**Key point:** `everyNTurns: 3` means it fires on turns 3, 6, 9, 12… No condition needed — just tick on the turn. Want to stop increasing once hunger maxes out? Add a condition `hunger lt 10`.
 
 ---
 
-### 例 3：进入危险区域，切换背景音乐
+### Example 3: Enter a danger zone, switch BGM
 
-当玩家的 location 变量变成 "dark_forest" 时，渐变切换到恐怖 BGM。
+When the player's location variable becomes "dark_forest," crossfade to horror BGM.
 
 ```json
 {
   "id": "rule-dark-forest-bgm",
-  "name": "黑暗森林 BGM",
+  "name": "Dark Forest BGM",
   "trigger": {
     "type": "state-change"
   },
@@ -411,22 +411,22 @@ variableId  +  operator  +  value
 }
 ```
 
-**要点：** 这里用 `state-change` 触发 + 条件检查，因为 location 可能来自 AI 的回复解析。`cooldownTurns: 5` 防止玩家在森林边缘反复进出时音乐不停切换。
+**Key point:** `state-change` + condition check is used here because location may come from parsed AI output. `cooldownTurns: 5` prevents constant music switching if the player hovers at the forest's edge.
 
 ---
 
-### 例 4：规则互控——地下城怪物遭遇
+### Example 4: Rule cross-control — dungeon monster encounters
 
-进入地下城时激活怪物遭遇规则，离开时关闭。
+Activate the monster encounter rule when entering the dungeon; deactivate when leaving.
 
 ```json
 [
   {
     "id": "rule-enter-dungeon",
-    "name": "进入地下城",
+    "name": "Enter dungeon",
     "trigger": {
       "type": "keyword",
-      "keywords": ["进入地下城", "走进洞穴", "enter dungeon"]
+      "keywords": ["enter the dungeon", "walk into the cave", "enter dungeon"]
     },
     "conditions": [],
     "actions": [
@@ -454,7 +454,7 @@ variableId  +  operator  +  value
   },
   {
     "id": "rule-monster-encounter",
-    "name": "怪物遭遇",
+    "name": "Monster encounter",
     "trigger": {
       "type": "every-turn"
     },
@@ -479,18 +479,18 @@ variableId  +  operator  +  value
 ]
 ```
 
-**要点：** 怪物遭遇规则初始是 `enabled: false` 的。只有当"进入地下城"规则触发后，通过 `toggle-rule` 把它激活，它才开始每回合工作。`cooldownTurns: 2` 确保不会每回合都遇怪——至少间隔 2 回合。同时，`inject-directive` 动态地往 AI 上下文里注入了地下城氛围描写指令，让 AI 的文风随场景切换。
+**Key point:** The monster encounter rule starts `enabled: false`. Only after the "enter dungeon" rule fires and uses `toggle-rule` to activate it does it start working every turn. `cooldownTurns: 2` ensures monsters don't spawn every single turn — at least 2 turns between encounters. Meanwhile, `inject-directive` dynamically injects a dungeon atmosphere instruction into the AI context, switching the tone as the scene changes.
 
 ---
 
-### 例 5：成就系统
+### Example 5: Achievement system
 
-玩家金币超过 1000 时解锁"富甲一方"成就。
+Unlock the "Rolling in Gold" achievement when the player's gold exceeds 1000.
 
 ```json
 {
   "id": "rule-rich-achievement",
-  "name": "富甲一方",
+  "name": "Rolling in Gold",
   "trigger": {
     "type": "variable-crossed",
     "variableId": "gold",
@@ -501,7 +501,7 @@ variableId  +  operator  +  value
   "actions": [
     {
       "type": "notify-player",
-      "message": "成就解锁：富甲一方 —— 你的金币超过了 1000！",
+      "message": "Achievement unlocked: Rolling in Gold — your gold exceeded 1,000!",
       "style": "achievement"
     },
     {
@@ -517,29 +517,29 @@ variableId  +  operator  +  value
 }
 ```
 
-**要点：** `variable-crossed` + `rises-above` 精准捕捉"穿过 1000"的瞬间。`maxFireCount: 1` 确保成就只解锁一次。动作里既弹了金色成就通知，又把一个布尔变量标记为 `true`，方便其他行为或词条根据成就状态做条件判断。
+**Key point:** `variable-crossed` + `rises-above` precisely captures the moment gold "crosses" 1000. `maxFireCount: 1` ensures the achievement is only unlocked once. The action both pops a gold achievement notification and sets a boolean flag, so other behaviors or entries can use that flag for conditional logic.
 
 ---
 
-### 例 6：计时器——限时挑战
+### Example 6: Timer — timed challenge
 
-玩家进入某个房间后启动 60 秒倒计时，到时间触发爆炸。
+The player enters a room and a 60-second countdown starts. When it expires, the bomb goes off.
 
 ```
-行为 A：进入密室
-  WHEN:    玩家说了关键词 "进入密室"
-  ONLY IF: （无）
+Behavior A: Enter the secret room
+  WHEN:    Player says keyword "enter the secret room"
+  ONLY IF: (none)
   DO:
-    - 修改变量 location = "secret_room"
-    - 启动计时器（ID: bomb_timer, 时长: 60秒, 不重复）
-    - 通知玩家 "炸弹已启动！你有60秒逃出去！" (warning)
+    - Modify variable location = "secret_room"
+    - Start timer (ID: bomb_timer, duration: 60 seconds, no repeat)
+    - Notify player "The bomb is armed! You have 60 seconds to escape!" (warning)
 
-行为 B：炸弹爆炸
-  WHEN:    计时器到时（bomb_timer）
+Behavior B: Bomb explodes
+  WHEN:    Timer fires (bomb_timer)
   ONLY IF: location == "secret_room"
   DO:
-    - 修改变量 health = 0
-    - 通知玩家 "轰——你没能及时逃出密室。" (danger)
+    - Modify variable health = 0
+    - Notify player "BOOM — you couldn't escape the room in time." (danger)
 ```
 
-**要点：** 行为 A 用 `start-timer` 启动一个 60 秒的倒计时。倒计时结束后，引擎自动触发 `timer:fired` 事件，行为 B 响应这个事件。如果玩家在 60 秒内离开了密室（location 不再是 "secret_room"），ONLY IF 条件不满足，炸弹就不会生效——这就是条件检查的妙用 (≧▽≦)
+**Key point:** Behavior A uses `start-timer` to start a 60-second countdown. When the timer expires, the engine automatically fires a `timer:fired` event, and Behavior B responds. If the player escapes the room within 60 seconds (location is no longer "secret_room"), the ONLY IF condition fails and the bomb does nothing — that's the power of condition checking (≧▽≦)

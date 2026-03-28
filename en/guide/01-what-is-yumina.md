@@ -1,6 +1,6 @@
 # What is Yumina
 
-## TL;DR (okay, it's 3 sentences)
+## The Short Version (okay, it's 3 sentences)
 
 Ever finished a book or movie and just couldn't let go? Wished the plot wasn't so dumb, or that you could jump in as the main character and actually talk to the people inside — deciding where the story goes? That's exactly what Yumina is for~ It lets you live out all of that like you're playing a game!
 

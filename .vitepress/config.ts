@@ -19,6 +19,7 @@ export default defineConfig({
     root: {
       label: '中文',
       lang: 'zh-CN',
+      title: 'Yumina 文档',
       description: 'Yumina AI 互动小说平台 — 官方文档',
       themeConfig: {
         nav: [

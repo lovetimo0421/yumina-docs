@@ -227,18 +227,28 @@ A text input in the UI where the player types something (e.g., a character name,
 
 ### How it works
 
-Entries support **macro syntax**: `{{variableId}}` gets replaced with the variable's current value before being sent to the AI. So:
+Entries support **macro syntax**: `{{variableId}}` is a placeholder. Every time the engine builds the prompt (i.e., every time the player sends a message), it replaces the placeholder with the variable's current value.
 
-1. Create a string variable (e.g., `custom_setting`)
-2. Write `{{custom_setting}}` in an entry's content
-3. Player types in a text box → `setVariable("custom_setting", "their input")`
-4. From the next message on, the entry includes the player's text
+Key timing: **the replacement happens when the prompt is built** — not the instant the variable changes. The AI sees the new content on the **next message**, not immediately.
+
+Full flow:
 
 ```
-Entry content: "The world has a special rule: {{custom_rule}}"
-Player types: "Magic is forbidden"
-AI receives: "The world has a special rule: Magic is forbidden"
+1. Entry content says: "Special rule: {{custom_rule}}"
+2. Variable custom_rule = "All magic is allowed"
+3. Player sends message → engine builds prompt → replaces macro
+   → AI receives "Special rule: All magic is allowed"
+
+4. Player types "Magic is forbidden" in the UI input box
+5. setVariable("custom_rule", "Magic is forbidden") → variable updated
+6. AI doesn't know yet. The entry still says {{custom_rule}}, only the variable changed.
+
+7. Player sends another message → engine rebuilds prompt → replaces macro
+   → AI receives "Special rule: Magic is forbidden"
+8. From this message on, AI follows the new rule.
 ```
+
+In short: **changing the variable is instant, but the AI sees the change on the next message**.
 
 ### Step by step
 
@@ -251,10 +261,10 @@ Editor → **Variables** → **Add Variable**
 | Name | Custom Rule |
 | ID | `custom_rule` |
 | Type | String |
-| Default Value | `No special rules.` |
+| Default Value | *(leave empty, or set a default like `All magic is allowed`)* |
 | Behavior Rules | `Do not modify this variable. It is set by the player.` |
 
-#### Step 2: Reference it in an entry
+#### Step 2: Use `{{custom_rule}}` as a placeholder in an entry
 
 Editor → **Entries** → edit or create a lore entry:
 
@@ -273,62 +283,95 @@ The following rule is in effect for this world and must be respected at all time
 {{custom_rule}}
 ```
 
-When `custom_rule` is `"No special rules."`, the AI sees the default. When the player changes it, the AI sees their input.
+Every time the engine builds the prompt, it replaces `{{custom_rule}}` with the variable's current value. If the variable is empty, that line is blank. If the variable is "Magic is forbidden", the AI sees "The following rule is in effect... Magic is forbidden".
 
-#### Step 3: Add an input UI
+#### Step 3: Add an input UI in the messageRenderer
 
-In a **messageRenderer** or **customComponent**, add a text input:
+Since `customComponent` panels only display in fullscreen mode, the input box needs to go inside the **messageRenderer**. To avoid repeating it on every message, only show it on the **last message**.
+
+Add this to your messageRenderer TSX (after the message text rendering):
 
 ```tsx
-export default function Component() {
-  const { variables, setVariable } = useYumina();
-  const [inputValue, setInputValue] = React.useState("");
-  const currentRule = variables.custom_rule || "No special rules.";
+// Inside your Renderer function, get what you need from useYumina()
+const api = useYumina();
+const msgs = api.messages || [];
+const isLastMsg = messageIndex === msgs.length - 1;
+const [ruleInput, setRuleInput] = React.useState("");
+const currentRule = String(api.variables.custom_rule || "");
 
-  return (
-    <YUI.Panel title="World Rules">
-      <p style={{ color: "#9ca3af", fontSize: "13px", marginBottom: "8px" }}>
-        Current rule: {String(currentRule)}
-      </p>
-      <div style={{ display: "flex", gap: "8px" }}>
-        <input
-          type="text"
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Type a new rule..."
-          style={{
-            flex: 1,
-            padding: "8px 12px",
-            background: "#1e293b",
-            border: "1px solid #334155",
-            borderRadius: "8px",
-            color: "#e2e8f0",
-            fontSize: "14px",
-            outline: "none",
-          }}
-        />
-        <YUI.ActionButton
-          onClick={() => {
-            if (inputValue.trim()) {
-              setVariable("custom_rule", inputValue.trim());
-              setInputValue("");
+// In the returned JSX, below the message text:
+{isLastMsg && (
+  <div style={{
+    marginTop: "12px",
+    padding: "12px",
+    background: "rgba(30,41,59,0.5)",
+    borderRadius: "8px",
+    border: "1px solid #334155",
+  }}>
+    <div style={{ fontSize: "12px", color: "#94a3b8", marginBottom: "6px" }}>
+      World Rule: {currentRule || "(not set)"}
+    </div>
+    <div style={{ display: "flex", gap: "8px" }}>
+      <input
+        type="text"
+        value={ruleInput}
+        onChange={(e) => setRuleInput(e.target.value)}
+        placeholder="Type a new rule..."
+        style={{
+          flex: 1,
+          padding: "6px 10px",
+          background: "#1e293b",
+          border: "1px solid #475569",
+          borderRadius: "6px",
+          color: "#e2e8f0",
+          fontSize: "13px",
+          outline: "none",
+        }}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" && ruleInput.trim()) {
+            api.setVariable("custom_rule", ruleInput.trim());
+            setRuleInput("");
+          }
+        }}
+      />
+      <button
+        onClick={() => {
+          if (ruleInput.trim()) {
+            api.setVariable("custom_rule", ruleInput.trim());
+            setRuleInput("");
             }
+          }}
+          style={{
+            padding: "6px 14px",
+            background: "#4338ca",
+            borderRadius: "6px",
+            color: "#e0e7ff",
+            fontSize: "13px",
+            fontWeight: "600",
+            cursor: "pointer",
+            border: "none",
           }}
         >
           Apply
-        </YUI.ActionButton>
+        </button>
       </div>
-    </YUI.Panel>
-  );
-}
+    </div>
+  </div>
+)}
 ```
+
+::: info Why messageRenderer, not customComponent?
+In the current version of Yumina, `customComponent` panels only render in fullscreen mode (`fullScreenComponent: true`). In normal chat mode they don't show. So if you want interactive elements (buttons, inputs) in the chat interface, put them in the `messageRenderer`.
+:::
 
 #### Step 4: Test it
 
-1. Start a session — the AI follows "No special rules."
-2. Type "Magic is forbidden" in the input box and click Apply
-3. Send a message — the AI now respects the rule "Magic is forbidden"
-4. Change it again — the AI adapts immediately
+1. Start a session — if no default value was set, the rule shows "(not set)"
+2. Type "Magic is forbidden" in the input box and click Apply (or press Enter)
+3. The variable updates instantly — the "World Rule" label shows your input
+4. **Send a message** — now the engine rebuilds the prompt, replacing `{{custom_rule}}` with "Magic is forbidden"
+5. The AI's response follows the new rule
+6. Change it again → send another message → the AI adapts
 
 ---
 

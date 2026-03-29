@@ -105,7 +105,8 @@ Editor → **Message Renderer** section → select **Custom TSX** → paste:
 
 ```tsx
 export default function Renderer({ content, renderMarkdown, messageIndex }) {
-  const { switchGreeting } = useYumina();
+  const api = useYumina();
+  const hasChosen = api.variables.current_route !== "none";
 
   return (
     <div>
@@ -115,15 +116,19 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
       />
 
-      {/* Route buttons — only on the first message */}
-      {messageIndex === 0 && (
+      {/* Route buttons — only on first message, before choosing */}
+      {messageIndex === 0 && !hasChosen && (
         <div style={{
           display: "flex",
           gap: "12px",
           marginTop: "16px",
         }}>
           <button
-            onClick={() => switchGreeting(1)}
+            onClick={() => {
+              api.setVariable("current_route", "dark");
+              api.executeAction("choose-dark");
+              api.switchGreeting?.(1);
+            }}
             style={{
               flex: 1,
               padding: "16px",
@@ -143,7 +148,11 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
           </button>
 
           <button
-            onClick={() => switchGreeting(2)}
+            onClick={() => {
+              api.setVariable("current_route", "light");
+              api.executeAction("choose-light");
+              api.switchGreeting?.(2);
+            }}
             style={{
               flex: 1,
               padding: "16px",
@@ -364,8 +373,7 @@ Download this JSON and import it as a new world to see everything in action:
 - 3 greeting entries (main opening + dark cave + meadow)
 - 2 variables (`current_route` for route tracking, `custom_rule` for player-editable rules)
 - 2 action behaviors (toggle lore entries when route is chosen)
-- A messageRenderer with route selection buttons
-- A customComponent sidebar panel for editing the world rule
+- A messageRenderer with route selection buttons + rule editor
 - A lore entry using `{{custom_rule}}` macro
 
 ---

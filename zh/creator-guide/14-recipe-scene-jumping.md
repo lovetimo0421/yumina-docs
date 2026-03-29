@@ -105,7 +105,8 @@ Yumina 已经把你所有的 greeting 条目存成了第一条消息的 **swipes
 
 ```tsx
 export default function Renderer({ content, renderMarkdown, messageIndex }) {
-  const { switchGreeting } = useYumina();
+  const api = useYumina();
+  const hasChosen = api.variables.current_route !== "none";
 
   return (
     <div>
@@ -115,15 +116,19 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
       />
 
-      {/* 路线按钮——只在第一条消息上显示 */}
-      {messageIndex === 0 && (
+      {/* 路线按钮——只在第一条消息且未选择时显示 */}
+      {messageIndex === 0 && !hasChosen && (
         <div style={{
           display: "flex",
           gap: "12px",
           marginTop: "16px",
         }}>
           <button
-            onClick={() => switchGreeting(1)}
+            onClick={() => {
+              api.setVariable("current_route", "dark");
+              api.executeAction("choose-dark");
+              api.switchGreeting?.(1);
+            }}
             style={{
               flex: 1,
               padding: "16px",
@@ -143,7 +148,11 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
           </button>
 
           <button
-            onClick={() => switchGreeting(2)}
+            onClick={() => {
+              api.setVariable("current_route", "light");
+              api.executeAction("choose-light");
+              api.switchGreeting?.(2);
+            }}
             style={{
               flex: 1,
               padding: "16px",
@@ -349,7 +358,7 @@ export default function Component() {
 
 下载这个 JSON 文件，导入即可体验完整效果：
 
-<a href="/recipe-1-demo.json" download>recipe-1-demo.json</a>
+<a href="/recipe-1-demo-zh.json" download>recipe-1-demo-zh.json</a>
 
 **导入方法：**
 1. 进入 Yumina → **我的世界（My Worlds）** → **创建新世界**
@@ -362,8 +371,7 @@ export default function Component() {
 - 3 个开场白条目（主开场 + 黑暗洞穴 + 阳光草地）
 - 2 个变量（`current_route` 追踪路线，`custom_rule` 玩家可编辑的规则）
 - 2 个动作行为（选择路线时开关世界观条目）
-- 一个带路线选择按钮的消息渲染器
-- 一个侧边栏世界规则编辑面板
+- 一个消息渲染器（路线选择按钮 + 规则编辑器）
 - 一个使用 `{{custom_rule}}` 宏的世界观条目
 
 ---

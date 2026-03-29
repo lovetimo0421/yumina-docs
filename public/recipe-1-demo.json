@@ -73,7 +73,7 @@
     {
       "id": "entry-lore-dark",
       "name": "Dark Cave Lore",
-      "content": "[Setting: Shadowmaw Cave]\nThe player is exploring the Shadowmaw Cave system.\n- Ancient dwarven ruins, abandoned centuries ago\n- Bioluminescent fungi provide dim blue-green light\n- Strange creatures lurk in deeper tunnels\n- Temperature drops the further you go\n- Occasional tremors shake loose rocks from the ceiling\n\nMaintain a tense, horror-survival atmosphere. Describe echoing sounds, flickering shadows, dripping water, and the oppressive weight of stone overhead.",
+      "content": "[Setting: Shadowmaw Cave]\nThe player is exploring the Shadowmaw Cave system.\n- Ancient dwarven ruins, abandoned centuries ago\n- Bioluminescent fungi provide dim blue-green light\n- Strange creatures lurk in deeper tunnels\n- Temperature drops the further you go\n- Occasional tremors shake loose rocks from the ceiling\n\nMaintain a tense, horror-survival atmosphere.",
       "role": "lore",
       "section": "system-presets",
       "position": 10,
@@ -86,7 +86,7 @@
     {
       "id": "entry-lore-meadow",
       "name": "Meadow Lore",
-      "content": "[Setting: Everbloom Meadow]\nThe player is exploring the Everbloom Meadow.\n- Vast flower fields stretching to the horizon\n- A cozy village visible in the distance\n- Friendly forest spirits occasionally appear as floating lights\n- A gentle stream runs through the meadow\n- The weather is perpetually warm and pleasant\n\nMaintain a warm, inviting atmosphere. Describe vivid colors, floral scents, gentle breezes, and the feeling of peace and wonder.",
+      "content": "[Setting: Everbloom Meadow]\nThe player is exploring the Everbloom Meadow.\n- Vast flower fields stretching to the horizon\n- A cozy village visible in the distance\n- Friendly forest spirits occasionally appear as floating lights\n- A gentle stream runs through the meadow\n\nMaintain a warm, inviting atmosphere.",
       "role": "lore",
       "section": "system-presets",
       "position": 11,
@@ -121,30 +121,13 @@
     {
       "id": "rule-choose-dark",
       "name": "Choose Dark Route",
-      "description": "Activates dark cave lore when player picks the dark route",
-      "trigger": {
-        "type": "action",
-        "actionId": "choose-dark"
-      },
+      "trigger": { "type": "action", "actionId": "choose-dark" },
       "conditions": [],
       "conditionLogic": "all",
       "actions": [
-        {
-          "type": "modify-variable",
-          "variableId": "current_route",
-          "operation": "set",
-          "value": "dark"
-        },
-        {
-          "type": "toggle-entry",
-          "entryId": "entry-lore-dark",
-          "enabled": true
-        },
-        {
-          "type": "toggle-entry",
-          "entryId": "entry-lore-meadow",
-          "enabled": false
-        }
+        { "type": "modify-variable", "variableId": "current_route", "operation": "set", "value": "dark" },
+        { "type": "toggle-entry", "entryId": "entry-lore-dark", "enabled": true },
+        { "type": "toggle-entry", "entryId": "entry-lore-meadow", "enabled": false }
       ],
       "priority": 50,
       "enabled": true
@@ -152,30 +135,13 @@
     {
       "id": "rule-choose-light",
       "name": "Choose Light Route",
-      "description": "Activates meadow lore when player picks the light route",
-      "trigger": {
-        "type": "action",
-        "actionId": "choose-light"
-      },
+      "trigger": { "type": "action", "actionId": "choose-light" },
       "conditions": [],
       "conditionLogic": "all",
       "actions": [
-        {
-          "type": "modify-variable",
-          "variableId": "current_route",
-          "operation": "set",
-          "value": "light"
-        },
-        {
-          "type": "toggle-entry",
-          "entryId": "entry-lore-meadow",
-          "enabled": true
-        },
-        {
-          "type": "toggle-entry",
-          "entryId": "entry-lore-dark",
-          "enabled": false
-        }
+        { "type": "modify-variable", "variableId": "current_route", "operation": "set", "value": "light" },
+        { "type": "toggle-entry", "entryId": "entry-lore-meadow", "enabled": true },
+        { "type": "toggle-entry", "entryId": "entry-lore-dark", "enabled": false }
       ],
       "priority": 50,
       "enabled": true
@@ -183,21 +149,12 @@
   ],
   "components": [],
   "audioTracks": [],
-  "customComponents": [
-    {
-      "id": "comp-rule-editor",
-      "name": "World Rule Editor",
-      "tsxCode": "export default function RuleEditor() {\n  const { variables, setVariable } = useYumina();\n  const [input, setInput] = React.useState(\"\");\n  const currentRule = String(variables.custom_rule || \"No special rules.\");\n\n  return (\n    <YUI.Panel title=\"World Rules\">\n      <p style={{ color: \"#9ca3af\", fontSize: \"13px\", marginBottom: \"8px\" }}>\n        Current rule: {currentRule}\n      </p>\n      <div style={{ display: \"flex\", gap: \"8px\" }}>\n        <input\n          type=\"text\"\n          value={input}\n          onChange={(e) => setInput(e.target.value)}\n          placeholder=\"Type a new rule...\"\n          style={{\n            flex: 1,\n            padding: \"8px 12px\",\n            background: \"#1e293b\",\n            border: \"1px solid #334155\",\n            borderRadius: \"8px\",\n            color: \"#e2e8f0\",\n            fontSize: \"14px\",\n            outline: \"none\",\n          }}\n          onKeyDown={(e) => {\n            if (e.key === \"Enter\" && input.trim()) {\n              setVariable(\"custom_rule\", input.trim());\n              setInput(\"\");\n            }\n          }}\n        />\n        <YUI.ActionButton\n          onClick={() => {\n            if (input.trim()) {\n              setVariable(\"custom_rule\", input.trim());\n              setInput(\"\");\n            }\n          }}\n        >\n          Apply\n        </YUI.ActionButton>\n      </div>\n    </YUI.Panel>\n  );\n}",
-      "description": "Sidebar panel where the player can modify the world rule",
-      "order": 0,
-      "visible": true
-    }
-  ],
+  "customComponents": [],
   "messageRenderer": {
     "id": "renderer-main",
     "name": "Route Selection Renderer",
-    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const { variables, switchGreeting, setVariable, executeAction } = useYumina();\n  const hasChosen = variables.current_route !== \"none\";\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {messageIndex === 0 && !hasChosen && (\n        <div style={{ display: \"flex\", gap: \"12px\", marginTop: \"16px\" }}>\n          <button\n            onClick={() => {\n              setVariable(\"current_route\", \"dark\");\n              executeAction(\"choose-dark\");\n              switchGreeting(1);\n            }}\n            style={{\n              flex: 1,\n              padding: \"16px\",\n              background: \"linear-gradient(135deg, #1e1b4b, #312e81)\",\n              border: \"1px solid #4338ca\",\n              borderRadius: \"12px\",\n              color: \"#c7d2fe\",\n              fontSize: \"15px\",\n              fontWeight: \"bold\",\n              cursor: \"pointer\",\n              transition: \"transform 0.15s\",\n            }}\n            onMouseOver={(e) => e.currentTarget.style.transform = \"scale(1.03)\"}\n            onMouseOut={(e) => e.currentTarget.style.transform = \"scale(1)\"}\n          >\n            Enter the Dark Cave\n          </button>\n\n          <button\n            onClick={() => {\n              setVariable(\"current_route\", \"light\");\n              executeAction(\"choose-light\");\n              switchGreeting(2);\n            }}\n            style={{\n              flex: 1,\n              padding: \"16px\",\n              background: \"linear-gradient(135deg, #365314, #4d7c0f)\",\n              border: \"1px solid #65a30d\",\n              borderRadius: \"12px\",\n              color: \"#ecfccb\",\n              fontSize: \"15px\",\n              fontWeight: \"bold\",\n              cursor: \"pointer\",\n              transition: \"transform 0.15s\",\n            }}\n            onMouseOver={(e) => e.currentTarget.style.transform = \"scale(1.03)\"}\n            onMouseOut={(e) => e.currentTarget.style.transform = \"scale(1)\"}\n          >\n            Walk to the Sunlit Meadow\n          </button>\n        </div>\n      )}\n    </div>\n  );\n}",
-    "description": "Shows route selection buttons on the first message, normal text otherwise",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n  const route = api.variables.current_route;\n  const hasChosen = route !== \"none\";\n  const msgs = api.messages || [];\n  const isLastMsg = messageIndex === msgs.length - 1;\n  const [ruleInput, setRuleInput] = React.useState(\"\");\n  const currentRule = String(api.variables.custom_rule || \"No special rules.\");\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {messageIndex === 0 && !hasChosen && (\n        <div style={{ display: \"flex\", gap: \"12px\", marginTop: \"16px\" }}>\n          <button\n            onClick={() => {\n              api.setVariable(\"current_route\", \"dark\");\n              api.executeAction(\"choose-dark\");\n              api.switchGreeting?.(1);\n            }}\n            style={{ flex: 1, padding: \"16px\", background: \"linear-gradient(135deg, #1e1b4b, #312e81)\", border: \"1px solid #4338ca\", borderRadius: \"12px\", color: \"#c7d2fe\", fontSize: \"15px\", fontWeight: \"bold\", cursor: \"pointer\", transition: \"transform 0.15s\" }}\n            onMouseOver={(e) => e.currentTarget.style.transform = \"scale(1.03)\"}\n            onMouseOut={(e) => e.currentTarget.style.transform = \"scale(1)\"}\n          >\n            Enter the Dark Cave\n          </button>\n          <button\n            onClick={() => {\n              api.setVariable(\"current_route\", \"light\");\n              api.executeAction(\"choose-light\");\n              api.switchGreeting?.(2);\n            }}\n            style={{ flex: 1, padding: \"16px\", background: \"linear-gradient(135deg, #365314, #4d7c0f)\", border: \"1px solid #65a30d\", borderRadius: \"12px\", color: \"#ecfccb\", fontSize: \"15px\", fontWeight: \"bold\", cursor: \"pointer\", transition: \"transform 0.15s\" }}\n            onMouseOver={(e) => e.currentTarget.style.transform = \"scale(1.03)\"}\n            onMouseOut={(e) => e.currentTarget.style.transform = \"scale(1)\"}\n          >\n            Walk to the Sunlit Meadow\n          </button>\n        </div>\n      )}\n\n      {isLastMsg && (\n        <div style={{ marginTop: \"12px\", padding: \"12px\", background: \"rgba(30,41,59,0.5)\", borderRadius: \"8px\", border: \"1px solid #334155\" }}>\n          <div style={{ fontSize: \"12px\", color: \"#94a3b8\", marginBottom: \"6px\" }}>World Rule: {currentRule}</div>\n          <div style={{ display: \"flex\", gap: \"8px\" }}>\n            <input\n              type=\"text\"\n              value={ruleInput}\n              onChange={(e) => setRuleInput(e.target.value)}\n              placeholder=\"Type a new rule...\"\n              style={{ flex: 1, padding: \"6px 10px\", background: \"#1e293b\", border: \"1px solid #475569\", borderRadius: \"6px\", color: \"#e2e8f0\", fontSize: \"13px\", outline: \"none\" }}\n              onKeyDown={(e) => { if (e.key === \"Enter\" && ruleInput.trim()) { api.setVariable(\"custom_rule\", ruleInput.trim()); setRuleInput(\"\"); } }}\n            />\n            <button\n              onClick={() => { if (ruleInput.trim()) { api.setVariable(\"custom_rule\", ruleInput.trim()); setRuleInput(\"\"); } }}\n              style={{ padding: \"6px 14px\", background: \"#4338ca\", borderRadius: \"6px\", color: \"#e0e7ff\", fontSize: \"13px\", fontWeight: \"600\", cursor: \"pointer\", border: \"none\" }}\n            >\n              Apply\n            </button>\n          </div>\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "Shows route buttons on first message, rule editor on last message",
     "order": 0,
     "visible": true
   },

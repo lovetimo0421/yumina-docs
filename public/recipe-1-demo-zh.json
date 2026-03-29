@@ -1,0 +1,167 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：开场白切换与条目修改",
+  "description": "实战配方 #1 的演示世界。点击按钮切换预写的开场白，在文本框中输入内容动态修改世界规则。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "系统提示",
+      "content": "你是一个互动奇幻故事的叙述者。用沉浸式的第二人称散文写作。每次回复保持 2-3 段。根据玩家的行动推进故事。\n\n始终遵守 [世界规则] 条目中定义的规则。",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-main",
+      "name": "主开场白",
+      "content": "*你在一片神秘森林的深处醒来。晨雾在古老的树木之间翻涌，空气中弥漫着潮湿的泥土气息。*\n\n你面前有两条路：\n\n**左边**——一条狭窄的小径消失在黑暗中。空气变冷了，你隐约听到远处传来的回声，似乎来自一个洞穴。\n\n**右边**——一条洒满阳光的小路，野花在微风中摇曳。你闻到了蜂蜜的香味，听到了鸟鸣声。\n\n你要走哪边？",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-dark",
+      "name": "黑暗洞穴开场",
+      "content": "*你踏上了左边的小路。头顶的树冠越来越密，吞噬了光线。几分钟后，小径缩窄成一道岩壁上的裂缝——一个洞穴的入口。*\n\n*冷风从里面涌出，带着潮湿石头和金属的气味。深处闪烁着微弱的蓝绿色光芒——那是附着在洞壁上的发光菌类。*\n\n*你深吸一口气，走了进去。身后，最后一丝日光缩成一条苍白的线，然后消失了。*\n\n你独自身处黑暗之中。",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 1,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-meadow",
+      "name": "阳光草地开场",
+      "content": "*你选择了右边的路。树木渐渐稀疏，温暖的阳光倾泻而入。几分钟后，森林让位于一片延伸到地平线的广阔草地。*\n\n*各种颜色的野花在微风中轻轻摇曳。远处有一条溪流在阳光下闪闪发光。附近某处，一只鸟唱着你从未听过的旋律。*\n\n*你感觉肩膀上的紧张感融化了。不管这是什么地方，它让人感到安全。*\n\n欢迎来到永绽草地。",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 2,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-world-rules",
+      "name": "世界规则",
+      "content": "[世界规则]\n以下规则在这个世界中生效，必须始终遵守：\n{{custom_rule}}",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 5,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-lore-dark",
+      "name": "黑暗洞穴世界观",
+      "content": "[世界设定：暗影之口洞穴]\n玩家正在探索暗影之口洞穴。\n- 古代矮人遗迹，已被遗弃数百年\n- 发光菌类提供微弱的蓝绿色光线\n- 深处隧道中潜伏着奇异生物\n- 越往里走温度越低\n- 偶尔有震动从天花板上摇落碎石\n\n保持紧张的恐怖生存氛围。",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 10,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    },
+    {
+      "id": "entry-lore-meadow",
+      "name": "阳光草地世界观",
+      "content": "[世界设定：永绽草地]\n玩家正在探索永绽草地。\n- 广阔的花田延伸到天际线\n- 远处可以看到一个温馨的小村庄\n- 友善的森林精灵偶尔以浮光的形态出现\n- 一条小溪穿过草地\n\n保持温暖、治愈的氛围。",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 11,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    }
+  ],
+  "variables": [
+    {
+      "id": "current_route",
+      "name": "当前路线",
+      "type": "string",
+      "defaultValue": "none",
+      "description": "追踪玩家选择了哪条路线",
+      "category": "flag",
+      "behaviorRules": "不要修改这个变量。它由玩家的 UI 选择控制。"
+    },
+    {
+      "id": "custom_rule",
+      "name": "自定义规则",
+      "type": "string",
+      "defaultValue": "没有特殊规则。",
+      "description": "玩家可以通过 UI 修改的世界规则",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。它由玩家通过 UI 设置。"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-choose-dark",
+      "name": "选择黑暗路线",
+      "trigger": { "type": "action", "actionId": "choose-dark" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "current_route", "operation": "set", "value": "dark" },
+        { "type": "toggle-entry", "entryId": "entry-lore-dark", "enabled": true },
+        { "type": "toggle-entry", "entryId": "entry-lore-meadow", "enabled": false }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-choose-light",
+      "name": "选择阳光路线",
+      "trigger": { "type": "action", "actionId": "choose-light" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "current_route", "operation": "set", "value": "light" },
+        { "type": "toggle-entry", "entryId": "entry-lore-meadow", "enabled": true },
+        { "type": "toggle-entry", "entryId": "entry-lore-dark", "enabled": false }
+      ],
+      "priority": 50,
+      "enabled": true
+    }
+  ],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-main",
+    "name": "路线选择渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n  const route = api.variables.current_route;\n  const hasChosen = route !== \"none\";\n  const msgs = api.messages || [];\n  const isLastMsg = messageIndex === msgs.length - 1;\n  const [ruleInput, setRuleInput] = React.useState(\"\");\n  const currentRule = String(api.variables.custom_rule || \"没有特殊规则。\");\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {messageIndex === 0 && !hasChosen && (\n        <div style={{ display: \"flex\", gap: \"12px\", marginTop: \"16px\" }}>\n          <button\n            onClick={() => {\n              api.setVariable(\"current_route\", \"dark\");\n              api.executeAction(\"choose-dark\");\n              api.switchGreeting?.(1);\n            }}\n            style={{ flex: 1, padding: \"16px\", background: \"linear-gradient(135deg, #1e1b4b, #312e81)\", border: \"1px solid #4338ca\", borderRadius: \"12px\", color: \"#c7d2fe\", fontSize: \"15px\", fontWeight: \"bold\", cursor: \"pointer\", transition: \"transform 0.15s\" }}\n            onMouseOver={(e) => e.currentTarget.style.transform = \"scale(1.03)\"}\n            onMouseOut={(e) => e.currentTarget.style.transform = \"scale(1)\"}\n          >\n            进入黑暗洞穴\n          </button>\n          <button\n            onClick={() => {\n              api.setVariable(\"current_route\", \"light\");\n              api.executeAction(\"choose-light\");\n              api.switchGreeting?.(2);\n            }}\n            style={{ flex: 1, padding: \"16px\", background: \"linear-gradient(135deg, #365314, #4d7c0f)\", border: \"1px solid #65a30d\", borderRadius: \"12px\", color: \"#ecfccb\", fontSize: \"15px\", fontWeight: \"bold\", cursor: \"pointer\", transition: \"transform 0.15s\" }}\n            onMouseOver={(e) => e.currentTarget.style.transform = \"scale(1.03)\"}\n            onMouseOut={(e) => e.currentTarget.style.transform = \"scale(1)\"}\n          >\n            走向阳光草地\n          </button>\n        </div>\n      )}\n\n      {isLastMsg && (\n        <div style={{ marginTop: \"12px\", padding: \"12px\", background: \"rgba(30,41,59,0.5)\", borderRadius: \"8px\", border: \"1px solid #334155\" }}>\n          <div style={{ fontSize: \"12px\", color: \"#94a3b8\", marginBottom: \"6px\" }}>世界规则：{currentRule}</div>\n          <div style={{ display: \"flex\", gap: \"8px\" }}>\n            <input\n              type=\"text\"\n              value={ruleInput}\n              onChange={(e) => setRuleInput(e.target.value)}\n              placeholder=\"输入新规则...\"\n              style={{ flex: 1, padding: \"6px 10px\", background: \"#1e293b\", border: \"1px solid #475569\", borderRadius: \"6px\", color: \"#e2e8f0\", fontSize: \"13px\", outline: \"none\" }}\n              onKeyDown={(e) => { if (e.key === \"Enter\" && ruleInput.trim()) { api.setVariable(\"custom_rule\", ruleInput.trim()); setRuleInput(\"\"); } }}\n            />\n            <button\n              onClick={() => { if (ruleInput.trim()) { api.setVariable(\"custom_rule\", ruleInput.trim()); setRuleInput(\"\"); } }}\n              style={{ padding: \"6px 14px\", background: \"#4338ca\", borderRadius: \"6px\", color: \"#e0e7ff\", fontSize: \"13px\", fontWeight: \"600\", cursor: \"pointer\", border: \"none\" }}\n            >\n              应用\n            </button>\n          </div>\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "第一条消息显示路线按钮，最后一条消息显示规则编辑器",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "旅人",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

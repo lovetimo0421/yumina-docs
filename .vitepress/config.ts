@@ -80,7 +80,7 @@ export default defineConfig({
             {
               text: 'Recipes',
               items: [
-                { text: 'Scene Jumping & Entry Switching via UI', link: '/creator-guide/14-recipe-scene-jumping' },
+                { text: 'Greeting Switching & Entry Modification', link: '/creator-guide/14-recipe-scene-jumping' },
               ]
             },
             {
@@ -170,7 +170,7 @@ export default defineConfig({
             {
               text: '实战配方',
               items: [
-                { text: '点击 UI 跳转场景与切换条目', link: '/zh/creator-guide/14-recipe-scene-jumping' },
+                { text: '开场白切换与条目内容修改', link: '/zh/creator-guide/14-recipe-scene-jumping' },
               ]
             },
             {

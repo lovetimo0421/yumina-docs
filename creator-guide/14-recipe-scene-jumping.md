@@ -347,6 +347,29 @@ You can combine greeting switching with entry modification. For example:
 
 ---
 
+## Try it yourself — importable demo world
+
+Download this JSON and import it as a new world to see everything in action:
+
+<a href="/recipe-1-demo.json" download>recipe-1-demo.json</a>
+
+**How to import:**
+1. Go to Yumina → **My Worlds** → **Create New World**
+2. In the editor, click **Import** (or the upload icon)
+3. Select the downloaded `.json` file
+4. A new world is created with all entries, variables, behaviors, renderer, and component pre-configured
+5. Start a new session and try it out
+
+**What's included:**
+- 3 greeting entries (main opening + dark cave + meadow)
+- 2 variables (`current_route` for route tracking, `custom_rule` for player-editable rules)
+- 2 action behaviors (toggle lore entries when route is chosen)
+- A messageRenderer with route selection buttons
+- A customComponent sidebar panel for editing the world rule
+- A lore entry using `{{custom_rule}}` macro
+
+---
+
 ::: tip This is Recipe #1
 More recipes coming soon — combat systems, shop interfaces, quest tracking, and more. Each recipe combines variables, entries, behaviors, and UI to build something greater than the sum of its parts.
 :::

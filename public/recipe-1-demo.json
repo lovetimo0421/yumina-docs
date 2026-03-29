@@ -1,0 +1,210 @@
+{
+  "version": "18.0.0",
+  "name": "Recipe Demo: Greeting Switch & Entry Modification",
+  "description": "Demo world for Recipe #1. Click buttons to switch between pre-written openings, and type in a text box to modify world rules dynamically.",
+  "author": "Yumina Docs",
+  "language": "en",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "System Prompt",
+      "content": "You are the narrator of an interactive fantasy story. Write immersive, atmospheric prose in second person (\"you\"). Keep responses to 2-3 paragraphs. React to the player's actions and move the story forward.\n\nAlways respect the rules defined in the [World Rules] entry.",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-main",
+      "name": "Main Opening",
+      "content": "*You wake up in the heart of a mysterious forest. Morning mist swirls between ancient trees, and the air is thick with the smell of damp earth.*\n\nTwo paths diverge before you:\n\n**To the left** — a narrow trail disappearing into darkness. The air grows cold, and you hear distant echoes from what might be a cave.\n\n**To the right** — a sun-dappled path where wildflowers sway gently. You catch the scent of honey and hear birdsong.\n\nWhich way will you go?",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-dark",
+      "name": "Dark Cave Opening",
+      "content": "*You step onto the left path. The canopy thickens overhead, swallowing the light. Within minutes, the trail narrows to a crack in a rock face — the entrance to a cave.*\n\n*Cold air rushes out, carrying the smell of damp stone and something metallic. Faint blue-green light flickers deep inside — bioluminescent fungi clinging to the walls.*\n\n*You take a breath and step in. Behind you, the last sliver of daylight shrinks to a pale line, then vanishes.*\n\nYou are alone in the dark.",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 1,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-meadow",
+      "name": "Meadow Opening",
+      "content": "*You choose the right path. The trees thin out, and warm sunlight floods through the canopy. Within minutes, the forest opens into a vast meadow stretching to the horizon.*\n\n*Wildflowers in every color sway gently in the breeze. A stream glitters in the distance. Somewhere nearby, a bird sings a melody you've never heard before.*\n\n*You feel the tension in your shoulders melt away. Whatever this place is, it feels safe.*\n\nWelcome to the Everbloom Meadow.",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 2,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-world-rules",
+      "name": "World Rules",
+      "content": "[World Rules]\nThe following rule is in effect and must be respected at all times:\n{{custom_rule}}",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 5,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-lore-dark",
+      "name": "Dark Cave Lore",
+      "content": "[Setting: Shadowmaw Cave]\nThe player is exploring the Shadowmaw Cave system.\n- Ancient dwarven ruins, abandoned centuries ago\n- Bioluminescent fungi provide dim blue-green light\n- Strange creatures lurk in deeper tunnels\n- Temperature drops the further you go\n- Occasional tremors shake loose rocks from the ceiling\n\nMaintain a tense, horror-survival atmosphere. Describe echoing sounds, flickering shadows, dripping water, and the oppressive weight of stone overhead.",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 10,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    },
+    {
+      "id": "entry-lore-meadow",
+      "name": "Meadow Lore",
+      "content": "[Setting: Everbloom Meadow]\nThe player is exploring the Everbloom Meadow.\n- Vast flower fields stretching to the horizon\n- A cozy village visible in the distance\n- Friendly forest spirits occasionally appear as floating lights\n- A gentle stream runs through the meadow\n- The weather is perpetually warm and pleasant\n\nMaintain a warm, inviting atmosphere. Describe vivid colors, floral scents, gentle breezes, and the feeling of peace and wonder.",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 11,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    }
+  ],
+  "variables": [
+    {
+      "id": "current_route",
+      "name": "Current Route",
+      "type": "string",
+      "defaultValue": "none",
+      "description": "Tracks which route the player chose",
+      "category": "flag",
+      "behaviorRules": "Do not modify this variable. It is controlled by the player's UI choices."
+    },
+    {
+      "id": "custom_rule",
+      "name": "Custom Rule",
+      "type": "string",
+      "defaultValue": "No special rules.",
+      "description": "A world rule the player can modify via the UI",
+      "category": "custom",
+      "behaviorRules": "Do not modify this variable. It is set by the player through the UI."
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-choose-dark",
+      "name": "Choose Dark Route",
+      "description": "Activates dark cave lore when player picks the dark route",
+      "trigger": {
+        "type": "action",
+        "actionId": "choose-dark"
+      },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        {
+          "type": "modify-variable",
+          "variableId": "current_route",
+          "operation": "set",
+          "value": "dark"
+        },
+        {
+          "type": "toggle-entry",
+          "entryId": "entry-lore-dark",
+          "enabled": true
+        },
+        {
+          "type": "toggle-entry",
+          "entryId": "entry-lore-meadow",
+          "enabled": false
+        }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-choose-light",
+      "name": "Choose Light Route",
+      "description": "Activates meadow lore when player picks the light route",
+      "trigger": {
+        "type": "action",
+        "actionId": "choose-light"
+      },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        {
+          "type": "modify-variable",
+          "variableId": "current_route",
+          "operation": "set",
+          "value": "light"
+        },
+        {
+          "type": "toggle-entry",
+          "entryId": "entry-lore-meadow",
+          "enabled": true
+        },
+        {
+          "type": "toggle-entry",
+          "entryId": "entry-lore-dark",
+          "enabled": false
+        }
+      ],
+      "priority": 50,
+      "enabled": true
+    }
+  ],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [
+    {
+      "id": "comp-rule-editor",
+      "name": "World Rule Editor",
+      "tsxCode": "export default function RuleEditor() {\n  const { variables, setVariable } = useYumina();\n  const [input, setInput] = React.useState(\"\");\n  const currentRule = String(variables.custom_rule || \"No special rules.\");\n\n  return (\n    <YUI.Panel title=\"World Rules\">\n      <p style={{ color: \"#9ca3af\", fontSize: \"13px\", marginBottom: \"8px\" }}>\n        Current rule: {currentRule}\n      </p>\n      <div style={{ display: \"flex\", gap: \"8px\" }}>\n        <input\n          type=\"text\"\n          value={input}\n          onChange={(e) => setInput(e.target.value)}\n          placeholder=\"Type a new rule...\"\n          style={{\n            flex: 1,\n            padding: \"8px 12px\",\n            background: \"#1e293b\",\n            border: \"1px solid #334155\",\n            borderRadius: \"8px\",\n            color: \"#e2e8f0\",\n            fontSize: \"14px\",\n            outline: \"none\",\n          }}\n          onKeyDown={(e) => {\n            if (e.key === \"Enter\" && input.trim()) {\n              setVariable(\"custom_rule\", input.trim());\n              setInput(\"\");\n            }\n          }}\n        />\n        <YUI.ActionButton\n          onClick={() => {\n            if (input.trim()) {\n              setVariable(\"custom_rule\", input.trim());\n              setInput(\"\");\n            }\n          }}\n        >\n          Apply\n        </YUI.ActionButton>\n      </div>\n    </YUI.Panel>\n  );\n}",
+      "description": "Sidebar panel where the player can modify the world rule",
+      "order": 0,
+      "visible": true
+    }
+  ],
+  "messageRenderer": {
+    "id": "renderer-main",
+    "name": "Route Selection Renderer",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const { variables, switchGreeting, setVariable, executeAction } = useYumina();\n  const hasChosen = variables.current_route !== \"none\";\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {messageIndex === 0 && !hasChosen && (\n        <div style={{ display: \"flex\", gap: \"12px\", marginTop: \"16px\" }}>\n          <button\n            onClick={() => {\n              setVariable(\"current_route\", \"dark\");\n              executeAction(\"choose-dark\");\n              switchGreeting(1);\n            }}\n            style={{\n              flex: 1,\n              padding: \"16px\",\n              background: \"linear-gradient(135deg, #1e1b4b, #312e81)\",\n              border: \"1px solid #4338ca\",\n              borderRadius: \"12px\",\n              color: \"#c7d2fe\",\n              fontSize: \"15px\",\n              fontWeight: \"bold\",\n              cursor: \"pointer\",\n              transition: \"transform 0.15s\",\n            }}\n            onMouseOver={(e) => e.currentTarget.style.transform = \"scale(1.03)\"}\n            onMouseOut={(e) => e.currentTarget.style.transform = \"scale(1)\"}\n          >\n            Enter the Dark Cave\n          </button>\n\n          <button\n            onClick={() => {\n              setVariable(\"current_route\", \"light\");\n              executeAction(\"choose-light\");\n              switchGreeting(2);\n            }}\n            style={{\n              flex: 1,\n              padding: \"16px\",\n              background: \"linear-gradient(135deg, #365314, #4d7c0f)\",\n              border: \"1px solid #65a30d\",\n              borderRadius: \"12px\",\n              color: \"#ecfccb\",\n              fontSize: \"15px\",\n              fontWeight: \"bold\",\n              cursor: \"pointer\",\n              transition: \"transform 0.15s\",\n            }}\n            onMouseOver={(e) => e.currentTarget.style.transform = \"scale(1.03)\"}\n            onMouseOut={(e) => e.currentTarget.style.transform = \"scale(1)\"}\n          >\n            Walk to the Sunlit Meadow\n          </button>\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "Shows route selection buttons on the first message, normal text otherwise",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "Traveler",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

@@ -1,3 +1,5 @@
+<div v-pre>
+
 # Scene Jumping & Entry Switching via UI
 
 > Click a button → jump to a different pre-written opening. Type in a text box → change what an entry says to the AI. This recipe shows you both.
@@ -424,3 +426,5 @@ Download this JSON and import it as a new world to see everything in action:
 ::: tip This is Recipe #1
 More recipes coming soon — combat systems, shop interfaces, quest tracking, and more. Each recipe combines variables, entries, behaviors, and UI to build something greater than the sum of its parts.
 :::
+
+</div>

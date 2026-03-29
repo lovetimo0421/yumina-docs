@@ -39,6 +39,145 @@
 
 ---
 
+### 在动手之前：搞清楚三层架构
+
+在深入渲染器代码之前，先花两分钟搞懂整个系统是怎么运转的。理解了这个大图，后面看代码就不会迷路。
+
+这个系统分三层：
+
+```
+用户发消息
+    ↓
+AI（大模型）生成回复文字
+    ↓
+消息渲染器把文字"包装"成带状态栏的 UI
+```
+
+#### 第一层：AI 回复内容
+
+AI（大语言模型）就是普通地生成一段文字回复，但同时它会在回复里偷偷夹带"指令"，比如：
+
+```
+今天天气真好呢～
+
+[affection: add 5]
+[mood: set 开心]
+```
+
+这些 `[...]` 括号里的东西叫**指令（Directive）**，玩家看不到，但系统能读懂。指令的详细用法见 [指令与宏](./05-directives-and-macros.md)。
+
+#### 第二层：变量系统
+
+系统读取到 `[affection: add 5]` 之后，就会把 `affection`（好感度）这个变量从 50 改成 55。
+
+变量就像游戏里的存档数据，存在服务器上，随时可以读取。变量的详细用法见 [变量](./04-variables.md)。
+
+#### 第三层：消息渲染器（前端 UI）
+
+这是最关键的部分，也是本章的主角。
+
+默认情况下，AI 的回复就是一段普通的 Markdown 文字。但你开启了消息渲染器之后，每条消息在显示之前都会经过一个 TSX 函数（可以理解成一个"模板"），这个函数接收：
+
+| 输入 | 含义 |
+|------|------|
+| `content` | AI 说的话（文字） |
+| `variables` | 当前所有变量的值（好感度=55, 心情=开心） |
+
+然后输出带状态栏的 UI：
+
+```
+┌─────────────────────────────┐
+│ 今天天气真好呢～              │
+│                             │
+│ ❤️ 好感度 ████████░░  55    │
+│ 😊 心情：开心               │
+└─────────────────────────────┘
+```
+
+#### 完整流程
+
+把三层串起来：
+
+```
+① 你发消息："你好！"
+        ↓
+② AI 生成回复文字 + [affection: add 2] 指令
+        ↓
+③ 系统解析指令，更新变量（好感度 → 52）
+        ↓
+④ 消息渲染器函数被调用
+   输入：{ content: "你好呀～", variables: { affection: 52, mood: "开心" } }
+        ↓
+⑤ 函数输出带状态栏的 HTML，显示在屏幕上
+```
+
+> **一句话总结**：AI 负责生成文字和改变数据，渲染器负责把数据变成好看的 UI，两者通过"变量"连接在一起。
+
+---
+
+### 读懂一个真实的渲染器
+
+理解了三层架构之后，来看一个真实的渲染器代码是怎么写的。下面是一个最简单的"好感度 + 心情状态栏"渲染器：
+
+```tsx
+export default function ChatRenderer({ content, role, variables, renderMarkdown }) {
+  // 用户消息直接显示，不加状态栏
+  if (role === "user") {
+    return <div dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />;
+  }
+
+  // 从变量里读数据，给默认值
+  var affection = variables.affection !== undefined ? Number(variables.affection) : 50;
+  var mood = variables.mood || "开心";
+
+  // 心情 → emoji 和颜色的映射
+  var moodEmoji = { "开心": "😊", "平静": "😌", "害羞": "😳", "生气": "😠" };
+  var moodColor = { "开心": "text-yellow-400", "平静": "text-blue-400", "害羞": "text-pink-400", "生气": "text-red-400" };
+
+  // 好感度 → 进度条颜色
+  var barColor = affection >= 70 ? "bg-pink-500" : affection >= 40 ? "bg-yellow-500" : "bg-gray-500";
+
+  return (
+    <div className="space-y-2">
+      {/* AI 说的话 */}
+      <div dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
+
+      {/* 状态栏 */}
+      <div className="mt-3 px-3 py-2 rounded-lg bg-muted border border-border text-sm flex items-center gap-4">
+        <div className="flex items-center gap-2 flex-1">
+          <Icons.Heart size={14} className="text-pink-400" />
+          <span>好感度</span>
+          <div className="flex-1 bg-background rounded-full h-2">
+            <div className={"h-2 rounded-full " + barColor} style={{ width: affection + "%" }} />
+          </div>
+          <span>{affection}</span>
+        </div>
+        <div className={"flex items-center gap-1 " + (moodColor[mood] || "text-gray-400")}>
+          <span>{moodEmoji[mood] || "😐"}</span>
+          <span>{mood}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+逐块拆解：
+
+| 代码 | 作用 |
+|------|------|
+| `if (role === "user")` | 用户消息直接渲染文字，不加状态栏 |
+| `variables.affection` | 从变量系统读取好感度的当前值 |
+| `moodEmoji` / `moodColor` | 数据→样式的映射表，心情不同，显示不同的 emoji 和颜色 |
+| `barColor` | 好感度高低决定进度条颜色（粉/黄/灰） |
+| `dangerouslySetInnerHTML` | React 渲染 HTML 字符串的标准方式 |
+| `style={{ width: affection + "%" }}` | 进度条宽度直接绑定变量值，变量变了进度条自动变 |
+| `className="rounded-lg bg-muted ..."` | Tailwind CSS 样式类，`rounded-lg` = 圆角，`bg-muted` = 跟随主题的灰色背景 |
+
+> 变量是数据，TSX 是模板。每次消息显示时把数据填进模板里，生成最终的 HTML——就像 Excel 里的公式，单元格的值变了，显示结果自动更新。
+
+---
+
 ## 详细版
 
 ### 三种渲染方式——搞清楚区别

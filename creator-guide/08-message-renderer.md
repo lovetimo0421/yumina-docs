@@ -39,6 +39,145 @@ That said, this is an **advanced feature**. If you've never touched HTML or Reac
 
 ---
 
+### Before you start: Understanding the three-layer architecture
+
+Before diving into renderer code, take two minutes to understand how the whole system works. Once you see the big picture, the code will make much more sense.
+
+The system has three layers:
+
+```
+User sends a message
+    ↓
+AI (language model) generates a text reply
+    ↓
+Message renderer "wraps" the text into a styled UI
+```
+
+#### Layer 1: AI response content
+
+The AI generates a normal text reply, but it also sneaks in "instructions" alongside the text:
+
+```
+The weather is so nice today~
+
+[affection: add 5]
+[mood: set happy]
+```
+
+These `[...]` bracketed items are called **directives**. Players never see them, but the engine knows how to read them. See [Directives & Macros](./05-directives-and-macros.md) for the full reference.
+
+#### Layer 2: Variable system
+
+When the engine reads `[affection: add 5]`, it updates the `affection` variable from 50 to 55.
+
+Variables are like save data in a video game — stored on the server, available anytime. See [Variables](./04-variables.md) for the full reference.
+
+#### Layer 3: Message renderer (frontend UI)
+
+This is the critical piece, and the main subject of this chapter.
+
+By default, AI replies display as plain Markdown text. But when you enable a message renderer, every message passes through a TSX function (think of it as a "template") before being displayed. The function receives:
+
+| Input | Meaning |
+|-------|---------|
+| `content` | What the AI said (text) |
+| `variables` | Current values of all variables (affection=55, mood=happy) |
+
+And outputs a styled UI:
+
+```
+┌─────────────────────────────┐
+│ The weather is so nice today~│
+│                             │
+│ ❤️ Affection ████████░░ 55  │
+│ 😊 Mood: happy              │
+└─────────────────────────────┘
+```
+
+#### The complete flow
+
+Putting all three layers together:
+
+```
+① You send a message: "Hello!"
+        ↓
+② AI generates reply text + [affection: add 2] directive
+        ↓
+③ Engine parses directive, updates variable (affection → 52)
+        ↓
+④ Message renderer function is called
+   Input: { content: "Hey there~", variables: { affection: 52, mood: "happy" } }
+        ↓
+⑤ Function outputs HTML with a status bar, displayed on screen
+```
+
+> **In one sentence**: The AI generates text and changes data, the renderer turns data into a beautiful UI, and variables are the bridge connecting them.
+
+---
+
+### Reading a real renderer
+
+Now that you understand the three layers, let's look at what a real renderer looks like. Here's a simple "affection + mood status bar" renderer:
+
+```tsx
+export default function ChatRenderer({ content, role, variables, renderMarkdown }) {
+  // User messages render directly, no status bar
+  if (role === "user") {
+    return <div dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />;
+  }
+
+  // Read data from variables, with defaults
+  var affection = variables.affection !== undefined ? Number(variables.affection) : 50;
+  var mood = variables.mood || "happy";
+
+  // Mood → emoji and color mapping
+  var moodEmoji = { "happy": "😊", "calm": "😌", "shy": "😳", "angry": "😠" };
+  var moodColor = { "happy": "text-yellow-400", "calm": "text-blue-400", "shy": "text-pink-400", "angry": "text-red-400" };
+
+  // Affection → progress bar color
+  var barColor = affection >= 70 ? "bg-pink-500" : affection >= 40 ? "bg-yellow-500" : "bg-gray-500";
+
+  return (
+    <div className="space-y-2">
+      {/* AI's message */}
+      <div dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
+
+      {/* Status bar */}
+      <div className="mt-3 px-3 py-2 rounded-lg bg-muted border border-border text-sm flex items-center gap-4">
+        <div className="flex items-center gap-2 flex-1">
+          <Icons.Heart size={14} className="text-pink-400" />
+          <span>Affection</span>
+          <div className="flex-1 bg-background rounded-full h-2">
+            <div className={"h-2 rounded-full " + barColor} style={{ width: affection + "%" }} />
+          </div>
+          <span>{affection}</span>
+        </div>
+        <div className={"flex items-center gap-1 " + (moodColor[mood] || "text-gray-400")}>
+          <span>{moodEmoji[mood] || "😐"}</span>
+          <span>{mood}</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+```
+
+Breaking it down:
+
+| Code | What it does |
+|------|-------------|
+| `if (role === "user")` | User messages render as plain text, no status bar |
+| `variables.affection` | Reads the current affection value from the variable system |
+| `moodEmoji` / `moodColor` | Data → style mapping: different moods show different emojis and colors |
+| `barColor` | Affection level determines progress bar color (pink / yellow / gray) |
+| `dangerouslySetInnerHTML` | React's standard way to render HTML strings |
+| `style={{ width: affection + "%" }}` | Progress bar width is directly bound to the variable — value changes, bar updates |
+| `className="rounded-lg bg-muted ..."` | Tailwind CSS classes: `rounded-lg` = rounded corners, `bg-muted` = theme-aware gray background |
+
+> Variables are data, TSX is the template. Every time a message is displayed, data fills the template to produce the final HTML — just like an Excel formula where changing a cell value automatically updates the display.
+
+---
+
 ## The detailed version
 
 ### Three rendering approaches — know the difference

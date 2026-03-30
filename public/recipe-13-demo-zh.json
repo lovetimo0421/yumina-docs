@@ -57,7 +57,7 @@
       "type": "boolean",
       "defaultValue": false,
       "description": "累计获得超过 100 金币时解锁",
-      "category": "achievement",
+      "category": "custom",
       "behaviorRules": "不要直接修改这个变量——成就由行为规则根据条件自动解锁，并弹出通知。手动修改会绕过通知系统。"
     },
     {
@@ -66,7 +66,7 @@
       "type": "boolean",
       "defaultValue": false,
       "description": "在战斗中胜利超过 5 次时解锁",
-      "category": "achievement",
+      "category": "custom",
       "behaviorRules": "不要直接修改这个变量——成就由行为规则根据条件自动解锁，并弹出通知。手动修改会绕过通知系统。"
     },
     {
@@ -75,7 +75,7 @@
       "type": "boolean",
       "defaultValue": false,
       "description": "玩家提到探索或 AI 提到发现时解锁",
-      "category": "achievement",
+      "category": "custom",
       "behaviorRules": "不要直接修改这个变量——成就由行为规则根据条件自动解锁，并弹出通知。手动修改会绕过通知系统。"
     }
   ],
@@ -111,7 +111,7 @@
     {
       "id": "rule-achievement-explorer-player",
       "name": "成就：探索先驱（玩家关键词）",
-      "trigger": { "type": "keyword", "keyword": "探索" },
+      "trigger": { "type": "keyword", "keywords": ["探索"] },
       "conditions": [
         { "variableId": "achievement_explorer", "operator": "eq", "value": false }
       ],
@@ -127,7 +127,7 @@
     {
       "id": "rule-achievement-explorer-ai",
       "name": "成就：探索先驱（AI 关键词）",
-      "trigger": { "type": "ai-keyword", "keyword": "发现" },
+      "trigger": { "type": "ai-keyword", "keywords": ["发现"] },
       "conditions": [
         { "variableId": "achievement_explorer", "operator": "eq", "value": false }
       ],

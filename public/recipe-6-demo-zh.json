@@ -93,7 +93,7 @@
         { "type": "modify-variable", "variableId": "quest_1_complete", "operation": "set", "value": true },
         { "type": "modify-variable", "variableId": "gold", "operation": "add", "value": 30 },
         { "type": "notify-player", "message": "任务完成：寻找草药！获得 30 金币", "style": "achievement" },
-        { "type": "send-context", "content": "玩家刚刚完成了任务「寻找草药」，获得了 30 金币奖励。请在回复中适当提及。" }
+        { "type": "send-context", "message": "玩家刚刚完成了任务「寻找草药」，获得了 30 金币奖励。请在回复中适当提及。" }
       ],
       "priority": 50,
       "enabled": true
@@ -110,7 +110,7 @@
         { "type": "modify-variable", "variableId": "quest_2_complete", "operation": "set", "value": true },
         { "type": "modify-variable", "variableId": "gold", "operation": "add", "value": 50 },
         { "type": "notify-player", "message": "任务完成：击败森林狼！获得 50 金币", "style": "achievement" },
-        { "type": "send-context", "content": "玩家刚刚完成了任务「击败森林狼」，获得了 50 金币奖励。请在回复中适当提及。" }
+        { "type": "send-context", "message": "玩家刚刚完成了任务「击败森林狼」，获得了 50 金币奖励。请在回复中适当提及。" }
       ],
       "priority": 50,
       "enabled": true

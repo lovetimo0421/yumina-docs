@@ -120,7 +120,7 @@
     {
       "id": "rule-morning-to-noon",
       "name": "时段推进：早晨→中午",
-      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "above", "threshold": 2 },
+      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "rises-above", "threshold": 2 },
       "conditions": [
         { "variableId": "time_period", "operator": "eq", "value": "早晨" }
       ],
@@ -130,7 +130,7 @@
         { "type": "modify-variable", "variableId": "time_period", "operation": "set", "value": "中午" },
         { "type": "toggle-entry", "entryId": "entry-morning", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-noon", "enabled": true },
-        { "type": "send-context", "content": "时间从早晨推进到了中午。请在接下来的描写中自然地体现时间变化。" }
+        { "type": "send-context", "message": "时间从早晨推进到了中午。请在接下来的描写中自然地体现时间变化。" }
       ],
       "priority": 50,
       "enabled": true
@@ -138,7 +138,7 @@
     {
       "id": "rule-noon-to-evening",
       "name": "时段推进：中午→傍晚",
-      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "above", "threshold": 2 },
+      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "rises-above", "threshold": 2 },
       "conditions": [
         { "variableId": "time_period", "operator": "eq", "value": "中午" }
       ],
@@ -148,7 +148,7 @@
         { "type": "modify-variable", "variableId": "time_period", "operation": "set", "value": "傍晚" },
         { "type": "toggle-entry", "entryId": "entry-noon", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-evening", "enabled": true },
-        { "type": "send-context", "content": "时间从中午推进到了傍晚。请在接下来的描写中自然地体现时间变化。" }
+        { "type": "send-context", "message": "时间从中午推进到了傍晚。请在接下来的描写中自然地体现时间变化。" }
       ],
       "priority": 50,
       "enabled": true
@@ -156,7 +156,7 @@
     {
       "id": "rule-evening-to-night",
       "name": "时段推进：傍晚→夜晚",
-      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "above", "threshold": 2 },
+      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "rises-above", "threshold": 2 },
       "conditions": [
         { "variableId": "time_period", "operator": "eq", "value": "傍晚" }
       ],
@@ -166,7 +166,7 @@
         { "type": "modify-variable", "variableId": "time_period", "operation": "set", "value": "夜晚" },
         { "type": "toggle-entry", "entryId": "entry-evening", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-night", "enabled": true },
-        { "type": "send-context", "content": "时间从傍晚推进到了夜晚。请在接下来的描写中自然地体现时间变化。" }
+        { "type": "send-context", "message": "时间从傍晚推进到了夜晚。请在接下来的描写中自然地体现时间变化。" }
       ],
       "priority": 50,
       "enabled": true
@@ -174,7 +174,7 @@
     {
       "id": "rule-night-to-morning",
       "name": "时段推进：夜晚→早晨",
-      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "above", "threshold": 2 },
+      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "rises-above", "threshold": 2 },
       "conditions": [
         { "variableId": "time_period", "operator": "eq", "value": "夜晚" }
       ],
@@ -184,7 +184,7 @@
         { "type": "modify-variable", "variableId": "time_period", "operation": "set", "value": "早晨" },
         { "type": "toggle-entry", "entryId": "entry-night", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-morning", "enabled": true },
-        { "type": "send-context", "content": "时间从夜晚推进到了早晨，新的一天开始了。请在接下来的描写中自然地体现时间变化。" }
+        { "type": "send-context", "message": "时间从夜晚推进到了早晨，新的一天开始了。请在接下来的描写中自然地体现时间变化。" }
       ],
       "priority": 50,
       "enabled": true

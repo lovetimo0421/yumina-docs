@@ -108,7 +108,7 @@
         { "type": "toggle-entry", "entryId": "entry-lore-cave", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-lore-market", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-lore-village", "enabled": true },
-        { "type": "send-context", "context": "玩家回到了村庄。请描写玩家到达村庄时看到的场景。" }
+        { "type": "send-context", "message": "玩家回到了村庄。请描写玩家到达村庄时看到的场景。" }
       ],
       "priority": 50,
       "enabled": true
@@ -125,7 +125,7 @@
         { "type": "toggle-entry", "entryId": "entry-lore-cave", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-lore-market", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-lore-forest", "enabled": true },
-        { "type": "send-context", "context": "玩家进入了森林。请描写玩家踏入森林时看到的场景。" }
+        { "type": "send-context", "message": "玩家进入了森林。请描写玩家踏入森林时看到的场景。" }
       ],
       "priority": 50,
       "enabled": true
@@ -142,7 +142,7 @@
         { "type": "toggle-entry", "entryId": "entry-lore-forest", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-lore-market", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-lore-cave", "enabled": true },
-        { "type": "send-context", "context": "玩家走进了洞穴。请描写玩家进入洞穴时看到的场景。" }
+        { "type": "send-context", "message": "玩家走进了洞穴。请描写玩家进入洞穴时看到的场景。" }
       ],
       "priority": 50,
       "enabled": true
@@ -159,7 +159,7 @@
         { "type": "toggle-entry", "entryId": "entry-lore-forest", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-lore-cave", "enabled": false },
         { "type": "toggle-entry", "entryId": "entry-lore-market", "enabled": true },
-        { "type": "send-context", "context": "玩家来到了集市。请描写玩家走进集市时看到的场景。" }
+        { "type": "send-context", "message": "玩家来到了集市。请描写玩家走进集市时看到的场景。" }
       ],
       "priority": 50,
       "enabled": true

@@ -155,31 +155,70 @@ Format rules:
 
 ---
 
-### Step 3: Prepare your assets
+### Step 3: Prepare and upload assets
 
-A visual novel needs background images and character sprites. You can use any image URLs.
+A visual novel needs background images and character sprites. Two ways to provide them:
 
-**Backgrounds:**
+- **Option A (recommended)**: Upload to Yumina's asset system, get `@asset:` references — stable, won't expire
+- **Option B**: Use external image URLs (imgur, your own server) — simpler but may break
 
-Prepare a few scene backgrounds and note their URLs or filenames. For example:
+#### Uploading assets to Yumina
 
-| Scene | Filename / URL | Purpose |
-|-------|---------------|---------|
+1. Open the editor → sidebar → **Assets** tab
+2. **Drag and drop** your image files into the upload area (or click to browse)
+3. After upload, each file gets an `@asset:` reference (like `@asset:a1b2c3d4-e5f6-7890`)
+4. Click an uploaded asset to **copy its reference**
+
+> **What is an `@asset:` reference?** It's Yumina's internal asset identifier. In your message renderer TSX code, `<img src="@asset:xxx" />` is automatically resolved to a real CDN URL at render time. You don't need to convert it manually — the renderer handles it. Variables can also store `@asset:xxx` values and they'll be auto-resolved too.
+
+#### Recommended assets to prepare
+
+**Backgrounds (16:9 ratio recommended, 1920×1080 or higher):**
+
+| Scene | Suggested filename | Purpose |
+|-------|--------------------|---------|
 | Classroom (daytime) | `classroom_morning.jpg` | Class, conversation scenes |
 | School hallway | `hallway.jpg` | Transition scenes |
 | Street (evening) | `street_evening.jpg` | After-school scenes |
 | Bedroom (night) | `room_night.jpg` | Nighttime scenes |
 
-**Character sprites:**
+After uploading, note each background's `@asset:` reference. You'll put these in a knowledge entry so the AI knows which reference goes with which scene.
 
-Prepare multiple expression sprites for each character. Use a consistent naming format: `characterName_emotion.png`.
+**Character sprites (transparent PNG recommended, 1000px+ height):**
 
-| Character | Filename Format | Examples |
-|-----------|----------------|---------|
-| Yuki | `yuki_emotion.png` | `yuki_happy.png`, `yuki_sad.png` |
-| Teacher | `teacher_emotion.png` | `teacher_neutral.png`, `teacher_angry.png` |
+Prepare multiple expression sprites per character. Use a consistent naming format: `characterName_emotion.png`.
 
-> **No assets? You can still test.** The renderer code can show a solid color background and text placeholders when images fail to load. Get the logic working first — add assets later.
+| Character | Example filenames | Example reference |
+|-----------|-------------------|-------------------|
+| Yuki (happy) | `yuki_happy.png` | `@asset:abc123...` |
+| Yuki (sad) | `yuki_sad.png` | `@asset:def456...` |
+| Teacher (neutral) | `teacher_neutral.png` | `@asset:ghi789...` |
+
+#### Tell the AI which assets to use
+
+After uploading, add an asset reference table to the VN system instruction entry you created in Step 2. This tells the AI which `@asset:` reference corresponds to which scene or character:
+
+```
+[Asset Reference Table]
+Backgrounds:
+- Classroom daytime: @asset:your-classroom-reference
+- School hallway: @asset:your-hallway-reference
+- Street evening: @asset:your-street-reference
+
+Character sprites (format: @asset:reference):
+- Yuki happy: @asset:your-yuki-happy-reference
+- Yuki sad: @asset:your-yuki-sad-reference
+- Teacher neutral: @asset:your-teacher-reference
+
+When using directives, use the @asset: references above as values. For example:
+[current_bg: set "@asset:your-classroom-reference"]
+```
+
+> The AI reads this table and uses the correct `@asset:` references in its directives. The renderer automatically converts `@asset:` to real image URLs when displaying.
+
+::: tip No assets yet? You can still test
+The renderer shows a solid color background when images fail to load. Get the logic working first — add assets later. You can also use free stock image URLs instead of `@asset:` references for quick prototyping.
+:::
 
 ---
 

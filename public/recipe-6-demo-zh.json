@@ -1,0 +1,136 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：任务追踪",
+  "description": "实战配方 #6 的演示世界。任务追踪面板实时显示任务完成状态和金币奖励，玩家消息中的关键词会自动触发任务完成。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "系统提示",
+      "content": "你是一个互动奇幻故事的叙述者。用沉浸式的第二人称散文写作。每次回复保持 2-3 段。根据玩家的行动推进故事。\n\n当前有两个活跃的任务：\n1. 寻找草药——玩家需要在森林中找到草药\n2. 击败森林狼——玩家需要击败一只威胁村庄的森林狼\n\n在故事中自然地引入这些任务目标。当玩家完成任务时，系统会自动检测并发放奖励。",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-main",
+      "name": "任务开场白",
+      "content": "*你走进了边陲小村的村长家。一位白发苍苍的老人坐在桌前，脸上满是忧虑。*\n\n*他看到你，眼中闪过一丝希望：*\n\n\"旅人，你来得正好！我们村子最近遭遇了两个麻烦。\"\n\n*他展开一张手绘地图，指着两个标记：*\n\n\"首先，村里的药师急需一种稀有的**草药**——它生长在北边森林深处的溪流旁。其次，一只凶猛的**森林狼**在东边的林地里出没，已经伤了好几个樵夫了。\"\n\n*他恳切地望着你：*\n\n\"如果你能帮忙解决这两件事，村子会给你丰厚的报酬。你愿意帮忙吗？\"",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    }
+  ],
+  "variables": [
+    {
+      "id": "quest_1_complete",
+      "name": "任务1完成",
+      "type": "boolean",
+      "defaultValue": false,
+      "description": "寻找草药任务的完成状态",
+      "category": "flag",
+      "behaviorRules": "当玩家完成了寻找草药的任务时设为 true。行为规则会通过关键词自动检测，但你也可以在合适的剧情时刻手动标记完成。"
+    },
+    {
+      "id": "quest_2_complete",
+      "name": "任务2完成",
+      "type": "boolean",
+      "defaultValue": false,
+      "description": "击败森林狼任务的完成状态",
+      "category": "flag",
+      "behaviorRules": "当玩家击败了森林狼时设为 true。行为规则会通过关键词自动检测，但你也可以在合适的剧情时刻手动标记完成。"
+    },
+    {
+      "id": "gold",
+      "name": "金币",
+      "type": "number",
+      "defaultValue": 0,
+      "min": 0,
+      "description": "玩家持有的金币数量",
+      "category": "resource",
+      "behaviorRules": "任务完成时会自动奖励金币。你也可以在剧情中增减金币——例如战斗掉落、交易、或被偷窃。"
+    },
+    {
+      "id": "quest_1_name",
+      "name": "任务1名称",
+      "type": "string",
+      "defaultValue": "寻找草药",
+      "description": "第一个任务的名称",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。"
+    },
+    {
+      "id": "quest_2_name",
+      "name": "任务2名称",
+      "type": "string",
+      "defaultValue": "击败森林狼",
+      "description": "第二个任务的名称",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-quest-1-complete",
+      "name": "完成任务：寻找草药",
+      "trigger": { "type": "keyword", "keywords": ["草药"] },
+      "conditions": [
+        { "variableId": "quest_1_complete", "operator": "eq", "value": false }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "quest_1_complete", "operation": "set", "value": true },
+        { "type": "modify-variable", "variableId": "gold", "operation": "add", "value": 30 },
+        { "type": "notify-player", "message": "任务完成：寻找草药！获得 30 金币", "style": "achievement" },
+        { "type": "send-context", "content": "玩家刚刚完成了任务「寻找草药」，获得了 30 金币奖励。请在回复中适当提及。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-quest-2-complete",
+      "name": "完成任务：击败森林狼",
+      "trigger": { "type": "keyword", "keywords": ["击败", "狼"] },
+      "conditions": [
+        { "variableId": "quest_2_complete", "operator": "eq", "value": false }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "quest_2_complete", "operation": "set", "value": true },
+        { "type": "modify-variable", "variableId": "gold", "operation": "add", "value": 50 },
+        { "type": "notify-player", "message": "任务完成：击败森林狼！获得 50 金币", "style": "achievement" },
+        { "type": "send-context", "content": "玩家刚刚完成了任务「击败森林狼」，获得了 50 金币奖励。请在回复中适当提及。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    }
+  ],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-quest-tracker",
+    "name": "任务追踪渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n  const msgs = api.messages || [];\n  const isLastMsg = messageIndex === msgs.length - 1;\n\n  const quest1Done = api.variables.quest_1_complete === true;\n  const quest2Done = api.variables.quest_2_complete === true;\n  const quest1Name = String(api.variables.quest_1_name || \"\u5bfb\u627e\u8349\u836f\");\n  const quest2Name = String(api.variables.quest_2_name || \"\u51fb\u8d25\u68ee\u6797\u72fc\");\n  const gold = Number(api.variables.gold ?? 0);\n\n  const quests = [\n    { name: quest1Name, done: quest1Done, reward: 30 },\n    { name: quest2Name, done: quest2Done, reward: 50 },\n  ];\n\n  const completedCount = quests.filter(q => q.done).length;\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {isLastMsg && (\n        <div style={{\n          marginTop: \"16px\",\n          padding: \"16px\",\n          background: \"linear-gradient(135deg, rgba(30,41,59,0.8), rgba(15,23,42,0.9))\",\n          borderRadius: \"12px\",\n          border: \"1px solid #334155\",\n        }}>\n          <div style={{\n            display: \"flex\",\n            justifyContent: \"space-between\",\n            alignItems: \"center\",\n            marginBottom: \"14px\",\n          }}>\n            <div style={{\n              fontSize: \"15px\",\n              fontWeight: \"bold\",\n              color: \"#e2e8f0\",\n              letterSpacing: \"0.5px\",\n            }}>\n              \u4efb\u52a1\u8ffd\u8e2a\n            </div>\n            <div style={{\n              display: \"flex\",\n              alignItems: \"center\",\n              gap: \"6px\",\n              padding: \"4px 12px\",\n              background: \"rgba(234,179,8,0.15)\",\n              border: \"1px solid rgba(234,179,8,0.3)\",\n              borderRadius: \"20px\",\n            }}>\n              <span style={{ fontSize: \"14px\" }}>\ud83d\udcb0</span>\n              <span style={{\n                fontSize: \"14px\",\n                fontWeight: \"bold\",\n                color: \"#fbbf24\",\n              }}>\n                {gold}\n              </span>\n            </div>\n          </div>\n\n          <div style={{\n            fontSize: \"12px\",\n            color: \"#64748b\",\n            marginBottom: \"12px\",\n          }}>\n            \u5df2\u5b8c\u6210 {completedCount}/{quests.length}\n          </div>\n\n          <div style={{ display: \"flex\", flexDirection: \"column\", gap: \"8px\" }}>\n            {quests.map((quest, idx) => (\n              <div\n                key={idx}\n                style={{\n                  display: \"flex\",\n                  justifyContent: \"space-between\",\n                  alignItems: \"center\",\n                  padding: \"10px 14px\",\n                  background: quest.done\n                    ? \"rgba(34,197,94,0.08)\"\n                    : \"rgba(30,41,59,0.5)\",\n                  border: quest.done\n                    ? \"1px solid rgba(34,197,94,0.2)\"\n                    : \"1px solid #1e293b\",\n                  borderRadius: \"8px\",\n                }}\n              >\n                <div style={{\n                  display: \"flex\",\n                  alignItems: \"center\",\n                  gap: \"10px\",\n                }}>\n                  <span style={{\n                    fontSize: \"13px\",\n                    color: quest.done ? \"#94a3b8\" : \"#e2e8f0\",\n                    textDecoration: quest.done ? \"line-through\" : \"none\",\n                  }}>\n                    {quest.name}\n                  </span>\n                </div>\n\n                <div style={{\n                  display: \"flex\",\n                  alignItems: \"center\",\n                  gap: \"8px\",\n                }}>\n                  <span style={{\n                    fontSize: \"12px\",\n                    color: quest.done ? \"#4ade80\" : \"#64748b\",\n                  }}>\n                    {quest.done ? \"+\" + quest.reward + \" \u91d1\" : quest.reward + \" \u91d1\"}\n                  </span>\n\n                  <span style={{\n                    display: \"inline-flex\",\n                    alignItems: \"center\",\n                    justifyContent: \"center\",\n                    width: \"24px\",\n                    height: \"24px\",\n                    borderRadius: \"6px\",\n                    fontSize: \"13px\",\n                    fontWeight: \"bold\",\n                    background: quest.done\n                      ? \"rgba(34,197,94,0.2)\"\n                      : \"rgba(239,68,68,0.15)\",\n                    color: quest.done ? \"#4ade80\" : \"#f87171\",\n                    border: quest.done\n                      ? \"1px solid rgba(34,197,94,0.3)\"\n                      : \"1px solid rgba(239,68,68,0.25)\",\n                  }}>\n                    {quest.done ? \"\u2713\" : \"\u2717\"}\n                  </span>\n                </div>\n              </div>\n            ))}\n          </div>\n\n          {completedCount === quests.length && (\n            <div style={{\n              marginTop: \"12px\",\n              padding: \"10px\",\n              background: \"rgba(34,197,94,0.1)\",\n              border: \"1px solid rgba(34,197,94,0.25)\",\n              borderRadius: \"8px\",\n              textAlign: \"center\",\n              fontSize: \"13px\",\n              color: \"#4ade80\",\n              fontWeight: \"600\",\n            }}>\n              \u6240\u6709\u4efb\u52a1\u5df2\u5b8c\u6210\uff01\n            </div>\n          )}\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "最后一条消息下方显示任务追踪面板：任务列表、完成状态徽章、金币计数器、完成进度",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "旅人",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

@@ -227,7 +227,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   // ---- 清理内容：去掉指令行，只保留叙事文本 ----
   const cleanContent = content
     .split("\n")
-    .filter((line) => !line.trim().match(/^\[.+:\s*(set|add|toggle)\s+.+\]$/))
+    .filter((line) => !line.trim().match(/^\[.+:\s*(set|add|subtract|multiply|toggle|append|merge|push|delete)\s+.+\]$/) && !line.trim().match(/^\[.+:\s*[+-]?\d+\]$/))
     .join("\n")
     .trim();
 
@@ -414,7 +414,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 
 **代码逐块解释：**
 
-- **清理内容** — `cleanContent` 把 `[current_bg: set "xxx"]` 这类指令行过滤掉。指令已经被引擎解析过了，渲染器不需要再显示它们
+- **清理内容** — `cleanContent` 把 `[current_bg: set "xxx"]` 这类指令行过滤掉（匹配所有操作类型：set/add/subtract/multiply/toggle/append/merge/push/delete，以及 `[hp: -10]` 这样的简写指令）。指令已经被引擎解析过了，渲染器不需要再显示它们
 - **解析段落** — 把文本按空行拆成段落，逐段判断是旁白（以 `*` 开头）还是对话（普通文字），或者是选项（以 `A)` 格式开头）
 - **背景层** — 用 `backgroundImage` 显示当前场景背景。`filter: brightness(0.7)` 让背景略暗，确保前景文字可读。`transition` 让背景切换有渐变动画
 - **立绘层** — 根据 `speaker` 和 `emotion` 拼出立绘文件路径。`onError` 处理图片不存在的情况（静默隐藏）。旁白模式时不显示立绘

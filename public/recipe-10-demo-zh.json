@@ -1,0 +1,92 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：视觉小说模式",
+  "description": "实战配方 #10 的演示世界。把聊天界面变成视觉小说——场景背景、角色立绘、对话框、选项按钮，全由 AI 通过指令驱动。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-vn-system",
+      "name": "视觉小说系统指令",
+      "content": "[视觉小说模式]\n你正在为一个视觉小说引擎生成内容。每段回复必须包含指令来控制画面。\n\n格式规则：\n1. 在回复开头用指令设置场景：\n   [current_bg: set \"背景图片URL\"]\n   [current_speaker: set \"角色名\"]\n   [speaker_emotion: set \"情绪\"]\n\n2. 文本格式：\n   - *斜体文字* = 旁白或内心独白。用来描写环境、角色动作、内心想法。\n   - 普通文字（不加格式）= 角色说的台词/对话。\n   - 不要用引号包裹台词，直接写普通文字即可。\n\n3. 当你想让玩家做选择时：\n   - 用 [show_choices: set true]\n   - 在文本末尾列出选项，格式为：\n     A) 选项内容\n     B) 选项内容\n     C) 选项内容\n\n4. 每段回复只写一个场景片段（3-5 句话），保持节奏紧凑，像真正的视觉小说一样。\n\n5. 可用的情绪：neutral, happy, sad, angry, surprised, shy\n\n6. 切换场景时一定要更新 current_bg。角色说话时一定要更新 current_speaker 和 speaker_emotion。",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-main",
+      "name": "VN 开场白",
+      "content": "[current_bg: set \"classroom_morning.jpg\"]\n[current_speaker: set \"旁白\"]\n[speaker_emotion: set \"neutral\"]\n\n*四月的第一天，樱花季的尾巴。*\n\n*你推开教室的门，熟悉的粉笔灰和木头的气味扑面而来。大部分座位还空着——离上课还有十分钟。*\n\n*靠窗的位置上，一个你没见过的女生正安静地看着窗外。*\n\n[current_speaker: set \"旁白\"]\n*她是转学生吗？你不记得班上有这个人。*",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    }
+  ],
+  "variables": [
+    {
+      "id": "current_bg",
+      "name": "当前背景",
+      "type": "string",
+      "defaultValue": "",
+      "description": "当前场景的背景图片 URL",
+      "category": "custom",
+      "behaviorRules": "用 [current_bg: set \"图片URL\"] 来切换场景背景。每当场景发生变化时都要更新这个变量。"
+    },
+    {
+      "id": "current_speaker",
+      "name": "当前说话者",
+      "type": "string",
+      "defaultValue": "旁白",
+      "description": "当前说话的角色名称",
+      "category": "custom",
+      "behaviorRules": "用 [current_speaker: set \"角色名\"] 来设置当前说话的角色。旁白/内心描写时设为 \"旁白\"。"
+    },
+    {
+      "id": "speaker_emotion",
+      "name": "角色情绪",
+      "type": "string",
+      "defaultValue": "neutral",
+      "description": "当前说话角色的情绪状态",
+      "category": "custom",
+      "behaviorRules": "用 [speaker_emotion: set \"情绪\"] 来改变角色的表情。可用的情绪有：neutral, happy, sad, angry, surprised, shy。每次角色情绪变化时都要更新。"
+    },
+    {
+      "id": "show_choices",
+      "name": "显示选项",
+      "type": "boolean",
+      "defaultValue": false,
+      "description": "是否显示选项按钮",
+      "category": "custom",
+      "behaviorRules": "当你要给玩家提供选择时，用 [show_choices: set true]。平时保持 false。"
+    }
+  ],
+  "rules": [],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-vn",
+    "name": "视觉小说渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n\n  // ---- 读取变量 ----\n  const bgUrl = String(api.variables.current_bg || \"default_bg.jpg\");\n  const speaker = String(api.variables.current_speaker || \"旁白\");\n  const emotion = String(api.variables.speaker_emotion || \"neutral\");\n  const showChoices = Boolean(api.variables.show_choices);\n\n  // ---- 清理内容：去掉指令行，只保留叙事文本 ----\n  const cleanContent = content\n    .split(\"\\n\")\n    .filter((line) => !line.trim().match(/^\\[.+:\\s*(set|add|subtract|multiply|toggle|append|merge|push|delete)\\s+.+\\]$/) && !line.trim().match(/^\\[.+:\\s*[+-]?\\d+\\]$/))\n    .join(\"\\n\")\n    .trim();\n\n  // ---- 解析文本：区分旁白（斜体）和对话（普通文字） ----\n  const paragraphs = cleanContent\n    .split(\"\\n\\n\")\n    .map((p) => p.trim())\n    .filter((p) => p.length > 0);\n\n  const parsed = paragraphs.map((p) => {\n    const isNarration = /^\\*[^*].*[^*]\\*$/.test(p.trim())\n      || p.trim().startsWith(\"*\");\n    const isChoice = /^[A-Z]\\)\\s/.test(p.trim());\n    return { text: p, isNarration, isChoice };\n  });\n\n  // ---- 立绘 URL（根据角色名和情绪拼接） ----\n  const spriteUrl = speaker !== \"旁白\"\n    ? `/sprites/${speaker.toLowerCase()}_${emotion}.png`\n    : null;\n\n  // ---- 选项提取 ----\n  const choices = parsed\n    .filter((p) => p.isChoice)\n    .map((p) => p.text.replace(/^[A-Z]\\)\\s*/, \"\"));\n\n  // ---- 渲染 ----\n  return (\n    <div style={{\n      position: \"relative\",\n      width: \"100%\",\n      minHeight: \"500px\",\n      borderRadius: \"12px\",\n      overflow: \"hidden\",\n      background: \"#000\",\n    }}>\n      {/* ===== 背景层 (YUI.Scene) ===== */}\n      <div style={{\n        position: \"absolute\",\n        inset: 0,\n        backgroundImage: `url(${bgUrl})`,\n        backgroundSize: \"cover\",\n        backgroundPosition: \"center\",\n        filter: \"brightness(0.7)\",\n        transition: \"background-image 0.8s ease\",\n      }} />\n\n      {/* ===== 角色立绘层 (YUI.Sprite) ===== */}\n      {spriteUrl && (\n        <div style={{\n          position: \"absolute\",\n          bottom: \"120px\",\n          left: \"50%\",\n          transform: \"translateX(-50%)\",\n          zIndex: 2,\n          transition: \"opacity 0.5s ease\",\n        }}>\n          <img\n            src={spriteUrl}\n            alt={`${speaker} - ${emotion}`}\n            style={{\n              maxHeight: \"350px\",\n              objectFit: \"contain\",\n              filter: \"drop-shadow(0 4px 12px rgba(0,0,0,0.5))\",\n            }}\n            onError={(e) => { e.target.style.display = \"none\"; }}\n          />\n        </div>\n      )}\n\n      {/* ===== 对话框层 (YUI.DialogueBox) ===== */}\n      <div style={{\n        position: \"absolute\",\n        bottom: 0,\n        left: 0,\n        right: 0,\n        zIndex: 3,\n        background: \"linear-gradient(transparent, rgba(0,0,0,0.85) 30%)\",\n        padding: \"60px 24px 24px\",\n      }}>\n        {/* 角色名标签 */}\n        {speaker !== \"旁白\" && (\n          <div style={{\n            display: \"inline-block\",\n            padding: \"4px 16px\",\n            marginBottom: \"8px\",\n            background: \"rgba(99,102,241,0.8)\",\n            borderRadius: \"6px 6px 0 0\",\n            color: \"#e0e7ff\",\n            fontSize: \"14px\",\n            fontWeight: \"bold\",\n            letterSpacing: \"0.05em\",\n          }}>\n            {speaker}\n          </div>\n        )}\n\n        {/* 文本内容 */}\n        <div style={{\n          background: \"rgba(15,23,42,0.9)\",\n          borderRadius: speaker !== \"旁白\" ? \"0 12px 12px 12px\" : \"12px\",\n          padding: \"16px 20px\",\n          border: \"1px solid rgba(148,163,184,0.2)\",\n          minHeight: \"80px\",\n        }}>\n          {parsed\n            .filter((p) => !p.isChoice)\n            .map((p, i) => (\n              <p key={i} style={{\n                margin: i > 0 ? \"10px 0 0\" : \"0\",\n                color: p.isNarration ? \"#94a3b8\" : \"#e2e8f0\",\n                fontStyle: p.isNarration ? \"italic\" : \"normal\",\n                fontSize: \"15px\",\n                lineHeight: 1.8,\n              }}\n              dangerouslySetInnerHTML={{\n                __html: renderMarkdown(\n                  p.isNarration\n                    ? p.text.replace(/^\\*|\\*$/g, \"\")\n                    : p.text\n                ),\n              }}\n              />\n            ))\n          }\n        </div>\n      </div>\n\n      {/* ===== 选项按钮层 (YUI.ChoiceButtons) ===== */}\n      {showChoices && choices.length > 0 && (\n        <div style={{\n          position: \"absolute\",\n          top: \"50%\",\n          left: \"50%\",\n          transform: \"translate(-50%, -50%)\",\n          zIndex: 4,\n          display: \"flex\",\n          flexDirection: \"column\",\n          gap: \"10px\",\n          width: \"80%\",\n          maxWidth: \"400px\",\n        }}>\n          {choices.map((choice, i) => (\n            <button\n              key={i}\n              onClick={() => {\n                api.setVariable(\"show_choices\", false);\n                api.sendMessage(choice);\n              }}\n              style={{\n                padding: \"14px 20px\",\n                background: \"rgba(30,27,75,0.9)\",\n                border: \"1px solid rgba(99,102,241,0.6)\",\n                borderRadius: \"10px\",\n                color: \"#c7d2fe\",\n                fontSize: \"15px\",\n                fontWeight: \"600\",\n                cursor: \"pointer\",\n                textAlign: \"left\",\n                transition: \"all 0.2s ease\",\n                backdropFilter: \"blur(8px)\",\n              }}\n              onMouseEnter={(e) => {\n                e.target.style.background = \"rgba(67,56,202,0.8)\";\n                e.target.style.borderColor = \"#818cf8\";\n              }}\n              onMouseLeave={(e) => {\n                e.target.style.background = \"rgba(30,27,75,0.9)\";\n                e.target.style.borderColor = \"rgba(99,102,241,0.6)\";\n              }}\n            >\n              {choice}\n            </button>\n          ))}\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "视觉小说渲染器：场景背景 + 角色立绘 + 对话框（区分旁白/台词）+ 选项按钮",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "你",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2,
+    "fullScreenComponent": false
+  }
+}

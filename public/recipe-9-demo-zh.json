@@ -1,0 +1,223 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：日夜循环",
+  "description": "实战配方 #9 的演示世界。自动推进的时间系统——每 3 回合时间前进一个时段（早晨→中午→傍晚→夜晚→早晨），不同时段启用不同的知识条目，AI 的描写氛围随之变化。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "系统提示",
+      "content": "你是一个互动奇幻故事的叙述者。用沉浸式的第二人称散文写作。每次回复保持 2-3 段。根据玩家的行动推进故事。\n\n这个世界有日夜循环系统。请根据当前启用的时段氛围条目来调整你的描写风格、光线描写和 NPC 行为。当收到时间变化通知时，在回复中自然地体现时间流逝。",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-main",
+      "name": "主开场白",
+      "content": "*清晨的阳光透过树叶间的缝隙洒落，在你身上投下斑驳的光影。你站在一个安静的小镇广场上，空气中弥漫着新鲜面包的香味。*\n\n*远处，一个老人正在打开他的杂货铺大门。几只鸽子在喷泉边踱步，偶尔低头啄食。镇子刚刚从一夜的沉睡中苏醒。*\n\n新的一天开始了。你打算做什么？",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-morning",
+      "name": "早晨氛围",
+      "content": "[当前时段：早晨]\n现在是清晨。描写场景时请体现以下氛围：\n- 柔和的晨光从东方洒入，空气清新微凉\n- 露珠挂在草叶和花瓣上，折射出细碎的光芒\n- 鸟儿在枝头鸣叫，远处传来公鸡的啼鸣\n- NPC 刚刚醒来，店铺陆续开张，街上行人渐多\n- 整体氛围是宁静、充满希望的",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 10,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-noon",
+      "name": "中午氛围",
+      "content": "[当前时段：中午]\n现在是正午。描写场景时请体现以下氛围：\n- 阳光直射，光线炽热明亮，地面反射着刺眼的白光\n- 空气闷热，远处的景物在热浪中微微扭曲\n- 大部分人躲在阴凉处休息，街道上比早晨安静\n- 酒馆和餐馆最为热闹，食物的香气飘散在空气中\n- 整体氛围是慵懒、炎热的",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 11,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    },
+    {
+      "id": "entry-evening",
+      "name": "傍晚氛围",
+      "content": "[当前时段：傍晚]\n现在是黄昏。描写场景时请体现以下氛围：\n- 夕阳将天空染成橘红和紫色，云层边缘镶着金边\n- 长长的影子从建筑和树木上投射出来\n- 归巢的鸟群掠过天际，炊烟从屋顶升起\n- NPC 陆续收工回家，孩子们在街上追逐玩耍\n- 整体氛围是温暖、怀旧、略带伤感的",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 12,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    },
+    {
+      "id": "entry-night",
+      "name": "夜晚氛围",
+      "content": "[当前时段：夜晚]\n现在是深夜。描写场景时请体现以下氛围：\n- 月光和星光是唯一的自然光源，银白色的光洒在万物之上\n- 大部分建筑已经熄灯，偶尔有窗户透出昏黄的烛光\n- 夜风带着凉意，虫鸣声和蛙叫声此起彼伏\n- 街道几乎空无一人，巡夜的卫兵举着火把缓缓走过\n- 暗处可能潜伏着危险——野兽、盗贼、或更诡异的东西\n- 整体氛围是神秘、静谧、暗藏危机的",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 13,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    }
+  ],
+  "variables": [
+    {
+      "id": "time_period",
+      "name": "当前时段",
+      "type": "string",
+      "defaultValue": "早晨",
+      "description": "追踪当前的时段（早晨/中午/傍晚/夜晚）",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。它由日夜循环系统自动控制。当前值代表游戏内的时段。"
+    },
+    {
+      "id": "turn_counter",
+      "name": "回合计数器",
+      "type": "number",
+      "defaultValue": 0,
+      "description": "每回合 +1，到 3 时触发时段切换并重置",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。它由日夜循环系统自动控制。"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-turn-count",
+      "name": "每回合计数",
+      "trigger": { "type": "every-turn" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "turn_counter", "operation": "add", "value": 1 }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-morning-to-noon",
+      "name": "时段推进：早晨→中午",
+      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "above", "threshold": 2 },
+      "conditions": [
+        { "variableId": "time_period", "operator": "eq", "value": "早晨" }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "turn_counter", "operation": "set", "value": 0 },
+        { "type": "modify-variable", "variableId": "time_period", "operation": "set", "value": "中午" },
+        { "type": "toggle-entry", "entryId": "entry-morning", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-noon", "enabled": true },
+        { "type": "send-context", "content": "时间从早晨推进到了中午。请在接下来的描写中自然地体现时间变化。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-noon-to-evening",
+      "name": "时段推进：中午→傍晚",
+      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "above", "threshold": 2 },
+      "conditions": [
+        { "variableId": "time_period", "operator": "eq", "value": "中午" }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "turn_counter", "operation": "set", "value": 0 },
+        { "type": "modify-variable", "variableId": "time_period", "operation": "set", "value": "傍晚" },
+        { "type": "toggle-entry", "entryId": "entry-noon", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-evening", "enabled": true },
+        { "type": "send-context", "content": "时间从中午推进到了傍晚。请在接下来的描写中自然地体现时间变化。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-evening-to-night",
+      "name": "时段推进：傍晚→夜晚",
+      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "above", "threshold": 2 },
+      "conditions": [
+        { "variableId": "time_period", "operator": "eq", "value": "傍晚" }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "turn_counter", "operation": "set", "value": 0 },
+        { "type": "modify-variable", "variableId": "time_period", "operation": "set", "value": "夜晚" },
+        { "type": "toggle-entry", "entryId": "entry-evening", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-night", "enabled": true },
+        { "type": "send-context", "content": "时间从傍晚推进到了夜晚。请在接下来的描写中自然地体现时间变化。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-night-to-morning",
+      "name": "时段推进：夜晚→早晨",
+      "trigger": { "type": "variable-crossed", "variableId": "turn_counter", "direction": "above", "threshold": 2 },
+      "conditions": [
+        { "variableId": "time_period", "operator": "eq", "value": "夜晚" }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "turn_counter", "operation": "set", "value": 0 },
+        { "type": "modify-variable", "variableId": "time_period", "operation": "set", "value": "早晨" },
+        { "type": "toggle-entry", "entryId": "entry-night", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-morning", "enabled": true },
+        { "type": "send-context", "content": "时间从夜晚推进到了早晨，新的一天开始了。请在接下来的描写中自然地体现时间变化。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-session-init",
+      "name": "会话初始化",
+      "trigger": { "type": "session-start" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "time_period", "operation": "set", "value": "早晨" },
+        { "type": "modify-variable", "variableId": "turn_counter", "operation": "set", "value": 0 }
+      ],
+      "priority": 100,
+      "enabled": true
+    }
+  ],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-daynight",
+    "name": "日夜循环渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n\n  // ---- 读取变量 ----\n  const timePeriod = String(api.variables.time_period || \"早晨\");\n\n  // ---- 时段对应的图标和颜色 ----\n  const timeConfig = {\n    \"早晨\": { icon: \"☀️\", label: \"早晨\", color: \"#fbbf24\", bg: \"rgba(251,191,36,0.15)\" },\n    \"中午\": { icon: \"🌤️\", label: \"中午\", color: \"#f59e0b\", bg: \"rgba(245,158,11,0.15)\" },\n    \"傍晚\": { icon: \"🌅\", label: \"傍晚\", color: \"#f97316\", bg: \"rgba(249,115,22,0.15)\" },\n    \"夜晚\": { icon: \"🌙\", label: \"夜晚\", color: \"#818cf8\", bg: \"rgba(129,140,248,0.15)\" },\n  };\n\n  const current = timeConfig[timePeriod] || timeConfig[\"早晨\"];\n\n  // ---- 判断是否是最后一条消息 ----\n  const msgs = api.messages || [];\n  const isLastMsg = messageIndex === msgs.length - 1;\n\n  return (\n    <div>\n      {/* 正常渲染消息文字 */}\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {/* 时间徽章——只在最后一条消息上显示 */}\n      {isLastMsg && (\n        <div style={{\n          display: \"inline-flex\",\n          alignItems: \"center\",\n          gap: \"6px\",\n          marginTop: \"12px\",\n          padding: \"4px 12px\",\n          background: current.bg,\n          border: `1px solid ${current.color}33`,\n          borderRadius: \"999px\",\n          fontSize: \"13px\",\n          color: current.color,\n          fontWeight: \"600\",\n        }}>\n          <span style={{ fontSize: \"16px\" }}>{current.icon}</span>\n          <span>{current.label}</span>\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "最后一条消息显示当前时段的图标徽章（☀️早晨 / 🌤️中午 / 🌅傍晚 / 🌙夜晚）",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "旅人",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

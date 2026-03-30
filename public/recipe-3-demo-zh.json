@@ -1,0 +1,135 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：商店与交易",
+  "description": "实战配方 #3 的演示世界。点击购买按钮购买商品，金币自动扣除，物品自动添加到背包。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "系统提示",
+      "content": "你是一个互动奇幻故事的叙述者。用沉浸式的第二人称散文写作。每次回复保持 2-3 段。根据玩家的行动推进故事。\n\n玩家可以通过界面中的商店面板购买物品。购买时金币会自动扣除，物品会自动添加到背包。",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-main",
+      "name": "商店开场白",
+      "content": "*你推开了一扇厚重的木门，走进了一家弥漫着草药和金属气味的商店。柜台后面站着一位身材矮壮的矮人商人，他的胡子编成了精致的辫子，上面缀着几颗闪亮的金属珠子。*\n\n*他抬起头，露出一个热情的微笑：*\n\n\"欢迎光临，旅人！我这里有上好的药水和精制的武器。看看有没有你需要的？\"\n\n*他伸出粗糙的手掌，指向柜台上整齐排列的商品。*",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    }
+  ],
+  "variables": [
+    {
+      "id": "gold",
+      "name": "金币",
+      "type": "number",
+      "defaultValue": 100,
+      "min": 0,
+      "description": "玩家持有的金币数量",
+      "category": "resource",
+      "behaviorRules": "玩家通过商店购买物品时会自动扣减金币。你也可以在剧情中增减金币——例如完成任务奖励金币、被盗贼偷走金币、或者找到宝箱。"
+    },
+    {
+      "id": "inventory",
+      "name": "背包",
+      "type": "json",
+      "defaultValue": [],
+      "description": "玩家背包中的物品列表",
+      "category": "inventory",
+      "behaviorRules": "商店购买会自动添加物品。你也可以在剧情中添加或移除物品——例如玩家捡到东西、物品损坏、被抢走、或作为任务奖励获得。"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-buy-potion",
+      "name": "购买药水（成功）",
+      "trigger": { "type": "action", "actionId": "buy-potion" },
+      "conditions": [
+        { "variableId": "gold", "operator": "gte", "value": 20 }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "gold", "operation": "subtract", "value": 20 },
+        { "type": "modify-variable", "variableId": "inventory", "operation": "push", "value": "药水" },
+        { "type": "notify-player", "message": "购买成功！获得了药水。", "style": "achievement" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-buy-potion-fail",
+      "name": "购买药水（金币不足）",
+      "trigger": { "type": "action", "actionId": "buy-potion" },
+      "conditions": [
+        { "variableId": "gold", "operator": "lt", "value": 20 }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "notify-player", "message": "金币不足！药水需要 20 金。", "style": "warning" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-buy-sword",
+      "name": "购买铁剑（成功）",
+      "trigger": { "type": "action", "actionId": "buy-sword" },
+      "conditions": [
+        { "variableId": "gold", "operator": "gte", "value": 50 }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "gold", "operation": "subtract", "value": 50 },
+        { "type": "modify-variable", "variableId": "inventory", "operation": "push", "value": "铁剑" },
+        { "type": "notify-player", "message": "购买成功！获得了铁剑。", "style": "achievement" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-buy-sword-fail",
+      "name": "购买铁剑（金币不足）",
+      "trigger": { "type": "action", "actionId": "buy-sword" },
+      "conditions": [
+        { "variableId": "gold", "operator": "lt", "value": 50 }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "notify-player", "message": "金币不足！铁剑需要 50 金。", "style": "warning" }
+      ],
+      "priority": 50,
+      "enabled": true
+    }
+  ],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-shop",
+    "name": "商店渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n  const msgs = api.messages || [];\n  const isLastMsg = messageIndex === msgs.length - 1;\n\n  const gold = Number(api.variables.gold ?? 100);\n  const inventory = Array.isArray(api.variables.inventory)\n    ? api.variables.inventory\n    : [];\n\n  const shopItems = [\n    { name: \"\u836f\u6c34\", price: 20, actionId: \"buy-potion\", icon: \"\ud83e\uddea\", desc: \"\u6062\u590d\u5c11\u91cf\u751f\u547d\u503c\" },\n    { name: \"\u94c1\u5251\", price: 50, actionId: \"buy-sword\", icon: \"\u2694\ufe0f\", desc: \"\u4e00\u628a\u666e\u901a\u7684\u94c1\u5251\" },\n  ];\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {isLastMsg && (\n        <div style={{\n          marginTop: \"16px\",\n          padding: \"16px\",\n          background: \"rgba(15, 23, 42, 0.6)\",\n          borderRadius: \"12px\",\n          border: \"1px solid #334155\",\n        }}>\n          <div style={{\n            display: \"flex\",\n            alignItems: \"center\",\n            gap: \"8px\",\n            marginBottom: \"16px\",\n            padding: \"10px 14px\",\n            background: \"linear-gradient(135deg, #78350f, #92400e)\",\n            borderRadius: \"8px\",\n            border: \"1px solid #b45309\",\n          }}>\n            <span style={{ fontSize: \"20px\" }}>\ud83d\udcb0</span>\n            <span style={{ color: \"#fde68a\", fontSize: \"16px\", fontWeight: \"bold\" }}>\n              {gold} \u91d1\u5e01\n            </span>\n          </div>\n\n          <div style={{\n            fontSize: \"14px\",\n            fontWeight: \"bold\",\n            color: \"#94a3b8\",\n            marginBottom: \"10px\",\n            textTransform: \"uppercase\",\n            letterSpacing: \"1px\",\n          }}>\n            \u5546\u5e97\n          </div>\n\n          <div style={{ display: \"flex\", flexDirection: \"column\", gap: \"8px\", marginBottom: \"16px\" }}>\n            {shopItems.map((item) => (\n              <div\n                key={item.actionId}\n                style={{\n                  display: \"flex\",\n                  alignItems: \"center\",\n                  justifyContent: \"space-between\",\n                  padding: \"10px 14px\",\n                  background: \"rgba(30, 41, 59, 0.8)\",\n                  borderRadius: \"8px\",\n                  border: \"1px solid #475569\",\n                }}\n              >\n                <div style={{ display: \"flex\", alignItems: \"center\", gap: \"10px\" }}>\n                  <span style={{ fontSize: \"22px\" }}>{item.icon}</span>\n                  <div>\n                    <div style={{ color: \"#e2e8f0\", fontSize: \"14px\", fontWeight: \"600\" }}>\n                      {item.name}\n                    </div>\n                    <div style={{ color: \"#64748b\", fontSize: \"12px\" }}>\n                      {item.desc}\n                    </div>\n                  </div>\n                </div>\n                <button\n                  onClick={() => api.executeAction(item.actionId)}\n                  style={{\n                    padding: \"6px 16px\",\n                    background: gold >= item.price\n                      ? \"linear-gradient(135deg, #065f46, #047857)\"\n                      : \"linear-gradient(135deg, #374151, #4b5563)\",\n                    border: gold >= item.price\n                      ? \"1px solid #10b981\"\n                      : \"1px solid #6b7280\",\n                    borderRadius: \"6px\",\n                    color: gold >= item.price ? \"#a7f3d0\" : \"#9ca3af\",\n                    fontSize: \"13px\",\n                    fontWeight: \"600\",\n                    cursor: gold >= item.price ? \"pointer\" : \"not-allowed\",\n                    opacity: gold >= item.price ? 1 : 0.6,\n                    whiteSpace: \"nowrap\",\n                  }}\n                >\n                  {item.price} \u91d1\n                </button>\n              </div>\n            ))}\n          </div>\n\n          <div style={{\n            fontSize: \"14px\",\n            fontWeight: \"bold\",\n            color: \"#94a3b8\",\n            marginBottom: \"10px\",\n            textTransform: \"uppercase\",\n            letterSpacing: \"1px\",\n          }}>\n            \u80cc\u5305\n          </div>\n\n          {inventory.length === 0 ? (\n            <div style={{\n              padding: \"20px\",\n              textAlign: \"center\",\n              color: \"#475569\",\n              fontSize: \"13px\",\n              background: \"rgba(30, 41, 59, 0.4)\",\n              borderRadius: \"8px\",\n              border: \"1px dashed #334155\",\n            }}>\n              \u80cc\u5305\u662f\u7a7a\u7684\n            </div>\n          ) : (\n            <div style={{\n              display: \"grid\",\n              gridTemplateColumns: \"repeat(auto-fill, minmax(80px, 1fr))\",\n              gap: \"8px\",\n            }}>\n              {inventory.map((item, idx) => (\n                <div\n                  key={idx}\n                  style={{\n                    display: \"flex\",\n                    flexDirection: \"column\",\n                    alignItems: \"center\",\n                    justifyContent: \"center\",\n                    padding: \"10px 6px\",\n                    background: \"rgba(30, 41, 59, 0.8)\",\n                    borderRadius: \"8px\",\n                    border: \"1px solid #475569\",\n                    gap: \"4px\",\n                  }}\n                >\n                  <span style={{ fontSize: \"24px\" }}>\n                    {item === \"\u836f\u6c34\" ? \"\ud83e\uddea\" : item === \"\u94c1\u5251\" ? \"\u2694\ufe0f\" : \"\ud83d\udce6\"}\n                  </span>\n                  <span style={{ color: \"#cbd5e1\", fontSize: \"11px\", textAlign: \"center\" }}>\n                    {String(item)}\n                  </span>\n                </div>\n              ))}\n            </div>\n          )}\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "最后一条消息下方显示商店面板：金币余额、商品列表（带购买按钮）、背包物品栏",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "旅人",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

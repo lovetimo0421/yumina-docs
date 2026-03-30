@@ -1,0 +1,108 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：角色创建表单",
+  "description": "实战配方 #4 的演示世界。第一条消息显示角色创建表单，填写完毕后跳转到真正的故事开场。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "系统提示",
+      "content": "你是一个互动奇幻故事的叙述者。用沉浸式的第二人称散文写作。每次回复保持 2-3 段。根据玩家的行动推进故事。\n\n始终使用玩家角色档案中的信息来称呼角色和调整互动方式。",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-creation",
+      "name": "角色创建界面",
+      "content": "*一阵温暖的光芒包围了你。你感觉到自己正在成形——但你的身份尚未确定。*\n\n*一个古老的声音在虚空中回荡：*\n\n\"欢迎，旅人。在你踏入这个世界之前，请告诉我——你是谁？\"",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-story",
+      "name": "故事开场",
+      "content": "*{{player_name}}推开了命运之门。*\n\n*你是一名{{player_class}}，这是你第一次踏入埃尔德大陆。远方的城市轮廓在晨曦中若隐若现，脚下的石板路延伸向未知的方向。*\n\n*一阵微风拂过你的脸庞，带着草地和远处炊烟的气息。你深吸一口气——冒险，从现在开始。*\n\n你面前有三条路：通往城镇的大道、穿越树林的小径、以及一条通向河边的下坡路。你怎么走？",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 1,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-character-profile",
+      "name": "玩家角色档案",
+      "content": "[玩家角色档案]\n姓名：{{player_name}}\n职业：{{player_class}}\n背景故事：{{player_backstory}}\n\n在对话中始终用角色的名字称呼玩家。根据角色的职业和背景故事来调整互动方式、可用的技能和遭遇的事件。",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 5,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    }
+  ],
+  "variables": [
+    {
+      "id": "player_name",
+      "name": "角色名字",
+      "type": "string",
+      "defaultValue": "旅人",
+      "description": "玩家角色的名字",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。它由玩家通过角色创建表单设置。"
+    },
+    {
+      "id": "player_class",
+      "name": "角色职业",
+      "type": "string",
+      "defaultValue": "",
+      "description": "玩家角色的职业（战士/法师/盗贼）",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。它由玩家通过角色创建表单设置。"
+    },
+    {
+      "id": "player_backstory",
+      "name": "角色背景",
+      "type": "string",
+      "defaultValue": "",
+      "description": "玩家角色的背景故事",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。它由玩家通过角色创建表单设置。"
+    }
+  ],
+  "rules": [],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-character-creation",
+    "name": "角色创建渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n\n  const [name, setName] = React.useState(\n    String(api.variables.player_name || \"\")\n  );\n  const [selectedClass, setSelectedClass] = React.useState(\n    String(api.variables.player_class || \"\")\n  );\n  const [backstory, setBackstory] = React.useState(\n    String(api.variables.player_backstory || \"\")\n  );\n\n  const hasCreated = String(api.variables.player_class || \"\") !== \"\";\n\n  const classes = [\n    { id: \"\u6218\u58eb\", label: \"\u6218\u58eb\", icon: \"\u2694\ufe0f\", desc: \"\u8fd1\u6218\u4e13\u7cbe\uff0c\u9ad8\u751f\u547d\u503c\" },\n    { id: \"\u6cd5\u5e08\", label: \"\u6cd5\u5e08\", icon: \"\ud83d\udd2e\", desc: \"\u8fdc\u7a0b\u9b54\u6cd5\uff0c\u9ad8\u9b54\u529b\u503c\" },\n    { id: \"\u76d7\u8d3c\", label: \"\u76d7\u8d3c\", icon: \"\ud83d\udde1\ufe0f\", desc: \"\u654f\u6377\u9690\u533f\uff0c\u9ad8\u66b4\u51fb\u7387\" },\n  ];\n\n  const handleStart = () => {\n    if (!selectedClass) return;\n    api.setVariable(\"player_name\", name.trim() || \"\u65c5\u4eba\");\n    api.setVariable(\"player_class\", selectedClass);\n    api.setVariable(\"player_backstory\", backstory.trim());\n    api.switchGreeting?.(1);\n  };\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {messageIndex === 0 && !hasCreated && (\n        <div\n          style={{\n            marginTop: \"20px\",\n            padding: \"24px\",\n            background: \"linear-gradient(135deg, #1e1b4b 0%, #1a1a2e 100%)\",\n            borderRadius: \"16px\",\n            border: \"1px solid #312e81\",\n          }}\n        >\n          <div\n            style={{\n              fontSize: \"18px\",\n              fontWeight: \"bold\",\n              color: \"#c4b5fd\",\n              marginBottom: \"20px\",\n              textAlign: \"center\",\n            }}\n          >\n            \u521b\u5efa\u4f60\u7684\u89d2\u8272\n          </div>\n\n          <div style={{ marginBottom: \"16px\" }}>\n            <div\n              style={{\n                fontSize: \"13px\",\n                color: \"#a5b4fc\",\n                marginBottom: \"6px\",\n                fontWeight: \"600\",\n              }}\n            >\n              \u89d2\u8272\u540d\u5b57\n            </div>\n            <input\n              type=\"text\"\n              value={name}\n              onChange={(e) => setName(e.target.value)}\n              placeholder=\"\u8f93\u5165\u4f60\u7684\u540d\u5b57\uff08\u7559\u7a7a\u5219\u4e3a\u300c\u65c5\u4eba\u300d\uff09\"\n              style={{\n                width: \"100%\",\n                padding: \"10px 14px\",\n                background: \"#0f172a\",\n                border: \"1px solid #334155\",\n                borderRadius: \"8px\",\n                color: \"#e2e8f0\",\n                fontSize: \"14px\",\n                outline: \"none\",\n                boxSizing: \"border-box\",\n              }}\n            />\n          </div>\n\n          <div style={{ marginBottom: \"16px\" }}>\n            <div\n              style={{\n                fontSize: \"13px\",\n                color: \"#a5b4fc\",\n                marginBottom: \"8px\",\n                fontWeight: \"600\",\n              }}\n            >\n              \u9009\u62e9\u804c\u4e1a\n            </div>\n            <div style={{ display: \"flex\", gap: \"10px\" }}>\n              {classes.map((cls) => (\n                <button\n                  key={cls.id}\n                  onClick={() => setSelectedClass(cls.id)}\n                  style={{\n                    flex: 1,\n                    padding: \"14px 10px\",\n                    background:\n                      selectedClass === cls.id\n                        ? \"linear-gradient(135deg, #4338ca, #6366f1)\"\n                        : \"#1e293b\",\n                    border:\n                      selectedClass === cls.id\n                        ? \"2px solid #818cf8\"\n                        : \"1px solid #334155\",\n                    borderRadius: \"10px\",\n                    color:\n                      selectedClass === cls.id ? \"#e0e7ff\" : \"#94a3b8\",\n                    cursor: \"pointer\",\n                    textAlign: \"center\",\n                    transition: \"all 0.2s\",\n                  }}\n                >\n                  <div style={{ fontSize: \"24px\", marginBottom: \"4px\" }}>\n                    {cls.icon}\n                  </div>\n                  <div\n                    style={{\n                      fontSize: \"14px\",\n                      fontWeight: \"bold\",\n                      marginBottom: \"2px\",\n                    }}\n                  >\n                    {cls.label}\n                  </div>\n                  <div style={{ fontSize: \"11px\", opacity: 0.7 }}>\n                    {cls.desc}\n                  </div>\n                </button>\n              ))}\n            </div>\n          </div>\n\n          <div style={{ marginBottom: \"20px\" }}>\n            <div\n              style={{\n                fontSize: \"13px\",\n                color: \"#a5b4fc\",\n                marginBottom: \"6px\",\n                fontWeight: \"600\",\n              }}\n            >\n              \u80cc\u666f\u6545\u4e8b\uff08\u53ef\u9009\uff09\n            </div>\n            <textarea\n              value={backstory}\n              onChange={(e) => setBackstory(e.target.value)}\n              placeholder=\"\u7b80\u5355\u5199\u51e0\u53e5\u89d2\u8272\u7684\u6765\u5386...\"\n              rows={3}\n              style={{\n                width: \"100%\",\n                padding: \"10px 14px\",\n                background: \"#0f172a\",\n                border: \"1px solid #334155\",\n                borderRadius: \"8px\",\n                color: \"#e2e8f0\",\n                fontSize: \"14px\",\n                outline: \"none\",\n                resize: \"vertical\",\n                boxSizing: \"border-box\",\n                fontFamily: \"inherit\",\n              }}\n            />\n          </div>\n\n          <button\n            onClick={handleStart}\n            disabled={!selectedClass}\n            style={{\n              width: \"100%\",\n              padding: \"14px\",\n              background: selectedClass\n                ? \"linear-gradient(135deg, #7c3aed, #a855f7)\"\n                : \"#374151\",\n              border: \"none\",\n              borderRadius: \"10px\",\n              color: selectedClass ? \"#f5f3ff\" : \"#6b7280\",\n              fontSize: \"16px\",\n              fontWeight: \"bold\",\n              cursor: selectedClass ? \"pointer\" : \"not-allowed\",\n              transition: \"all 0.2s\",\n            }}\n          >\n            {selectedClass ? \"\u5f00\u59cb\u5192\u9669\" : \"\u8bf7\u5148\u9009\u62e9\u804c\u4e1a\"}\n          </button>\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "第一条消息显示角色创建表单（名字输入、职业选择、背景故事），创建后正常渲染消息",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "旅人",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：物品栏与装备",
+  "description": "实战配方 #7 的演示世界。一个嵌在聊天界面里的物品栏面板——HP 状态栏、装备槽、物品网格，药水可使用、铁剑可装备。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "系统提示",
+      "content": "你是一个互动奇幻故事的叙述者。用沉浸式的第二人称散文写作。每次回复保持 2-3 段。根据玩家的行动推进故事。\n\n玩家拥有一个物品栏系统。物品栏里的物品可以在剧情中使用。当玩家使用药水或装备武器时，请在描写中自然地体现这些变化。",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting-main",
+      "name": "主开场白",
+      "content": "*你在一片昏暗的地下遗迹中醒来。空气潮湿而冰冷，石壁上爬满了发光的苔藓，勉强照亮你身前的一小片空间。*\n\n*你低头检查自己的装备——腰间挂着两瓶药水，背包里还有一把铁剑。前方的通道传来微弱的脚步声和金属碰撞的回响。*\n\n看起来你得做好准备再往前走。检查一下你的物品栏吧。",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    }
+  ],
+  "variables": [
+    {
+      "id": "inventory",
+      "name": "物品栏",
+      "type": "json",
+      "defaultValue": [{"name":"药水","icon":"🧪","count":2},{"name":"铁剑","icon":"⚔️","count":1}],
+      "description": "玩家的物品栏，JSON 数组格式",
+      "category": "inventory",
+      "behaviorRules": "物品栏按钮会自动管理使用和装备操作。你也可以在剧情中添加物品（玩家捡到、获得奖励）或移除物品（损坏、丢失、被偷）。"
+    },
+    {
+      "id": "hp",
+      "name": "生命值",
+      "type": "number",
+      "defaultValue": 80,
+      "min": 0,
+      "max": 100,
+      "description": "玩家的当前生命值",
+      "category": "stat",
+      "behaviorRules": "当前值代表玩家的剩余生命值（0-100）。在战斗或危险场景中减少，使用药水或休息时增加。"
+    },
+    {
+      "id": "equipped_weapon",
+      "name": "当前武器",
+      "type": "string",
+      "defaultValue": "",
+      "description": "玩家当前装备的武器名称，空字符串表示未装备",
+      "category": "custom",
+      "behaviorRules": "当前值代表玩家装备的武器名称，空字符串表示未装备。装备按钮会自动设置，但你也可以在剧情中改变——例如武器损坏、被夺走、或获得新武器。"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-use-potion",
+      "name": "使用药水（成功）",
+      "trigger": { "type": "action", "actionId": "use-potion" },
+      "conditions": [
+        { "variableId": "inventory", "operator": "contains", "value": "药水" }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "hp", "operation": "add", "value": 20 },
+        { "type": "modify-variable", "variableId": "inventory", "operation": "delete", "value": {"name":"药水"} },
+        { "type": "notify-player", "message": "使用了药水！HP +20", "style": "achievement" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-use-potion-fail",
+      "name": "使用药水（没有药水）",
+      "trigger": { "type": "action", "actionId": "use-potion" },
+      "conditions": [
+        { "variableId": "inventory", "operator": "not_contains", "value": "药水" }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "notify-player", "message": "没有药水可以使用！", "style": "warning" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-equip-sword",
+      "name": "装备铁剑（成功）",
+      "trigger": { "type": "action", "actionId": "equip-sword" },
+      "conditions": [
+        { "variableId": "inventory", "operator": "contains", "value": "铁剑" },
+        { "variableId": "equipped_weapon", "operator": "neq", "value": "铁剑" }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "equipped_weapon", "operation": "set", "value": "铁剑" },
+        { "type": "inject-directive", "content": "玩家装备了铁剑。从现在开始，玩家手持一把铁制长剑。请在后续战斗描写和互动中体现这把武器的存在。" },
+        { "type": "notify-player", "message": "装备了铁剑！", "style": "achievement" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-equip-sword-already",
+      "name": "装备铁剑（已装备）",
+      "trigger": { "type": "action", "actionId": "equip-sword" },
+      "conditions": [
+        { "variableId": "equipped_weapon", "operator": "eq", "value": "铁剑" }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "notify-player", "message": "铁剑已经装备着了！", "style": "info" }
+      ],
+      "priority": 50,
+      "enabled": true
+    }
+  ],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-inventory",
+    "name": "物品栏渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n  const msgs = api.messages || [];\n  const isLastMsg = messageIndex === msgs.length - 1;\n\n  // 读取变量\n  const hp = Number(api.variables.hp ?? 80);\n  const equippedWeapon = String(api.variables.equipped_weapon || \"\");\n  const inventory = Array.isArray(api.variables.inventory)\n    ? api.variables.inventory\n    : [];\n\n  // 物品类型映射：决定每种物品能做什么操作\n  const itemActions = {\n    \"药水\": { type: \"consumable\", actionId: \"use-potion\", label: \"使用\" },\n    \"铁剑\": { type: \"equipment\", actionId: \"equip-sword\", label: \"装备\" },\n  };\n\n  return (\n    <div>\n      {/* 正常渲染消息文字 */}\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {/* 只在最后一条消息下方显示物品栏 */}\n      {isLastMsg && (\n        <div style={{\n          marginTop: \"16px\",\n          padding: \"16px\",\n          background: \"rgba(15, 23, 42, 0.6)\",\n          borderRadius: \"12px\",\n          border: \"1px solid #334155\",\n        }}>\n\n          {/* ====== HP 状态栏 ====== */}\n          <div style={{\n            display: \"flex\",\n            alignItems: \"center\",\n            gap: \"10px\",\n            marginBottom: \"14px\",\n          }}>\n            <span style={{ fontSize: \"16px\" }}>❤️</span>\n            <div style={{ flex: 1 }}>\n              <div style={{\n                display: \"flex\",\n                justifyContent: \"space-between\",\n                marginBottom: \"4px\",\n              }}>\n                <span style={{ color: \"#94a3b8\", fontSize: \"12px\" }}>HP</span>\n                <span style={{ color: \"#e2e8f0\", fontSize: \"12px\", fontWeight: \"bold\" }}>\n                  {hp} / 100\n                </span>\n              </div>\n              <div style={{\n                height: \"8px\",\n                background: \"#1e293b\",\n                borderRadius: \"4px\",\n                overflow: \"hidden\",\n              }}>\n                <div style={{\n                  height: \"100%\",\n                  width: `${Math.min(hp, 100)}%`,\n                  background: hp > 50\n                    ? \"linear-gradient(90deg, #22c55e, #4ade80)\"\n                    : hp > 20\n                      ? \"linear-gradient(90deg, #eab308, #facc15)\"\n                      : \"linear-gradient(90deg, #ef4444, #f87171)\",\n                  borderRadius: \"4px\",\n                  transition: \"width 0.3s ease\",\n                }} />\n              </div>\n            </div>\n          </div>\n\n          {/* ====== 装备槽 ====== */}\n          <div style={{\n            display: \"flex\",\n            alignItems: \"center\",\n            gap: \"8px\",\n            marginBottom: \"14px\",\n            padding: \"10px 14px\",\n            background: \"rgba(30, 41, 59, 0.8)\",\n            borderRadius: \"8px\",\n            border: \"1px solid #475569\",\n          }}>\n            <span style={{ fontSize: \"16px\" }}>⚔️</span>\n            <span style={{ color: \"#94a3b8\", fontSize: \"13px\" }}>武器：</span>\n            <span style={{\n              color: equippedWeapon ? \"#e2e8f0\" : \"#475569\",\n              fontSize: \"13px\",\n              fontWeight: equippedWeapon ? \"600\" : \"normal\",\n              fontStyle: equippedWeapon ? \"normal\" : \"italic\",\n            }}>\n              {equippedWeapon || \"未装备\"}\n            </span>\n          </div>\n\n          {/* ====== 物品栏标题 ====== */}\n          <div style={{\n            fontSize: \"14px\",\n            fontWeight: \"bold\",\n            color: \"#94a3b8\",\n            marginBottom: \"10px\",\n            textTransform: \"uppercase\",\n            letterSpacing: \"1px\",\n          }}>\n            物品栏\n          </div>\n\n          {/* ====== 物品栏网格 ====== */}\n          {inventory.length === 0 ? (\n            <div style={{\n              padding: \"24px\",\n              textAlign: \"center\",\n              color: \"#475569\",\n              fontSize: \"13px\",\n              background: \"rgba(30, 41, 59, 0.4)\",\n              borderRadius: \"8px\",\n              border: \"1px dashed #334155\",\n            }}>\n              物品栏是空的\n            </div>\n          ) : (\n            <div style={{\n              display: \"grid\",\n              gridTemplateColumns: \"repeat(auto-fill, minmax(140px, 1fr))\",\n              gap: \"8px\",\n            }}>\n              {inventory.map((item, idx) => {\n                const name = String(item?.name || item);\n                const icon = String(item?.icon || \"📦\");\n                const count = Number(item?.count ?? 1);\n                const action = itemActions[name];\n\n                return (\n                  <div\n                    key={idx}\n                    style={{\n                      display: \"flex\",\n                      flexDirection: \"column\",\n                      alignItems: \"center\",\n                      padding: \"12px 8px 8px\",\n                      background: \"rgba(30, 41, 59, 0.8)\",\n                      borderRadius: \"8px\",\n                      border: equippedWeapon === name\n                        ? \"1px solid #22d3ee\"\n                        : \"1px solid #475569\",\n                      gap: \"6px\",\n                    }}\n                  >\n                    <span style={{ fontSize: \"28px\" }}>{icon}</span>\n                    <span style={{\n                      color: \"#e2e8f0\",\n                      fontSize: \"12px\",\n                      fontWeight: \"600\",\n                      textAlign: \"center\",\n                    }}>\n                      {name}\n                    </span>\n                    <span style={{\n                      color: \"#64748b\",\n                      fontSize: \"11px\",\n                    }}>\n                      x{count}\n                    </span>\n\n                    {/* 操作按钮 */}\n                    {action && (\n                      <button\n                        onClick={() => api.executeAction(action.actionId)}\n                        style={{\n                          marginTop: \"4px\",\n                          padding: \"4px 14px\",\n                          background: action.type === \"consumable\"\n                            ? \"linear-gradient(135deg, #065f46, #047857)\"\n                            : equippedWeapon === name\n                              ? \"linear-gradient(135deg, #374151, #4b5563)\"\n                              : \"linear-gradient(135deg, #1e3a5f, #1e40af)\",\n                          border: action.type === \"consumable\"\n                            ? \"1px solid #10b981\"\n                            : equippedWeapon === name\n                              ? \"1px solid #6b7280\"\n                              : \"1px solid #3b82f6\",\n                          borderRadius: \"6px\",\n                          color: action.type === \"consumable\"\n                            ? \"#a7f3d0\"\n                            : equippedWeapon === name\n                              ? \"#9ca3af\"\n                              : \"#bfdbfe\",\n                          fontSize: \"12px\",\n                          fontWeight: \"600\",\n                          cursor: \"pointer\",\n                          width: \"100%\",\n                        }}\n                      >\n                        {equippedWeapon === name ? \"已装备\" : action.label}\n                      </button>\n                    )}\n                  </div>\n                );\n              })}\n            </div>\n          )}\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "HP 状态栏 + 装备槽 + 物品栏网格（带使用和装备按钮）",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "冒险者",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

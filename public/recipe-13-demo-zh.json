@@ -1,0 +1,161 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：成就系统",
+  "description": "实战配方 #13 的演示世界。当玩家达成特定里程碑时弹出金色成就通知，最后一条消息下方显示成就面板。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "系统提示",
+      "content": "你是一个互动奇幻故事的叙述者。用沉浸式的第二人称散文写作。每次回复保持 2-3 段。根据玩家的行动推进故事。\n\n当叙事中发生以下事件时，使用对应的指令修改变量：\n- 玩家获得金币时：[gold: add X]（X 为获得的金币数）\n- 玩家在战斗中获胜时：[combat_wins: add 1]\n\n不要直接修改以 achievement_ 开头的变量——成就由引擎根据条件自动解锁。",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting",
+      "name": "开场白",
+      "content": "*你推开酒馆的木门，走进了喧嚣的大厅。壁炉里的火焰欢快地跳跃着，烤肉的香气弥漫在空气中。*\n\n*酒馆老板向你招了招手。*\n\n「欢迎回来，冒险者！听说北边的森林里最近出现了一群哥布林，悬赏 50 金币。东边的矿洞里也有宝藏的传言。你今天想做什么？」\n\n*你摸了摸空荡荡的钱袋——是时候出发冒险了。*",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    }
+  ],
+  "variables": [
+    {
+      "id": "gold",
+      "name": "金币",
+      "type": "number",
+      "defaultValue": 0,
+      "description": "玩家当前的金币数量",
+      "category": "stat",
+      "behaviorRules": "当前金币数量。AI 可以在叙事需要时通过指令修改。"
+    },
+    {
+      "id": "combat_wins",
+      "name": "战斗胜利次数",
+      "type": "number",
+      "defaultValue": 0,
+      "description": "玩家在战斗中获胜的累计次数",
+      "category": "stat",
+      "behaviorRules": "玩家在战斗中获胜的累计次数。AI 可以在战斗胜利时通过指令 +1。"
+    },
+    {
+      "id": "achievement_rich",
+      "name": "成就：一掷千金",
+      "type": "boolean",
+      "defaultValue": false,
+      "description": "累计获得超过 100 金币时解锁",
+      "category": "achievement",
+      "behaviorRules": "不要直接修改这个变量——成就由行为规则根据条件自动解锁，并弹出通知。手动修改会绕过通知系统。"
+    },
+    {
+      "id": "achievement_warrior",
+      "name": "成就：初露锋芒",
+      "type": "boolean",
+      "defaultValue": false,
+      "description": "在战斗中胜利超过 5 次时解锁",
+      "category": "achievement",
+      "behaviorRules": "不要直接修改这个变量——成就由行为规则根据条件自动解锁，并弹出通知。手动修改会绕过通知系统。"
+    },
+    {
+      "id": "achievement_explorer",
+      "name": "成就：探索先驱",
+      "type": "boolean",
+      "defaultValue": false,
+      "description": "玩家提到探索或 AI 提到发现时解锁",
+      "category": "achievement",
+      "behaviorRules": "不要直接修改这个变量——成就由行为规则根据条件自动解锁，并弹出通知。手动修改会绕过通知系统。"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-achievement-rich",
+      "name": "成就：一掷千金",
+      "trigger": { "type": "variable-crossed", "variableId": "gold", "direction": "rises-above", "threshold": 100 },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "achievement_rich", "operation": "set", "value": true },
+        { "type": "notify-player", "message": "成就解锁：一掷千金", "style": "achievement" }
+      ],
+      "priority": 50,
+      "enabled": true,
+      "maxFireCount": 1
+    },
+    {
+      "id": "rule-achievement-warrior",
+      "name": "成就：初露锋芒",
+      "trigger": { "type": "variable-crossed", "variableId": "combat_wins", "direction": "rises-above", "threshold": 5 },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "achievement_warrior", "operation": "set", "value": true },
+        { "type": "notify-player", "message": "成就解锁：初露锋芒", "style": "achievement" }
+      ],
+      "priority": 50,
+      "enabled": true,
+      "maxFireCount": 1
+    },
+    {
+      "id": "rule-achievement-explorer-player",
+      "name": "成就：探索先驱（玩家关键词）",
+      "trigger": { "type": "keyword", "keyword": "探索" },
+      "conditions": [
+        { "variableId": "achievement_explorer", "operator": "eq", "value": false }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "achievement_explorer", "operation": "set", "value": true },
+        { "type": "notify-player", "message": "成就解锁：探索先驱", "style": "achievement" }
+      ],
+      "priority": 50,
+      "enabled": true,
+      "maxFireCount": 1
+    },
+    {
+      "id": "rule-achievement-explorer-ai",
+      "name": "成就：探索先驱（AI 关键词）",
+      "trigger": { "type": "ai-keyword", "keyword": "发现" },
+      "conditions": [
+        { "variableId": "achievement_explorer", "operator": "eq", "value": false }
+      ],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "achievement_explorer", "operation": "set", "value": true },
+        { "type": "notify-player", "message": "成就解锁：探索先驱", "style": "achievement" }
+      ],
+      "priority": 50,
+      "enabled": true,
+      "maxFireCount": 1
+    }
+  ],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-main",
+    "name": "成就面板渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n  const msgs = api.messages || [];\n  const isLastMsg = messageIndex === msgs.length - 1;\n\n  const achievements = [\n    {\n      id: \"achievement_rich\",\n      name: \"一掷千金\",\n      desc: \"累计获得超过 100 金币\",\n      icon: \"\ud83d\udcb0\",\n    },\n    {\n      id: \"achievement_warrior\",\n      name: \"初露锋芒\",\n      desc: \"在战斗中胜利超过 5 次\",\n      icon: \"\u2694\ufe0f\",\n    },\n    {\n      id: \"achievement_explorer\",\n      name: \"探索先驱\",\n      desc: \"发现隐藏的区域或秘密\",\n      icon: \"\ud83d\uddfa\ufe0f\",\n    },\n  ];\n\n  const unlockedCount = achievements.filter(\n    (a) => api.variables[a.id] === true\n  ).length;\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {isLastMsg && (\n        <div\n          style={{\n            marginTop: \"16px\",\n            padding: \"12px 16px\",\n            background: \"linear-gradient(135deg, #1c1917, #292524)\",\n            border: \"1px solid #44403c\",\n            borderRadius: \"10px\",\n          }}\n        >\n          <div\n            style={{\n              display: \"flex\",\n              justifyContent: \"space-between\",\n              alignItems: \"center\",\n              marginBottom: \"10px\",\n            }}\n          >\n            <span\n              style={{\n                fontSize: \"13px\",\n                fontWeight: \"bold\",\n                color: \"#fbbf24\",\n                letterSpacing: \"0.05em\",\n              }}\n            >\n              \ud83c\udfc6 成就\n            </span>\n            <span style={{ fontSize: \"12px\", color: \"#a8a29e\" }}>\n              {unlockedCount} / {achievements.length}\n            </span>\n          </div>\n\n          <div style={{ display: \"flex\", flexDirection: \"column\", gap: \"6px\" }}>\n            {achievements.map((a) => {\n              const unlocked = api.variables[a.id] === true;\n              return (\n                <div\n                  key={a.id}\n                  style={{\n                    display: \"flex\",\n                    alignItems: \"center\",\n                    gap: \"10px\",\n                    padding: \"6px 8px\",\n                    borderRadius: \"6px\",\n                    background: unlocked\n                      ? \"rgba(251, 191, 36, 0.08)\"\n                      : \"rgba(120, 113, 108, 0.08)\",\n                  }}\n                >\n                  <span style={{ fontSize: \"18px\", opacity: unlocked ? 1 : 0.3 }}>\n                    {unlocked ? a.icon : \"\ud83d\udd12\"}\n                  </span>\n\n                  <div style={{ flex: 1, minWidth: 0 }}>\n                    <div\n                      style={{\n                        fontSize: \"13px\",\n                        fontWeight: \"600\",\n                        color: unlocked ? \"#fbbf24\" : \"#78716c\",\n                      }}\n                    >\n                      {a.name}\n                    </div>\n                    <div\n                      style={{\n                        fontSize: \"11px\",\n                        color: unlocked ? \"#a8a29e\" : \"#57534e\",\n                        marginTop: \"1px\",\n                      }}\n                    >\n                      {a.desc}\n                    </div>\n                  </div>\n\n                  {unlocked && (\n                    <span style={{ fontSize: \"11px\", color: \"#fbbf24\" }}>\n                      \u2713 已解锁\n                    </span>\n                  )}\n                </div>\n              );\n            })}\n          </div>\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "最后一条消息下方显示成就面板，列出所有成就及其解锁状态",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "冒险者",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

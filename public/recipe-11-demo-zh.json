@@ -1,0 +1,109 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：动态 AI 人格切换",
+  "description": "实战配方 #11 的演示世界。点击按钮切换 AI 的人格模式（普通叙述 / 喜剧模式 / 恐怖模式），当前模式按钮高亮显示。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "系统提示",
+      "content": "你是一个互动奇幻故事的叙述者。用沉浸式的第二人称散文写作。每次回复保持 2-3 段。根据玩家的行动推进故事。",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting",
+      "name": "开场白",
+      "content": "*你站在一座古老城堡的大厅中央。火把在墙壁上摇曳，投射出忽明忽暗的影子。空气中弥漫着陈旧石头和蜡烛的气味。*\n\n大厅尽头有一扇半开的木门，门缝里透出微弱的光芒。远处传来隐约的音乐声——也许是竖琴，也许只是风。\n\n*你的冒险从这里开始。*\n\n你要怎么做？",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    }
+  ],
+  "variables": [
+    {
+      "id": "current_mode",
+      "name": "当前模式",
+      "type": "string",
+      "defaultValue": "normal",
+      "description": "追踪当前激活的 AI 人格模式",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。它由玩家的 UI 按钮控制。"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-mode-comedy",
+      "name": "切换到喜剧模式",
+      "trigger": { "type": "action", "actionId": "mode-comedy" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "remove-directive", "directiveId": "personality-override" },
+        { "type": "inject-directive", "directiveId": "personality-override", "content": "[叙述风格：喜剧模式]\n从现在开始，用幽默搞笑的口吻叙述一切。你可以：\n- 加入夸张的比喻和荒诞的类比\n- 偶尔打破第四面墙，对读者说悄悄话\n- 让NPC说出不合时宜但好笑的台词\n- 用轻松的语气描述严肃的场景，制造反差幽默\n保持故事推进，不要只是讲笑话。幽默应该融入叙述，而不是取代叙述。", "position": "after_char" },
+        { "type": "modify-variable", "variableId": "current_mode", "operation": "set", "value": "comedy" },
+        { "type": "notify-player", "message": "已切换到喜剧模式", "style": "info" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-mode-horror",
+      "name": "切换到恐怖模式",
+      "trigger": { "type": "action", "actionId": "mode-horror" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "remove-directive", "directiveId": "personality-override" },
+        { "type": "inject-directive", "directiveId": "personality-override", "content": "[叙述风格：恐怖模式]\n从现在开始，用阴暗不安的氛围叙述一切。你应该：\n- 用缓慢、压迫性的节奏描写场景，注重感官细节（声音、气味、触感）\n- 暗示有什么东西在暗处注视着角色，但不要直接揭露\n- 让环境本身散发出不对劲的感觉——门自己关上、影子移动的方向不对、镜子里的倒影慢了半拍\n- NPC的对话带着微妙的违和感，好像他们知道什么不该知道的事\n- 偶尔用第二人称直接描写角色的生理反应（后颈汗毛竖起、心跳加速、瞳孔放大）\n营造持续的紧张感，但不要每段都跳出怪物。真正的恐怖在于未知。", "position": "after_char" },
+        { "type": "modify-variable", "variableId": "current_mode", "operation": "set", "value": "horror" },
+        { "type": "notify-player", "message": "已切换到恐怖模式", "style": "danger" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-mode-normal",
+      "name": "切换回普通模式",
+      "trigger": { "type": "action", "actionId": "mode-normal" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "remove-directive", "directiveId": "personality-override" },
+        { "type": "modify-variable", "variableId": "current_mode", "operation": "set", "value": "normal" },
+        { "type": "notify-player", "message": "已恢复普通模式", "style": "info" }
+      ],
+      "priority": 50,
+      "enabled": true
+    }
+  ],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-main",
+    "name": "人格模式切换渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n\n  const currentMode = String(api.variables.current_mode || \"normal\");\n\n  const modes = [\n    {\n      id: \"normal\",\n      label: \"普通叙述\",\n      actionId: \"mode-normal\",\n      color: \"#94a3b8\",\n      activeColor: \"#e2e8f0\",\n      activeBg: \"rgba(148,163,184,0.2)\",\n      border: \"#475569\",\n      activeBorder: \"#94a3b8\",\n    },\n    {\n      id: \"comedy\",\n      label: \"喜剧模式\",\n      actionId: \"mode-comedy\",\n      color: \"#fbbf24\",\n      activeColor: \"#fef3c7\",\n      activeBg: \"rgba(251,191,36,0.2)\",\n      border: \"#a16207\",\n      activeBorder: \"#fbbf24\",\n    },\n    {\n      id: \"horror\",\n      label: \"恐怖模式\",\n      actionId: \"mode-horror\",\n      color: \"#f87171\",\n      activeColor: \"#fecaca\",\n      activeBg: \"rgba(248,113,113,0.2)\",\n      border: \"#991b1b\",\n      activeBorder: \"#f87171\",\n    },\n  ];\n\n  const msgs = api.messages || [];\n  const isLastMsg = messageIndex === msgs.length - 1;\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {isLastMsg && (\n        <div style={{\n          display: \"flex\",\n          gap: \"8px\",\n          marginTop: \"16px\",\n          flexWrap: \"wrap\",\n        }}>\n          {modes.map((mode) => {\n            const isActive = currentMode === mode.id;\n            return (\n              <button\n                key={mode.id}\n                onClick={() => {\n                  if (!isActive) {\n                    api.executeAction(mode.actionId);\n                  }\n                }}\n                style={{\n                  padding: \"8px 16px\",\n                  background: isActive ? mode.activeBg : \"transparent\",\n                  border: \"2px solid \" + (isActive ? mode.activeBorder : mode.border),\n                  borderRadius: \"8px\",\n                  color: isActive ? mode.activeColor : mode.color,\n                  fontSize: \"13px\",\n                  fontWeight: isActive ? \"700\" : \"500\",\n                  cursor: isActive ? \"default\" : \"pointer\",\n                  opacity: isActive ? 1 : 0.7,\n                  transition: \"all 0.2s ease\",\n                }}\n              >\n                {isActive ? \"● \" : \"\"}{mode.label}\n              </button>\n            );\n          })}\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "最后一条消息下方显示三个模式切换按钮，当前激活模式高亮",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "冒险者",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

@@ -1,0 +1,185 @@
+{
+  "version": "18.0.0",
+  "name": "实战配方演示：地图与场景导航",
+  "description": "实战配方 #12 的演示世界。点击地图按钮切换地点，AI 描写新场景，知识条目自动切换，当前地点高亮。",
+  "author": "Yumina Docs",
+  "language": "zh",
+  "entries": [
+    {
+      "id": "entry-system",
+      "name": "系统提示",
+      "content": "你是一个互动奇幻故事的叙述者。用沉浸式的第二人称散文写作。每次回复保持 2-3 段。根据玩家的行动推进故事。\n\n当玩家移动到新的地点时，描写他们到达时看到的场景。注意参考当前启用的地点氛围条目。",
+      "role": "system",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-greeting",
+      "name": "开场白",
+      "content": "*清晨的阳光洒在村庄的石板路上。你站在村口的老橡树下，远处传来铁匠铺有节奏的锤击声。*\n\n*这座小村庄虽然不大，但它连接着周围的几个区域——向北穿过田野就是茂密的森林，向东沿着山路可以到达一个古老的洞穴，而往南走不远就是热闹的集市。*\n\n*今天你打算去哪里？*",
+      "role": "greeting",
+      "section": "system-presets",
+      "position": 0,
+      "alwaysSend": false,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-lore-village",
+      "name": "村庄氛围",
+      "content": "[当前地点：村庄]\n玩家正在村庄中。描写场景时请体现以下氛围：\n- 一座宁静的小村庄，石板路蜿蜒在木屋之间\n- 炊烟从屋顶缓缓升起，空气里弥漫着面包和炖肉的香气\n- 村民们在井边闲聊，铁匠铺传来有节奏的锤击声\n- 远处的田野一片金黄，微风拂过麦穗荡起波浪\n- 整体氛围是温暖、安宁、充满生活气息的",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 10,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": true
+    },
+    {
+      "id": "entry-lore-forest",
+      "name": "森林氛围",
+      "content": "[当前地点：森林]\n玩家正在森林中。描写场景时请体现以下氛围：\n- 参天古木遮蔽了大部分阳光，只有斑驳的光影洒在苔藓上\n- 空气潮湿清新，混合着泥土、树脂和野花的气味\n- 鸟鸣声从四面八方传来，偶尔有树枝折断的脆响\n- 小径两旁的灌木丛里可能藏着野兔、鹿或更危险的东西\n- 越往深处走，树木越密集，光线越昏暗\n- 整体氛围是神秘、原始、充满未知的",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 11,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    },
+    {
+      "id": "entry-lore-cave",
+      "name": "洞穴氛围",
+      "content": "[当前地点：洞穴]\n玩家正在洞穴中。描写场景时请体现以下氛围：\n- 岩壁上附着发光的菌类，散发微弱的蓝绿色光芒\n- 水滴从钟乳石上滴落，每一声都在洞穴里回荡\n- 空气冰冷潮湿，带着矿石和地下水的金属气味\n- 脚下的地面湿滑不平，深处的隧道黑暗到伸手不见五指\n- 偶尔传来不明的低吼声或岩石碎裂声——洞穴深处可能并不安全\n- 整体氛围是阴暗、压抑、暗藏危险的",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 12,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    },
+    {
+      "id": "entry-lore-market",
+      "name": "集市氛围",
+      "content": "[当前地点：集市]\n玩家正在集市中。描写场景时请体现以下氛围：\n- 五颜六色的帐篷和摊位一字排开，商品琳琅满目\n- 商人们大声吆喝，讨价还价的声音此起彼伏\n- 空气中混杂着香料、烤肉、皮革和花卉的气味\n- 魔法道具店的橱窗里闪烁着奇异的光芒，炼金师在角落里调配药水\n- 人群熙熙攘攘，各种种族和职业的旅行者汇聚于此\n- 整体氛围是热闹、喧嚣、充满商业活力的",
+      "role": "lore",
+      "section": "system-presets",
+      "position": 13,
+      "alwaysSend": true,
+      "keywords": [],
+      "conditions": [],
+      "conditionLogic": "all",
+      "enabled": false
+    }
+  ],
+  "variables": [
+    {
+      "id": "current_location",
+      "name": "当前地点",
+      "type": "string",
+      "defaultValue": "village",
+      "description": "追踪玩家当前所在的地点",
+      "category": "custom",
+      "behaviorRules": "不要修改这个变量。它由玩家的地图 UI 控制。当前值代表玩家所在的地点。"
+    }
+  ],
+  "rules": [
+    {
+      "id": "rule-go-village",
+      "name": "前往村庄",
+      "trigger": { "type": "action", "actionId": "go-village" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "current_location", "operation": "set", "value": "village" },
+        { "type": "toggle-entry", "entryId": "entry-lore-forest", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-cave", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-market", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-village", "enabled": true },
+        { "type": "send-context", "context": "玩家回到了村庄。请描写玩家到达村庄时看到的场景。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-go-forest",
+      "name": "前往森林",
+      "trigger": { "type": "action", "actionId": "go-forest" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "current_location", "operation": "set", "value": "forest" },
+        { "type": "toggle-entry", "entryId": "entry-lore-village", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-cave", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-market", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-forest", "enabled": true },
+        { "type": "send-context", "context": "玩家进入了森林。请描写玩家踏入森林时看到的场景。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-go-cave",
+      "name": "前往洞穴",
+      "trigger": { "type": "action", "actionId": "go-cave" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "current_location", "operation": "set", "value": "cave" },
+        { "type": "toggle-entry", "entryId": "entry-lore-village", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-forest", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-market", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-cave", "enabled": true },
+        { "type": "send-context", "context": "玩家走进了洞穴。请描写玩家进入洞穴时看到的场景。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    },
+    {
+      "id": "rule-go-market",
+      "name": "前往集市",
+      "trigger": { "type": "action", "actionId": "go-market" },
+      "conditions": [],
+      "conditionLogic": "all",
+      "actions": [
+        { "type": "modify-variable", "variableId": "current_location", "operation": "set", "value": "market" },
+        { "type": "toggle-entry", "entryId": "entry-lore-village", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-forest", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-cave", "enabled": false },
+        { "type": "toggle-entry", "entryId": "entry-lore-market", "enabled": true },
+        { "type": "send-context", "context": "玩家来到了集市。请描写玩家走进集市时看到的场景。" }
+      ],
+      "priority": 50,
+      "enabled": true
+    }
+  ],
+  "components": [],
+  "audioTracks": [],
+  "customComponents": [],
+  "messageRenderer": {
+    "id": "renderer-main",
+    "name": "地图导航渲染器",
+    "tsxCode": "export default function Renderer({ content, renderMarkdown, messageIndex }) {\n  const api = useYumina();\n\n  const currentLocation = String(api.variables.current_location || \"village\");\n\n  const locations = [\n    { id: \"village\", label: \"村庄\", icon: \"\ud83c\udfe0\ufe0f\", action: \"go-village\",\n      color: \"#92400e\", bg: \"#fef3c7\", border: \"#f59e0b\",\n      activeBg: \"#f59e0b\", activeColor: \"#ffffff\" },\n    { id: \"forest\",  label: \"森林\", icon: \"\ud83c\udf32\", action: \"go-forest\",\n      color: \"#166534\", bg: \"#dcfce7\", border: \"#22c55e\",\n      activeBg: \"#22c55e\", activeColor: \"#ffffff\" },\n    { id: \"cave\",    label: \"洞穴\", icon: \"\ud83d\udd73\ufe0f\", action: \"go-cave\",\n      color: \"#3b0764\", bg: \"#f3e8ff\", border: \"#a855f7\",\n      activeBg: \"#a855f7\", activeColor: \"#ffffff\" },\n    { id: \"market\",  label: \"集市\", icon: \"\ud83c\udfea\", action: \"go-market\",\n      color: \"#9a3412\", bg: \"#ffedd5\", border: \"#f97316\",\n      activeBg: \"#f97316\", activeColor: \"#ffffff\" },\n  ];\n\n  const msgs = api.messages || [];\n  const isLastMsg = messageIndex === msgs.length - 1;\n\n  return (\n    <div>\n      <div\n        style={{ color: \"#e2e8f0\", lineHeight: 1.7 }}\n        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}\n      />\n\n      {isLastMsg && (\n        <div style={{\n          marginTop: \"16px\",\n          padding: \"16px\",\n          background: \"rgba(15,23,42,0.6)\",\n          borderRadius: \"12px\",\n          border: \"1px solid #334155\",\n        }}>\n          <div style={{\n            fontSize: \"13px\",\n            color: \"#94a3b8\",\n            marginBottom: \"12px\",\n            fontWeight: \"600\",\n            letterSpacing: \"0.05em\",\n          }}>\n            世界地图\n          </div>\n\n          <div style={{\n            display: \"grid\",\n            gridTemplateColumns: \"1fr 1fr\",\n            gap: \"10px\",\n          }}>\n            {locations.map((loc) => {\n              const isActive = currentLocation === loc.id;\n              return (\n                <button\n                  key={loc.id}\n                  onClick={() => {\n                    if (!isActive) {\n                      api.executeAction(loc.action);\n                    }\n                  }}\n                  style={{\n                    padding: \"14px 10px\",\n                    background: isActive ? loc.activeBg : loc.bg,\n                    border: \"2px solid \" + (isActive ? loc.activeBg : loc.border),\n                    borderRadius: \"10px\",\n                    color: isActive ? loc.activeColor : loc.color,\n                    fontSize: \"14px\",\n                    fontWeight: \"700\",\n                    cursor: isActive ? \"default\" : \"pointer\",\n                    opacity: isActive ? 1 : 0.85,\n                    display: \"flex\",\n                    flexDirection: \"column\",\n                    alignItems: \"center\",\n                    gap: \"6px\",\n                    transition: \"all 0.2s ease\",\n                  }}\n                >\n                  <span style={{ fontSize: \"28px\" }}>{loc.icon}</span>\n                  <span>{loc.label}</span>\n                  {isActive && (\n                    <span style={{\n                      fontSize: \"11px\",\n                      opacity: 0.9,\n                      fontWeight: \"500\",\n                    }}>\n                      当前位置\n                    </span>\n                  )}\n                </button>\n              );\n            })}\n          </div>\n        </div>\n      )}\n    </div>\n  );\n}",
+    "description": "最后一条消息下方显示 2x2 网格地图面板，当前地点高亮",
+    "order": 0,
+    "visible": true
+  },
+  "settings": {
+    "playerName": "旅人",
+    "temperature": 0.9,
+    "maxTokens": 4000,
+    "lorebookScanDepth": 2
+  }
+}

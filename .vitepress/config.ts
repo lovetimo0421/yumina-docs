@@ -81,7 +81,6 @@ export default defineConfig({
               text: 'Recipes',
               items: [
                 { text: 'Greeting Switching & Entry Modification', link: '/creator-guide/14-recipe-scene-jumping' },
-                { text: 'Combat System', link: '/creator-guide/15-recipe-combat' },
                 { text: 'Shop & Trading', link: '/creator-guide/16-recipe-shop' },
                 { text: 'Character Creation Form', link: '/creator-guide/17-recipe-character-creation' },
                 { text: 'Quest Tracker', link: '/creator-guide/18-recipe-quest-tracker' },
@@ -182,7 +181,6 @@ export default defineConfig({
               text: '实战配方',
               items: [
                 { text: '开场白切换与条目内容修改', link: '/zh/creator-guide/14-recipe-scene-jumping' },
-                { text: '战斗系统', link: '/zh/creator-guide/15-recipe-combat' },
                 { text: '商店与交易', link: '/zh/creator-guide/16-recipe-shop' },
                 { text: '角色创建表单', link: '/zh/creator-guide/17-recipe-character-creation' },
                 { text: '任务追踪', link: '/zh/creator-guide/18-recipe-quest-tracker' },

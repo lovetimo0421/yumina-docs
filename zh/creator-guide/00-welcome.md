@@ -20,7 +20,7 @@
 
 | 章节 | 一句话说明 |
 |------|-----------|
-| [词条与世界书](./03-entries-and-lorebook.md) | 给 AI 喂设定的地方 |
+| [知识库与条目](./03-entries-and-lorebook.md) | 给 AI 喂设定的地方 |
 | [变量系统](./04-variables.md) | 追踪血量、金币、好感度这些会变的东西 |
 | [AI 指令与宏](./05-directives-and-macros.md) | AI 怎么改变游戏状态 |
 | [行为规则引擎](./06-rules-engine.md) | 自动化逻辑，不用写代码的事件系统 |

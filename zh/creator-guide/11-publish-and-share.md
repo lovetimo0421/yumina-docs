@@ -11,7 +11,7 @@
 在你点"发布"之前，先在编辑器的 **概览（Overview）** 里把这几样东西准备好：
 
 - **名字和描述** — 名字最多200字，描述最多10000字。好名字是门面，好描述是引路牌。
-- **封面图（Cover Image）** — 就是玩家在社区列表里第一眼看到的那张图。没封面的世界就像没贴海报的电影院，路过的人不知道里面放什么。
+- **封面图片（Cover Image）** — 就是玩家在社区列表里第一眼看到的那张图。没封面的世界就像没贴海报的电影院，路过的人不知道里面放什么。
 - **标签（Tags）** — 最多 7 个。标签帮助玩家发现你的世界，比如"奇幻""恋爱""大逃杀""多人"之类的。
 - **年龄分级** — 全年龄（all）、R18、R18G，三选一。选了R18或R18G会自动打上NSFW标记。
 - **可见性** — 公开（所有人可见）或仅关注者可见。
@@ -86,7 +86,7 @@ followers  — 仅关注者可见，适合小范围测试或给熟人圈子
 
 最多 7 个标签。标签在 **发现（Discover）** 页面的搜索和筛选里非常有用——平台会统计所有已发布世界的标签使用频率，玩家可以按标签浏览和搜索。输入标签时还有自动补全，会基于已有的热门标签给你建议。
 
-**封面图（thumbnailUrl）**
+**封面图片（thumbnailUrl）**
 
 在编辑器的 **概览（Overview）** 区域上传。**发现（Discover）** 页面的卡片、搜索结果、**我的库（Library）** 列表都会用到这张图。没封面的世界几乎不会被点开，强烈建议加一张。
 
@@ -117,14 +117,14 @@ interface YuminaBundle {
   description: string;         // 描述这个Bundle是干什么的
   tags: string[];              // 标签
   createdAt: string;           // 创建时间（ISO格式）
-  entries: WorldEntry[];       // 词条（角色设定、剧情、风格指令等）
+  entries: WorldEntry[];       // 条目（角色设定、剧情、风格指令等）
   variables: Variable[];       // 变量（血量、金币、好感度等）
   components: GameComponent[]; // 游戏组件（血条、物品栏等）
   rules: Rule[];               // 规则（当血量归零时触发死亡等）
   customComponents: CustomComponent[];  // 自定义TSX组件
   audioTracks: AudioTrack[];   // 音频（BGM、音效、环境音）
   customTags?: string[];       // 自定义标签定义（可选）
-  entryFolders?: EntryFolder[];  // 词条的文件夹结构（可选）
+  entryFolders?: EntryFolder[];  // 条目的文件夹结构（可选）
 }
 ```
 
@@ -134,10 +134,10 @@ interface YuminaBundle {
 
 在编辑器顶部菜单点 **导出 Bundle（Export Bundle）**，勾选你想导出的内容。四大类可选：
 
-1. **Entries** — 词条（角色设定、剧情、风格指令等）
+1. **Entries** — 条目（角色设定、剧情、风格指令等）
 2. **Variables** — 变量（血量、金币、好感度等）
 3. **Components** — 游戏组件（状态栏、选项列表等）
-4. **Rules** — 规则（触发条件 + 动作）
+4. **Rules** — 行为（触发条件 + 动作）
 
 有个贴心的设计：当你勾选了某条规则或组件，系统会自动高亮提示它依赖的变量，标个"suggested"让你不会漏选。
 
@@ -149,7 +149,7 @@ interface YuminaBundle {
 
 - **变量ID相同**：跳过，直接用现有的
 - **变量名相同但ID不同**：创建新变量，名字自动加后缀（比如 `HP (1)`）
-- **词条**：总是生成新UUID，追加到现有词条列表末尾
+- **条目**：总是生成新UUID，追加到现有条目列表末尾
 - **规则和组件**：同理，新建ID后追加
 
 规则和组件里引用的变量ID会自动重映射，保证导入后引用关系不会断。这个细节很重要——否则导入一套战斗系统，规则里引用的"HP"变量对不上号，那就白导入了。
@@ -164,9 +164,9 @@ Bundle 保存后默认是私有的。发布后可以在 **发现（Discover）**
 
 除了Bundle这种"部分导出"，你也可以导出完整的世界JSON。在编辑器的 **概览（Overview）** 区域可以导出，也可以在 **我的库（Library）** → **我的项目（My Projects）** 里操作。导出的文件包含整个 `WorldDefinition` 里的所有内容：
 
-- 所有词条（entries）和词条文件夹结构（entryFolders）
+- 所有条目（entries）和条目文件夹结构（entryFolders）
 - 所有变量（variables）
-- 所有规则（rules）和事件反应（reactions）
+- 所有行为（rules）和事件反应（reactions）
 - 所有游戏组件（components）和自定义TSX组件（customComponents）
 - 消息渲染器（messageRenderer）
 - 音频轨道（audioTracks）和BGM播放列表（bgmPlaylist）、条件BGM（conditionalBGM）
@@ -266,7 +266,7 @@ multiplayerSettings: {
 ```
 [ ] 名字 — 有吸引力吗？能让人一眼知道这是什么类型的世界？
 [ ] 描述 — 写了吗？别留空。至少写两句话告诉玩家能在这里体验什么。
-[ ] 封面图（Cover Image）— 上传了吗？在发现（Discover）页面缩小后还能看清吗？
+[ ] 封面图片（Cover Image）— 上传了吗？在发现（Discover）页面缩小后还能看清吗？
 [ ] 标签（Tags）— 加了 3-7 个相关标签？想想玩家会搜什么词。
 [ ] 年龄分级 — 有成人内容就选r18，有极端内容就选r18g，没有就选all。别搞错。
 [ ] 可见性 — 想让所有人看到就选public。想先让小范围测试就选followers。
@@ -292,8 +292,8 @@ multiplayerSettings: {
 
 1. 编辑器顶部菜单点 **导出 Bundle（Export Bundle）**
 2. 名字填"回合制战斗系统 v1.0"，描述写清楚用法
-3. 勾选5个变量——注意勾行为的时候系统会提示相关变量，跟着点就行
-4. 勾选2条行为和2个组件
+3. 勾选 5 个变量——注意勾行为的时候系统会提示相关变量，跟着点就行
+4. 勾选 2 条行为和 2 个组件
 5. 勾选音频轨道
 6. 标签写 `combat`、`rpg`、`turn-based`
 7. 导出并保存

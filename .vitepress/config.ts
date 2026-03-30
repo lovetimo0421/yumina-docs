@@ -81,6 +81,17 @@ export default defineConfig({
               text: 'Recipes',
               items: [
                 { text: 'Greeting Switching & Entry Modification', link: '/creator-guide/14-recipe-scene-jumping' },
+                { text: 'Combat System', link: '/creator-guide/15-recipe-combat' },
+                { text: 'Shop & Trading', link: '/creator-guide/16-recipe-shop' },
+                { text: 'Character Creation Form', link: '/creator-guide/17-recipe-character-creation' },
+                { text: 'Quest Tracker', link: '/creator-guide/18-recipe-quest-tracker' },
+                { text: 'Inventory & Equipment', link: '/creator-guide/19-recipe-inventory' },
+                { text: 'Day-Night Cycle', link: '/creator-guide/20-recipe-day-night' },
+                { text: 'Visual Novel Mode', link: '/creator-guide/21-recipe-visual-novel' },
+                { text: 'Dynamic AI Personality', link: '/creator-guide/22-recipe-ai-personality' },
+                { text: 'Map & Scene Navigation', link: '/creator-guide/23-recipe-map-navigation' },
+                { text: 'Achievement System', link: '/creator-guide/24-recipe-achievements' },
+                { text: 'Audio Design Guide', link: '/creator-guide/25-recipe-audio-design' },
               ]
             },
             {
@@ -171,6 +182,17 @@ export default defineConfig({
               text: '实战配方',
               items: [
                 { text: '开场白切换与条目内容修改', link: '/zh/creator-guide/14-recipe-scene-jumping' },
+                { text: '战斗系统', link: '/zh/creator-guide/15-recipe-combat' },
+                { text: '商店与交易', link: '/zh/creator-guide/16-recipe-shop' },
+                { text: '角色创建表单', link: '/zh/creator-guide/17-recipe-character-creation' },
+                { text: '任务追踪', link: '/zh/creator-guide/18-recipe-quest-tracker' },
+                { text: '物品栏与装备', link: '/zh/creator-guide/19-recipe-inventory' },
+                { text: '日夜循环', link: '/zh/creator-guide/20-recipe-day-night' },
+                { text: '视觉小说模式', link: '/zh/creator-guide/21-recipe-visual-novel' },
+                { text: '动态 AI 人格切换', link: '/zh/creator-guide/22-recipe-ai-personality' },
+                { text: '地图与场景导航', link: '/zh/creator-guide/23-recipe-map-navigation' },
+                { text: '成就系统', link: '/zh/creator-guide/24-recipe-achievements' },
+                { text: '音效设计指南', link: '/zh/creator-guide/25-recipe-audio-design' },
               ]
             },
             {

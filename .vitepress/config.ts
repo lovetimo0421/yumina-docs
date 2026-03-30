@@ -171,6 +171,7 @@ export default defineConfig({
                 { text: 'AI 指令与宏', link: '/zh/creator-guide/05-directives-and-macros' },
                 { text: '行为规则引擎', link: '/zh/creator-guide/06-rules-engine' },
                 { text: '自定义前端指南', link: '/zh/creator-guide/07-components' },
+                { text: '消息渲染器 vs 自定义组件', link: '/zh/creator-guide/07b-renderer-vs-components' },
                 { text: '自定义消息渲染器', link: '/zh/creator-guide/08-message-renderer' },
                 { text: '音频系统', link: '/zh/creator-guide/09-audio' },
                 { text: 'AI 模型与设置', link: '/zh/creator-guide/10-ai-settings' },

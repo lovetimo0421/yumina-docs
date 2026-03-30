@@ -71,6 +71,7 @@ export default defineConfig({
                 { text: 'AI Directives & Macros', link: '/creator-guide/05-directives-and-macros' },
                 { text: 'Rules Engine', link: '/creator-guide/06-rules-engine' },
                 { text: 'Custom Frontend Guide', link: '/creator-guide/07-components' },
+                { text: 'Renderer vs Components', link: '/creator-guide/07b-renderer-vs-components' },
                 { text: 'Custom Message Renderer', link: '/creator-guide/08-message-renderer' },
                 { text: 'Audio System', link: '/creator-guide/09-audio' },
                 { text: 'AI Models & Settings', link: '/creator-guide/10-ai-settings' },

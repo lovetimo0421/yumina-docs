@@ -2,7 +2,7 @@
 
 # 自定义消息渲染器
 
-> 用一段 TSX 代码，把 AI 回复从"一坨纯文字"变成任何你想要的视觉体验——气泡对话、视觉小说、战斗日志、RPG 面板，随便你。
+> 深入篇。如果你看完了 [自定义 UI 指南](./07-components.md)，想搞懂渲染器底层是怎么运作的——架构、TSX 语法、样式技巧、调试方法——这就是你要找的页面。
 
 ---
 
@@ -35,7 +35,7 @@
 2. 把你想要的效果描述给 AI（比如 Claude），让它帮你写
 3. 先用默认渲染跑起来，等熟悉了再慢慢加
 
-但说实话，这是一个**进阶功能**。如果你完全没接触过 HTML 或 React，建议先玩玩 07-components.md 里的内置组件，那个不需要写代码。
+但说实话，这是一个**深入篇**。如果你完全没接触过 HTML 或 React，建议先看 [自定义 UI 指南](./07-components.md)——那里不需要你写代码也能搞定。
 
 ---
 
@@ -180,78 +180,9 @@ export default function ChatRenderer({ content, role, variables, renderMarkdown 
 
 ## 详细版
 
-### 三种渲染方式——搞清楚区别
-
-Yumina 有三种"自定义 UI"的方式，它们的定位完全不同，别搞混了：
-
-#### 1. messageRenderer —— 改造每条消息的样子
-
-这是本章的主角。它替换掉默认的 Markdown 渲染，让每条 AI 回复都按你的设计来显示。
-
-适用场景：聊天气泡、视觉小说对话框、战斗日志。
-
-在 world 定义中，它是一个单独的字段：
-
-```json
-{
-  "messageRenderer": {
-    "id": "message-renderer",
-    "name": "我的渲染器",
-    "tsxCode": "export default function Renderer({ content, renderMarkdown }) { ... }",
-    "description": "",
-    "order": 0,
-    "visible": true
-  }
-}
-```
-
-#### 2. customComponents —— 额外的 UI 面板
-
-它**不替换**消息渲染，而是在聊天界面旁边**额外添加**独立面板。比如角色创建界面、游戏侧边栏、地图面板。
-
-在 world 定义中，它是一个数组，可以有多个：
-
-```json
-{
-  "customComponents": [
-    { "id": "...", "name": "角色面板", "tsxCode": "...", "order": 0, "visible": true },
-    { "id": "...", "name": "地图",     "tsxCode": "...", "order": 1, "visible": true }
-  ]
-}
-```
-
-#### 3. fullScreenComponent —— 全屏模式
-
-当你在 settings 里设置 `fullScreenComponent: true` 时，customComponents 会占据整个屏幕，聊天窗口完全消失。适合做视觉小说、全屏游戏这类完全自定义的体验。
-
-```json
-{
-  "settings": {
-    "fullScreenComponent": true
-  }
-}
-```
-
-一句话总结：
-- **messageRenderer** = 改消息长什么样
-- **customComponents** = 在旁边加东西
-- **fullScreenComponent** = 全屏接管
-
----
-
-### CustomComponent 数据结构
-
-不管是 messageRenderer 还是 customComponents，底层数据结构都是同一个 `CustomComponent`：
-
-| 字段 | 类型 | 说明 |
-|---|---|---|
-| `id` | string | 唯一标识符 |
-| `name` | string | 显示名称（给你自己看的） |
-| `tsxCode` | string | TSX 代码，核心内容 |
-| `description` | string | 描述（可选） |
-| `order` | number | 排序用（customComponents 有多个时） |
-| `visible` | boolean | 是否显示 |
-| `updatedAt` | string | 最后更新时间（自动维护） |
+::: info 想看总览？
+三种自定义级别（默认聊天、消息模板、应用模板）、完整的 useYumina() SDK 参考、YUI 组件库 → [自定义 UI 指南](./07-components.md)
+:::
 
 ---
 
@@ -301,6 +232,8 @@ export default function MyRenderer({ content }) {
 
 ### messageRenderer 收到什么 Props
 
+快速参考表 → [自定义 UI 指南：消息模板 Props](./07-components.md#message-template-props)
+
 当你的渲染器被调用时，Yumina 会传入这些参数：
 
 ```typescript
@@ -335,72 +268,26 @@ export default function MyRenderer({
 
 ---
 
-### useYumina() Hook —— 和游戏引擎交互
+### useYumina() —— 和游戏引擎交互
 
-除了 Props，你还可以通过 `useYumina()` 获取更多能力：
+除了 Props，`useYumina()` 还可以让你发消息、改变量、触发规则、播放音频等等。
 
 ```tsx
 export default function MyRenderer({ content, renderMarkdown }) {
-  const api = useYumina();
+  var api = useYumina();
 
   return (
     <div>
       <div dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
-      <button onClick={() => api.sendMessage("攻击")}>攻击</button>
-      <button onClick={() => api.setVariable("health", 100)}>回满血</button>
-      <button onClick={() => api.executeAction("flee")}>触发逃跑规则</button>
+      <button onClick={function() { api.sendMessage("攻击") }}>攻击</button>
+      <button onClick={function() { api.setVariable("health", 100) }}>回满血</button>
+      <button onClick={function() { api.executeAction("flee") }}>触发逃跑规则</button>
     </div>
   );
 }
 ```
 
-`useYumina()` 返回的完整 API：
-
-| 方法/属性 | 说明 |
-|---|---|
-| `sendMessage(text)` | 以玩家身份发送一条消息 |
-| `setVariable(id, value)` | 直接修改一个游戏变量 |
-| `executeAction(actionId)` | 触发一个 action 类型的规则 |
-| `variables` | 当前所有游戏变量（和 Props 里的 variables 一样） |
-| `worldName` | 当前世界名称 |
-| `currentUser` | 当前用户信息（`{ id, name, image }`） |
-| `messages` | 所有聊天消息列表 |
-| `isStreaming` | AI 是否正在流式输出 |
-| `streamingContent` | 流式输出的当前累积内容 |
-| `playAudio(trackId, opts)` | 播放音轨 |
-| `stopAudio(trackId?)` | 停止音轨（不传 ID 则停止全部） |
-| `resolveAssetUrl(ref)` | 将 `@asset:xxx` 引用解析为真实 URL |
-
----
-
-### 编写渲染器的步骤
-
-1. 在编辑器中打开你的世界
-2. 找到 **消息渲染器（Message Renderer）** 区域
-3. 选择 **自定义 TSX（Custom TSX）** 模式
-4. 在代码框里写你的 TSX 代码
-5. 编辑器会实时编译，底部有编译状态指示（绿色"正常" / 红色报错）
-6. 保存世界，回到游戏界面测试
-
-你也可以在 **Studio** 的 Code View 面板里编辑——那里有更好的编辑体验。
-
----
-
-### 运行环境里有什么
-
-你的 TSX 代码运行在一个沙盒里，可以用以下全局变量：
-
-| 变量 | 说明 |
-|---|---|
-| `React` | React 库（`useState`、`useEffect` 等都在里面） |
-| `useYumina` | 获取游戏 API 的 Hook |
-| `Icons` | 全部 Lucide 图标，用法：`<Icons.Heart size={16} />`。完整列表见 [lucide.dev/icons](https://lucide.dev/icons) |
-| `YUI` | Yumina 内置 UI 组件库（`YUI.StatBar`、`YUI.Panel`、`YUI.DialogueBox` 等） |
-
-注意：你**不能** import 任何外部包。所有依赖都通过上面这些全局变量获取。
-
-**YUI 组件库包含：**
-Scene, Sprite, DialogueBox, ChoiceButtons, StatBar, StatCard, Badge, Panel, Tabs, ActionButton, ItemGrid, Fullscreen。
+完整的 SDK 参考（8 大类 30+ 方法）→ [自定义 UI 指南：useYumina() SDK](./07-components.md#the-useyumina-sdk)
 
 ---
 
@@ -486,7 +373,7 @@ React.useEffect(() => {
 
 ```tsx
 export default function BubbleRenderer({ content, role, renderMarkdown }) {
-  const isUser = role === "user";
+  var isUser = role === "user";
 
   return (
     <div style={{
@@ -534,9 +421,9 @@ export default function BubbleRenderer({ content, role, renderMarkdown }) {
 
 ```tsx
 export default function VNRenderer({ content, variables, renderMarkdown }) {
-  const api = useYumina();
-  const speaker = variables["current-speaker"] || "???";
-  const bg = variables["current-bg"] || "";
+  var api = useYumina();
+  var speaker = variables["current-speaker"] || "???";
+  var bg = variables["current-bg"] || "";
 
   // 注入动画样式
   React.useEffect(() => {
@@ -639,13 +526,13 @@ export default function VNRenderer({ content, variables, renderMarkdown }) {
 
 ```tsx
 export default function BattleLogRenderer({ content, variables, renderMarkdown }) {
-  const hp = Number(variables["health"] ?? 100);
-  const maxHp = Number(variables["max-health"] ?? 100);
-  const hpPercent = maxHp > 0 ? Math.min(100, (hp / maxHp) * 100) : 0;
-  const hpColor = hp < 30 ? "#ef4444" : hp < 60 ? "#f59e0b" : "#22c55e";
+  var hp = Number(variables["health"] ?? 100);
+  var maxHp = Number(variables["max-health"] ?? 100);
+  var hpPercent = maxHp > 0 ? Math.min(100, (hp / maxHp) * 100) : 0;
+  var hpColor = hp < 30 ? "#ef4444" : hp < 60 ? "#f59e0b" : "#22c55e";
 
   // 把回复内容按换行拆成日志条目
-  const lines = (content || "").split("\n").filter(function(l) {
+  var lines = (content || "").split("\n").filter(function(l) {
     return l.trim().length > 0;
   });
 
@@ -742,7 +629,7 @@ export default function BattleLogRenderer({ content, variables, renderMarkdown }
 
 ### 下一步
 
-- 想做独立 UI 面板（侧边栏、角色创建界面）？请看 **07-components.md**
+- 完整的 SDK 参考、YUI 组件库、实用 AI prompt → [自定义 UI 指南](./07-components.md)
 - 想让 AI 的回复自动改变游戏状态？请看 **06-rules-engine.md** 和 **04-variables.md**
 - 想加背景音乐和音效？请看 **09-audio.md**
 

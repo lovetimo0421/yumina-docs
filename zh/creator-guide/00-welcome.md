@@ -24,8 +24,8 @@
 | [变量系统](./04-variables.md) | 追踪血量、金币、好感度这些会变的东西 |
 | [AI 指令与宏](./05-directives-and-macros.md) | AI 怎么改变游戏状态 |
 | [行为规则引擎](./06-rules-engine.md) | 自动化逻辑，不用写代码的事件系统 |
-| [自定义前端指南](./07-components.md) | 用 AI 生成游戏界面（血条、背包、视觉小说等） |
-| [自定义消息渲染器](./08-message-renderer.md) | 彻底改造聊天消息的外观 |
+| [自定义 UI 指南](./07-components.md) | 用 AI 生成游戏界面（血条、背包、视觉小说等） |
+| [消息渲染器深入篇](./08-message-renderer.md) | 架构原理、TSX 语法、样式技巧、调试方法 |
 | [音频系统](./09-audio.md) | BGM、音效、环境音 |
 | [AI 模型与设置](./10-ai-settings.md) | 调 AI 的参数 |
 | [发布、导出与 Bundle](./11-publish-and-share.md) | 做完了怎么发出去 |

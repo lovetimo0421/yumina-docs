@@ -90,15 +90,15 @@ Yes — this is one of the most powerful features of the rules engine. The "enab
 
 ### Q: I can't code TSX. Can I still use a custom renderer?
 
-You can try. A few starting points: 1) use **Enter Studio** in the editor, and have the AI Assistant generate code for you; 2) describe your desired effect to an external AI (like Claude) and have it generate the TSX code, then paste it into the editor; 3) copy-paste from the template examples in the docs and adjust colors and text. The editor compiles in real time and shows errors at the bottom (**Compile Status**), so you can adjust as you go. See [Custom Frontend Guide](./07-components.md) and [Custom Message Renderer](./08-message-renderer.md).
+You can try. A few starting points: 1) use **Enter Studio** in the editor, and have the AI Assistant generate code for you; 2) describe your desired effect to an external AI (like Claude) and have it generate the TSX code, then paste it into the editor; 3) copy-paste from the template examples in the docs and adjust colors and text. The editor compiles in real time and shows errors at the bottom (**Compile Status**), so you can adjust as you go. See [Custom UI Guide](./07-components.md) and [Message Renderer Deep Dive](./08-message-renderer.md).
 
 ### Q: Where do components display? Can I customize their position?
 
-Built-in components (stat-bar, text-display, etc.) display in a header bar above the chat window. Currently `placement` only supports `"header"`. If you need a more flexible layout — like a sidebar or full-screen panel — use `customComponents` to write custom TSX, or enable `fullScreenComponent: true` to let custom components take over the full screen. Component order is controlled by the `order` field — lower numbers appear first. See [Components Guide](./07-components.md).
+Built-in components (stat-bar, text-display, etc.) display in a header bar above the chat window. Currently `placement` only supports `"header"`. If you need a more flexible layout — like a sidebar or full-screen panel — use `customComponents` to write custom TSX, or enable `fullScreenComponent: true` to let custom components take over the full screen. Component order is controlled by the `order` field — lower numbers appear first. See [Custom UI Guide](./07-components.md).
 
 ### Q: What's the difference between messageRenderer and customComponents?
 
-`messageRenderer` replaces how each chat message is displayed — it takes over AI reply rendering, letting you turn plain text into speech bubbles, visual novel dialogue boxes, battle logs, etc. `customComponents` adds independent UI panels alongside the chat interface — like character creation screens, game sidebars, and maps. Simply put: messageRenderer changes "what messages look like"; customComponents adds "what else is alongside messages." Both can be used simultaneously, and both share the same underlying `CustomComponent` data structure. See [Custom Message Renderer](./08-message-renderer.md).
+`messageRenderer` replaces how each chat message is displayed — it takes over AI reply rendering, letting you turn plain text into speech bubbles, visual novel dialogue boxes, battle logs, etc. `customComponents` adds independent UI panels alongside the chat interface — like character creation screens, game sidebars, and maps. Simply put: messageRenderer changes "what messages look like"; customComponents adds "what else is alongside messages." Both can be used simultaneously, and both share the same underlying `CustomComponent` data structure. See [Custom UI Guide](./07-components.md).
 
 ---
 

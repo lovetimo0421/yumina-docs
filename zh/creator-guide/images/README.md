@@ -47,7 +47,7 @@
 | `beginner-studio-renderer.png` | Studio 界面全貌，左侧 AI Assistant 对话，右侧 Canvas 效果 |
 | `beginner-studio-renderer2.png` | Studio 效果近景 |
 
-## 自定义前端指南（07-components.md）
+## 自定义 UI 指南（07-components.md）
 
 | 文件名 | 截什么 |
 |--------|--------|

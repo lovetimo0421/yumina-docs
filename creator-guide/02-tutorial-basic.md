@@ -423,7 +423,7 @@ These five pieces working together make a complete interactive world.
 This tutorial only used the most fundamental features. There's a lot more Yumina can do:
 
 - **[Rules Engine](./06-rules-engine.md)** — auto-trigger a death ending when HP hits 0, no need to rely on the AI remembering
-- **[Custom Renderer](./08-message-renderer.md)** — turn messages into speech bubbles, visual novel scenes, or battle logs
+- **[Custom UI Guide](./07-components.md)** — turn messages into speech bubbles, visual novel scenes, or battle logs
 - **[Audio](./09-audio.md)** — add BGM and sound effects, auto-switch to creepy music when entering the basement
 - **[Conditional Entries](./03-entries-and-lorebook.md)** — activate entries based on variable values, like late-game plot reveals
 

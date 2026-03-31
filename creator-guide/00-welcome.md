@@ -24,8 +24,8 @@ The docs are split into three sections. Pick your starting point:
 | [Variables](./04-variables.md) | Track things that change — health, gold, affection meters |
 | [AI Directives & Macros](./05-directives-and-macros.md) | How the AI changes game state |
 | [Rules Engine](./06-rules-engine.md) | Automation logic — an event system without code |
-| [Custom Frontend Guide](./07-components.md) | AI-generated game interfaces (health bars, inventories, visual novels, etc.) |
-| [Custom Message Renderer](./08-message-renderer.md) | Completely restyle how chat messages look |
+| [Custom UI Guide](./07-components.md) | AI-generated game interfaces (health bars, inventories, visual novels, etc.) |
+| [Message Renderer Deep Dive](./08-message-renderer.md) | Architecture, TSX syntax, styling techniques, and debugging |
 | [Audio](./09-audio.md) | BGM, sound effects, ambient audio |
 | [AI Model & Settings](./10-ai-settings.md) | Tune the AI's behavior |
 | [Publish, Export & Bundle](./11-publish-and-share.md) | How to ship your finished world |

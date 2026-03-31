@@ -2,7 +2,7 @@
 
 # Custom Message Renderer
 
-> With a snippet of TSX code, turn AI replies from "a wall of plain text" into whatever visual experience you want — speech bubbles, visual novels, battle logs, RPG panels, you name it.
+> The deep dive. If you've read the [Custom UI Guide](./07-components.md) and want to understand how renderers work under the hood — architecture, TSX syntax, styling techniques, debugging — this is the page.
 
 ---
 
@@ -35,7 +35,7 @@ No problem. You can:
 2. Describe what you want to an AI (like Claude) and let it write the code
 3. Start with default rendering to get the logic working, then add customization gradually
 
-That said, this is an **advanced feature**. If you've never touched HTML or React, consider trying the built-in components from 07-components.md first — those don't require any coding.
+That said, this is a **deep-dive** chapter. If you've never touched HTML or React, start with the [Custom UI Guide](./07-components.md) first — it covers everything without requiring you to write code.
 
 ---
 
@@ -180,78 +180,9 @@ Breaking it down:
 
 ## The detailed version
 
-### Three rendering approaches — know the difference
-
-Yumina has three ways to "customize the UI," and they serve completely different purposes. Don't mix them up:
-
-#### 1. messageRenderer — reskin individual messages
-
-This is the main subject of this chapter. It replaces the default Markdown rendering, making every AI reply display according to your design.
-
-Best for: chat bubbles, visual novel dialogue boxes, battle logs.
-
-In the world definition, it's a separate field:
-
-```json
-{
-  "messageRenderer": {
-    "id": "message-renderer",
-    "name": "My Renderer",
-    "tsxCode": "export default function Renderer({ content, renderMarkdown }) { ... }",
-    "description": "",
-    "order": 0,
-    "visible": true
-  }
-}
-```
-
-#### 2. customComponents — additional UI panels
-
-This does **not** replace message rendering — it **adds** independent panels alongside the chat. Like character creation screens, game sidebars, map panels.
-
-In the world definition, it's an array and can have multiple:
-
-```json
-{
-  "customComponents": [
-    { "id": "...", "name": "Character Panel", "tsxCode": "...", "order": 0, "visible": true },
-    { "id": "...", "name": "Map",             "tsxCode": "...", "order": 1, "visible": true }
-  ]
-}
-```
-
-#### 3. fullScreenComponent — full-screen mode
-
-When you set `fullScreenComponent: true` in settings, customComponents take over the entire screen and the chat window disappears. Best for visual novels, full-screen games, or any completely custom experience.
-
-```json
-{
-  "settings": {
-    "fullScreenComponent": true
-  }
-}
-```
-
-One-sentence summary:
-- **messageRenderer** = change what messages look like
-- **customComponents** = add things alongside messages
-- **fullScreenComponent** = full-screen takeover
-
----
-
-### CustomComponent data structure
-
-Whether it's a messageRenderer or a customComponent, the underlying data structure is the same `CustomComponent`:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `id` | string | Unique identifier |
-| `name` | string | Display name (for your own reference) |
-| `tsxCode` | string | TSX code — the core content |
-| `description` | string | Description (optional) |
-| `order` | number | Sort order (when there are multiple customComponents) |
-| `visible` | boolean | Whether to display |
-| `updatedAt` | string | Last updated time (auto-maintained) |
+::: info Looking for the overview?
+For the three levels of customization (default chat, message template, app template), the full useYumina() SDK reference, and YUI component library → [Custom UI Guide](./07-components.md)
+:::
 
 ---
 
@@ -333,74 +264,30 @@ Details on each parameter:
 
 **`isStreaming`** — `true` while the AI is streaming output. Use it to show a typing animation or loading indicator.
 
+For a quick reference table of all props → [Custom UI Guide: Message Template Props](./07-components.md#message-template-props)
+
 ---
 
-### useYumina() Hook — interacting with the game engine
+### useYumina() — interacting with the game engine
 
-Beyond Props, you can also get more capabilities through `useYumina()`:
+Beyond Props, `useYumina()` gives you access to game actions — sending messages, setting variables, triggering rules, playing audio, and much more.
 
 ```tsx
 export default function MyRenderer({ content, renderMarkdown }) {
-  const api = useYumina();
+  var api = useYumina();
 
   return (
     <div>
       <div dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
-      <button onClick={() => api.sendMessage("Attack")}>Attack</button>
-      <button onClick={() => api.setVariable("health", 100)}>Restore Full Health</button>
-      <button onClick={() => api.executeAction("flee")}>Trigger Flee Rule</button>
+      <button onClick={function() { api.sendMessage("Attack") }}>Attack</button>
+      <button onClick={function() { api.setVariable("health", 100) }}>Restore Full Health</button>
+      <button onClick={function() { api.executeAction("flee") }}>Trigger Flee Rule</button>
     </div>
   );
 }
 ```
 
-Full `useYumina()` API:
-
-| Method/property | Description |
-|-----------------|-------------|
-| `sendMessage(text)` | Send a message as the player |
-| `setVariable(id, value)` | Directly modify a game variable |
-| `executeAction(actionId)` | Trigger an action-type rule |
-| `variables` | All current game variables (same as the Props variables) |
-| `worldName` | Current world name |
-| `currentUser` | Current user info (`{ id, name, image }`) |
-| `messages` | Full list of chat messages |
-| `isStreaming` | Whether the AI is currently streaming |
-| `streamingContent` | Current accumulated streaming content |
-| `playAudio(trackId, opts)` | Play an audio track |
-| `stopAudio(trackId?)` | Stop an audio track (omit ID to stop all) |
-| `resolveAssetUrl(ref)` | Resolve `@asset:xxx` references to real URLs |
-
----
-
-### Steps for writing a renderer
-
-1. Open your world in the editor
-2. Find the **Message Renderer** section
-3. Select **Custom TSX** mode
-4. Write your TSX code in the code box
-5. The editor compiles in real time — the bottom shows compile status (green OK / red error)
-6. Save the world and test it in the game
-
-You can also edit in the **Studio** Code View panel — that's a better editing experience.
-
----
-
-### What's available in the runtime environment
-
-Your TSX code runs in a sandbox with these global variables available:
-
-| Variable | Description |
-|----------|-------------|
-| `React` | The React library (`useState`, `useEffect`, etc. all in here) |
-| `useYumina` | Hook for accessing the game API |
-| `Icons` | All Lucide icons, usage: `<Icons.Heart size={16} />`. Full list at [lucide.dev/icons](https://lucide.dev/icons) |
-| `YUI` | Yumina's built-in UI component library (`YUI.StatBar`, `YUI.Panel`, `YUI.DialogueBox`, etc.) |
-
-Note: you **cannot** import any external packages. All dependencies come through the global variables above.
-
-**YUI component library includes:**
-Scene, Sprite, DialogueBox, ChoiceButtons, StatBar, StatCard, Badge, Panel, Tabs, ActionButton, ItemGrid, Fullscreen.
+For the complete SDK reference (30+ methods across 8 categories) → [Custom UI Guide: useYumina() SDK](./07-components.md#the-useyumina-sdk)
 
 ---
 
@@ -486,7 +373,7 @@ Wrap the AI reply in a rounded bubble with a role label. The most basic starting
 
 ```tsx
 export default function BubbleRenderer({ content, role, renderMarkdown }) {
-  const isUser = role === "user";
+  var isUser = role === "user";
 
   return (
     <div style={{
@@ -534,9 +421,9 @@ Background image + character name + dialogue text, capturing that Galgame feel.
 
 ```tsx
 export default function VNRenderer({ content, variables, renderMarkdown }) {
-  const api = useYumina();
-  const speaker = variables["current-speaker"] || "???";
-  const bg = variables["current-bg"] || "";
+  var api = useYumina();
+  var speaker = variables["current-speaker"] || "???";
+  var bg = variables["current-bg"] || "";
 
   // Inject animation styles
   React.useEffect(() => {
@@ -639,13 +526,13 @@ Timestamped, color-coded log entries — great for combat/exploration games.
 
 ```tsx
 export default function BattleLogRenderer({ content, variables, renderMarkdown }) {
-  const hp = Number(variables["health"] ?? 100);
-  const maxHp = Number(variables["max-health"] ?? 100);
-  const hpPercent = maxHp > 0 ? Math.min(100, (hp / maxHp) * 100) : 0;
-  const hpColor = hp < 30 ? "#ef4444" : hp < 60 ? "#f59e0b" : "#22c55e";
+  var hp = Number(variables["health"] ?? 100);
+  var maxHp = Number(variables["max-health"] ?? 100);
+  var hpPercent = maxHp > 0 ? Math.min(100, (hp / maxHp) * 100) : 0;
+  var hpColor = hp < 30 ? "#ef4444" : hp < 60 ? "#f59e0b" : "#22c55e";
 
   // Split reply into log entries by line break
-  const lines = (content || "").split("\n").filter(function(l) {
+  var lines = (content || "").split("\n").filter(function(l) {
     return l.trim().length > 0;
   });
 
@@ -742,7 +629,7 @@ export default function BattleLogRenderer({ content, variables, renderMarkdown }
 
 ### Next steps
 
-- Want independent UI panels (sidebar, character creation screen)? See **07-components.md**
+- For the complete SDK reference, YUI components, and practical AI prompts → [Custom UI Guide](./07-components.md)
 - Want AI replies to automatically change game state? See **06-rules-engine.md** and **04-variables.md**
 - Want to add background music and sound effects? See **09-audio.md**
 

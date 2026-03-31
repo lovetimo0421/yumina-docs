@@ -231,12 +231,12 @@ If you see a red error message at the bottom after pasting, send the error back 
 Yumina also includes a built-in component library called **YUI** (health bars, dialogue boxes, item grids, scene backgrounds, etc.). When AI generates code, it'll automatically use these. You don't need to know how these components work — the AI knows.
 
 ::: tip What is Studio?
-Studio is the editor's "advanced mode." Besides the AI assistant, it has a code editor, live preview, and a test panel. Click **Enter Studio** at the top of the editor to get there. The [Custom Frontend Guide](./07-components.md) covers it in detail.
+Studio is the editor's "advanced mode." Besides the AI assistant, it has a code editor, live preview, and a test panel. Click **Enter Studio** at the top of the editor to get there. The [Custom UI Guide](./07-components.md) covers it in detail.
 :::
 
 ::: info Detailed reference
-Full frontend customization tutorial (more example prompts, YUI component library, Studio usage) → [Custom Frontend Guide](./07-components.md)
-Renderer technical details and API → [Custom Message Renderer](./08-message-renderer.md)
+Full UI customization tutorial (three levels, SDK reference, YUI component library, AI prompts) → [Custom UI Guide](./07-components.md)
+Renderer deep dive (architecture, TSX syntax, styling, debugging) → [Message Renderer Deep Dive](./08-message-renderer.md)
 :::
 
 ---

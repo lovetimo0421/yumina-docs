@@ -9,6 +9,9 @@ hero:
       text: 基础教程
       link: /zh/guide/01-what-is-yumina
     - theme: alt
+      text: Discord
+      link: https://discord.gg/FsZ5PpV4Yu
+    - theme: alt
       text: 愿景
       link: /zh/vision/
     - theme: alt

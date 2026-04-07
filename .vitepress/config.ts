@@ -12,6 +12,7 @@ export default defineConfig({
     hostname: 'https://docs.yumina.io',
   },
 
+  appearance: 'dark',
   ignoreDeadLinks: true,
 
   locales: {

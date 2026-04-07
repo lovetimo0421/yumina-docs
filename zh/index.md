@@ -4,6 +4,9 @@ hero:
   name: Yumina
   text: 文档中心
   tagline: 玩转 AI 互动世界，或创造属于你的
+  image:
+    src: /logo.png
+    alt: Yumina
   actions:
     - theme: brand
       text: 基础教程
@@ -27,4 +30,7 @@ features:
   - title: 创作者指南
     details: 不满足于只当玩家？从零开始做一个属于你的 AI 互动世界
     link: /zh/creator-guide/00-welcome
+  - title: 加入社区
+    details: 和创作者交流、获取帮助、分享你的世界、了解最新动态
+    link: https://discord.gg/FsZ5PpV4Yu
 ---

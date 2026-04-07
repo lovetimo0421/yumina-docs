@@ -4,6 +4,9 @@ hero:
   name: Yumina
   text: Documentation
   tagline: Play AI interactive worlds — or build one of your own
+  image:
+    src: /logo.png
+    alt: Yumina
   actions:
     - theme: brand
       text: Player Guide
@@ -27,4 +30,7 @@ features:
   - title: Creator Guide
     details: Not just a player? Build your own AI interactive world from the ground up
     link: /creator-guide/00-welcome
+  - title: Join the Community
+    details: Chat with creators, get help, share your worlds, and stay up to date
+    link: https://discord.gg/FsZ5PpV4Yu
 ---

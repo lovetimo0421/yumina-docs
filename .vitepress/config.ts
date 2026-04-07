@@ -12,7 +12,6 @@ export default defineConfig({
     hostname: 'https://docs.yumina.io',
   },
 
-  appearance: false,
   ignoreDeadLinks: true,
 
   locales: {
@@ -65,6 +64,7 @@ export default defineConfig({
             },
             {
               text: 'Feature Reference',
+              collapsed: true,
               items: [
                 { text: 'Entries & Lorebook', link: '/creator-guide/03-entries-and-lorebook' },
                 { text: 'Variable System', link: '/creator-guide/04-variables' },
@@ -80,6 +80,7 @@ export default defineConfig({
             },
             {
               text: 'Recipes',
+              collapsed: true,
               items: [
                 { text: 'Greeting Switching & Entry Modification ★', link: '/creator-guide/14-recipe-scene-jumping' },
                 { text: 'Shop & Trading ★★', link: '/creator-guide/16-recipe-shop' },
@@ -165,6 +166,7 @@ export default defineConfig({
             },
             {
               text: '功能参考',
+              collapsed: true,
               items: [
                 { text: '词条与世界书', link: '/zh/creator-guide/03-entries-and-lorebook' },
                 { text: '变量系统', link: '/zh/creator-guide/04-variables' },
@@ -180,6 +182,7 @@ export default defineConfig({
             },
             {
               text: '实战配方',
+              collapsed: true,
               items: [
                 { text: '开场白切换与条目内容修改 ★', link: '/zh/creator-guide/14-recipe-scene-jumping' },
                 { text: '商店与交易 ★★', link: '/zh/creator-guide/16-recipe-shop' },
@@ -226,6 +229,9 @@ export default defineConfig({
   },
 
   themeConfig: {
-    lastUpdated: false,
+    logo: '/logo.png',
+    socialLinks: [
+      { icon: 'discord', link: 'https://discord.gg/FsZ5PpV4Yu' }
+    ],
   }
 })

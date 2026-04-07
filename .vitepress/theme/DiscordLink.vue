@@ -16,8 +16,6 @@ const { page } = useData()
 
 <style scoped>
 .discord-link {
-  display: flex;
-  justify-content: center;
   padding-top: 12px;
 }
 

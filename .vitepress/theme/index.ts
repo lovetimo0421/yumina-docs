@@ -2,6 +2,7 @@ import DefaultTheme from 'vitepress/theme'
 import type { Theme } from 'vitepress'
 import { h } from 'vue'
 import DiscordLink from './DiscordLink.vue'
+import './custom.css'
 
 export default {
   extends: DefaultTheme,

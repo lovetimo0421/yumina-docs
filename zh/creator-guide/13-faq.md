@@ -18,7 +18,7 @@
 
 ### Q: Yumina支持哪些AI模型？
 
-Yumina通过 OpenRouter 接入模型，基本上 OpenRouter 上有的模型都能用——包括 Claude、GPT、Gemini、DeepSeek、Llama 等主流模型。你需要在设置里配置自己的 API Key。不同模型对指令格式的遵从度不同，建议在世界设置里调好 temperature 等参数来适配你选的模型。详见 [AI 模型与设置](./10-ai-settings.md)。
+Yumina 支持多个 AI 提供商——包括 Anthropic（Claude）、OpenAI（GPT）、Google（Gemini）和 OpenRouter（可访问数百个模型，包括 DeepSeek、Llama 等）。你可以使用 Yumina 的官方 API，也可以在 设置 → API Keys 中添加自己的 API 密钥（BYOK）。不同模型在遵循指令格式方面表现各异。我们建议根据你选择的模型调整 temperature 等设置。详见 [AI 模型与设置](./10-ai-settings.md)。
 
 ### Q: 我的世界数据保存在哪里？会丢吗？
 
@@ -94,11 +94,11 @@ JSON 变量可以存复杂数据结构——对象、数组、嵌套结构都行
 
 ### Q: 组件显示在哪里？能自定义位置吗？
 
-内置组件（stat-bar、text-display 等）显示在聊天窗口上方的 header 横栏里，目前 `placement` 只支持 `"header"` 这一个位置。如果你需要更灵活的布局——比如侧边栏、全屏面板——可以用 `customComponents` 写自定义 TSX 组件，或者开启 `fullScreenComponent: true` 让自定义组件占据整个屏幕。组件之间的排列顺序由 `order` 字段控制，数字越小越靠前。详见 [自定义 UI 指南](./07-components.md)。
+组件的显示位置由 `surface` 字段决定。`surface: "message"` 的组件替换每条聊天消息的显示方式，在聊天界面内可见。`surface: "app"` 的组件接管整个屏幕，用于构建完全自定义的游戏界面。组件之间的排列顺序由 `order` 字段控制，数字越小越靠前。详见 [自定义 UI 指南](./07-components.md)。
 
 ### Q: messageRenderer和customComponents有什么区别？
 
-`messageRenderer` 替换的是每条聊天消息的显示方式——它接管 AI 回复的渲染，让你把纯文本变成气泡对话、视觉小说对话框、战斗日志等。`customComponents` 是在聊天界面旁边额外添加的独立 UI 面板，比如角色创建界面、游戏侧边栏、地图。简单说：messageRenderer 改的是"消息长什么样"，customComponents 加的是"消息旁边还有什么"。两者可以同时使用，底层数据结构都是 `CustomComponent`。详见 [自定义 UI 指南](./07-components.md)。
+具有 `surface: 'message'` 的组件（消息渲染器）替换每条聊天消息的显示方式。具有 `surface: 'app'` 的组件（应用组件）接管整个屏幕来构建完全自定义的游戏界面。两者都存储在同一个 `customUI` 数组中，`surface` 字段决定组件的运行模式。详见 [自定义 UI 指南](./07-components.md)。
 
 ---
 

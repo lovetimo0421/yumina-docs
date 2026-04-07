@@ -71,7 +71,7 @@ Creators don't write any code. Variables + behavior rules + the engine's auto-in
 
 ## Rule
 
-Automated behavior in your world.
+Automated behavior in your world. (In the editor, rules are called **Behaviors**.)
 
 "When HP drops to 0, trigger the death ending." "Every 3 turns, increase hunger by 1." "When the player enters the forest, play forest background music." These are all rules.
 
@@ -89,19 +89,16 @@ Rules are the core mechanism that makes a world feel alive. Without rules, all s
 
 The UI panels the player sees.
 
-Components are visual widgets bound to variables, displayed alongside or above the chat interface. Yumina has five built-in component types:
+Components are custom TSX code that change how your world looks and feels. Each component has a `surface` field that determines where it renders:
 
-| Type | Use case | Variable type |
-|------|----------|---------------|
-| **Stat Bar** (`stat-bar`) | Progress bar for HP, MP, stamina | Number |
-| **Text Display** (`text-display`) | Formatted text for current location, status | Number / String / Boolean |
-| **Image Panel** (`image-panel`) | Show images — scene backgrounds, character sprites | String (URL) |
-| **Inventory Grid** (`inventory-grid`) | Item grid for equipment / items | String (JSON) |
-| **Web Panel** (`web-panel`) | Custom HTML/CSS/JS content | No binding needed |
+| Surface | What it does | Example |
+|---------|-------------|---------|
+| **`"message"`** | Replaces how each chat message is displayed. The chat interface stays — you just restyle each message. | Custom chat bubbles, stat bars below messages, interactive greeting screens |
+| **`"app"`** | Takes over the entire screen. The default chat disappears — you build everything yourself. | Visual novel engine, complete game UI, custom experiences |
 
-Once a component is bound to a variable, it updates automatically when the variable changes. The player gets hit, HP goes down, and the health bar shrinks instantly — you don't write any refresh logic.
+You can write components yourself in TSX, or use the Studio AI to generate them for you. Components have access to the `useYumina()` SDK for reading game state and triggering actions, plus the **YUI** pre-built component library (stat bars, item grids, dialogue boxes, etc.).
 
-Think of components as the gauges on a dashboard. The engine quietly updates the data in the background; components turn that data into something the player can see and understand.
+Think of components as the visual layer of your world. The engine quietly updates the data in the background; components turn that data into something the player can see and interact with.
 
 ---
 
@@ -111,7 +108,7 @@ How chat messages look.
 
 By default, AI replies are displayed as plain Markdown text — similar to what you'd see in ChatGPT. That works, but it's not very immersive.
 
-The renderer (`messageRenderer`) lets you use TSX code to completely take over how messages are presented. You can turn the AI's text into:
+A message-surface component lets you use TSX code to completely take over how messages are presented. You can turn the AI's text into:
 
 - Speech bubbles with character avatars
 - Visual novel-style sprites and dialogue boxes

@@ -57,10 +57,10 @@ export default defineConfig({
               text: 'Getting Started',
               items: [
                 { text: 'Welcome', link: '/creator-guide/00-welcome' },
+                { text: 'Core Concepts', link: '/creator-guide/01-core-concepts' },
                 { text: "Beginner's Guide: Meet the Editor", link: '/creator-guide/01-beginner-guide' },
                 { text: 'Tutorial: Build a Survival Horror World', link: '/creator-guide/02-tutorial-basic' },
                 { text: 'Lazy Guide: Let AI Do It', link: '/creator-guide/02-tutorial-agent' },
-                { text: 'Advanced: Battle Royale Game', link: '/creator-guide/02-tutorial-advanced' },
               ]
             },
             {
@@ -81,23 +81,22 @@ export default defineConfig({
             {
               text: 'Recipes',
               items: [
-                { text: 'Greeting Switching & Entry Modification', link: '/creator-guide/14-recipe-scene-jumping' },
-                { text: 'Shop & Trading', link: '/creator-guide/16-recipe-shop' },
-                { text: 'Character Creation Form', link: '/creator-guide/17-recipe-character-creation' },
-                { text: 'Quest Tracker', link: '/creator-guide/18-recipe-quest-tracker' },
-                { text: 'Inventory & Equipment', link: '/creator-guide/19-recipe-inventory' },
-                { text: 'Day-Night Cycle', link: '/creator-guide/20-recipe-day-night' },
-                { text: 'Visual Novel Mode', link: '/creator-guide/21-recipe-visual-novel' },
-                { text: 'Dynamic AI Personality', link: '/creator-guide/22-recipe-ai-personality' },
-                { text: 'Map & Scene Navigation', link: '/creator-guide/23-recipe-map-navigation' },
-                { text: 'Achievement System', link: '/creator-guide/24-recipe-achievements' },
-                { text: 'Audio Design Guide', link: '/creator-guide/25-recipe-audio-design' },
+                { text: 'Greeting Switching & Entry Modification ★', link: '/creator-guide/14-recipe-scene-jumping' },
+                { text: 'Shop & Trading ★★', link: '/creator-guide/16-recipe-shop' },
+                { text: 'Character Creation Form ★★', link: '/creator-guide/17-recipe-character-creation' },
+                { text: 'Quest Tracker ★★', link: '/creator-guide/18-recipe-quest-tracker' },
+                { text: 'Inventory & Equipment ★★', link: '/creator-guide/19-recipe-inventory' },
+                { text: 'Day-Night Cycle ★★', link: '/creator-guide/20-recipe-day-night' },
+                { text: 'Visual Novel Mode ★★★', link: '/creator-guide/21-recipe-visual-novel' },
+                { text: 'Dynamic AI Personality ★★', link: '/creator-guide/22-recipe-ai-personality' },
+                { text: 'Map & Scene Navigation ★★★', link: '/creator-guide/23-recipe-map-navigation' },
+                { text: 'Achievement System ★★★', link: '/creator-guide/24-recipe-achievements' },
+                { text: 'Audio Design Guide ★★', link: '/creator-guide/25-recipe-audio-design' },
               ]
             },
             {
               text: 'Appendix',
               items: [
-                { text: 'Core Concepts at a Glance', link: '/creator-guide/01-core-concepts' },
                 { text: 'Glossary', link: '/creator-guide/12-glossary' },
                 { text: 'FAQ', link: '/creator-guide/13-faq' },
               ]
@@ -158,10 +157,10 @@ export default defineConfig({
               text: '入门',
               items: [
                 { text: '欢迎', link: '/zh/creator-guide/00-welcome' },
+                { text: '核心概念', link: '/zh/creator-guide/01-core-concepts' },
                 { text: '新手指南：认识编辑器', link: '/zh/creator-guide/01-beginner-guide' },
                 { text: '教程：从零做一个生存恐怖世界', link: '/zh/creator-guide/02-tutorial-basic' },
                 { text: '懒人教程：让 AI 帮你做', link: '/zh/creator-guide/02-tutorial-agent' },
-                { text: '进阶教程：大逃杀游戏', link: '/zh/creator-guide/02-tutorial-advanced' },
               ]
             },
             {
@@ -182,23 +181,22 @@ export default defineConfig({
             {
               text: '实战配方',
               items: [
-                { text: '开场白切换与条目内容修改', link: '/zh/creator-guide/14-recipe-scene-jumping' },
-                { text: '商店与交易', link: '/zh/creator-guide/16-recipe-shop' },
-                { text: '角色创建表单', link: '/zh/creator-guide/17-recipe-character-creation' },
-                { text: '任务追踪', link: '/zh/creator-guide/18-recipe-quest-tracker' },
-                { text: '物品栏与装备', link: '/zh/creator-guide/19-recipe-inventory' },
-                { text: '日夜循环', link: '/zh/creator-guide/20-recipe-day-night' },
-                { text: '视觉小说模式', link: '/zh/creator-guide/21-recipe-visual-novel' },
-                { text: '动态 AI 人格切换', link: '/zh/creator-guide/22-recipe-ai-personality' },
-                { text: '地图与场景导航', link: '/zh/creator-guide/23-recipe-map-navigation' },
-                { text: '成就系统', link: '/zh/creator-guide/24-recipe-achievements' },
-                { text: '音效设计指南', link: '/zh/creator-guide/25-recipe-audio-design' },
+                { text: '开场白切换与条目内容修改 ★', link: '/zh/creator-guide/14-recipe-scene-jumping' },
+                { text: '商店与交易 ★★', link: '/zh/creator-guide/16-recipe-shop' },
+                { text: '角色创建表单 ★★', link: '/zh/creator-guide/17-recipe-character-creation' },
+                { text: '任务追踪 ★★', link: '/zh/creator-guide/18-recipe-quest-tracker' },
+                { text: '物品栏与装备 ★★', link: '/zh/creator-guide/19-recipe-inventory' },
+                { text: '日夜循环 ★★', link: '/zh/creator-guide/20-recipe-day-night' },
+                { text: '视觉小说模式 ★★★', link: '/zh/creator-guide/21-recipe-visual-novel' },
+                { text: '动态 AI 人格切换 ★★', link: '/zh/creator-guide/22-recipe-ai-personality' },
+                { text: '地图与场景导航 ★★★', link: '/zh/creator-guide/23-recipe-map-navigation' },
+                { text: '成就系统 ★★★', link: '/zh/creator-guide/24-recipe-achievements' },
+                { text: '音效设计指南 ★★', link: '/zh/creator-guide/25-recipe-audio-design' },
               ]
             },
             {
               text: '附录',
               items: [
-                { text: '核心概念速览', link: '/zh/creator-guide/01-core-concepts' },
                 { text: '术语表', link: '/zh/creator-guide/12-glossary' },
                 { text: '常见问题', link: '/zh/creator-guide/13-faq' },
               ]

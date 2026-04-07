@@ -57,13 +57,13 @@ With an app template, you must handle:
 
 **Best for:** Visual novel engines, complex game UIs, completely custom experiences that don't look like a chat at all.
 
-**Where to set it:** Studio → Code View → add a component → set `fullScreenComponent: true` in settings
+**Where to set it:** Editor → **Components** section → click "Add Component" → choose **App** surface
 
 ### How to choose
 
 | | Message Template | App Template |
 |--|-----------------|-------------|
-| Quantity | Only one | Can have multiple components |
+| Quantity | Only one | Only one |
 | What it replaces | Message rendering only | The entire screen |
 | Chat features | Handled by Yumina | You build them yourself |
 | Best for | Restyling messages, adding HUD | Full-screen games, visual novels |
@@ -315,7 +315,13 @@ export default function MyGame() {
 
 The SDK is your connection to the platform. Call `useYumina()` inside your component to access game state and actions.
 
-### Reading State
+::: tip Most creators only need the Essentials
+The Essentials section covers reading variables, sending messages, playing audio, and showing notifications — enough for 95% of worlds. The Advanced section is for multiplayer, model switching, and other niche features.
+:::
+
+### Essentials
+
+#### Reading State
 
 | Property | What it gives you |
 |----------|------------------|
@@ -328,7 +334,7 @@ The SDK is your connection to the platform. Call `useYumina()` inside your compo
 | `api.sessionId` | The current play session ID |
 | `api.worldId` | The current world ID |
 
-### Sending Actions
+#### Sending Actions
 
 | Method | What it does |
 |--------|-------------|
@@ -336,7 +342,7 @@ The SDK is your connection to the platform. Call `useYumina()` inside your compo
 | `api.setVariable("health", 50)` | Set a game variable |
 | `api.executeAction("attackBoss")` | Trigger a named action |
 
-### Chat Controls
+#### Chat Controls
 
 | Method | What it does |
 |--------|-------------|
@@ -347,16 +353,17 @@ The SDK is your connection to the platform. Call `useYumina()` inside your compo
 | `api.stopGeneration()` | Stop the AI mid-generation |
 | `api.restartChat()` | Clear all messages and start over |
 
-### Audio
+#### Audio
 
 | Method | What it does |
 |--------|-------------|
-| `api.playAudio("bgm-battle", { volume: 0.5 })` | Play a sound/music track |
-| `api.stopAudio("bgm-battle")` | Stop a specific track |
+| `api.playAudio("bgm-battle", { volume, fadeDuration, chainTo, maxDuration, duckBgm })` | Play a sound/music track with options |
+| `api.stopAudio("bgm-battle", 2.0)` | Stop a specific track (optional fade duration in seconds) |
 | `api.stopAudio()` | Stop all audio |
 | `api.setAudioVolume("bgm", 0.8)` | Set BGM or SFX volume |
+| `api.getAudioVolume("bgm")` | Get current volume for BGM or SFX (returns 0–1) |
 
-### Navigation & UI
+#### Navigation & UI
 
 | Method | What it does |
 |--------|-------------|
@@ -366,7 +373,7 @@ The SDK is your connection to the platform. Call `useYumina()` inside your compo
 | `api.showToast("Saved!", "success")` | Show a notification popup |
 | `api.switchGreeting(2)` | Switch to a different greeting variant |
 
-### Storage (Persists Across Sessions)
+#### Storage (Persists Across Sessions)
 
 | Method | What it does |
 |--------|-------------|
@@ -374,7 +381,39 @@ The SDK is your connection to the platform. Call `useYumina()` inside your compo
 | `api.storage.set("highScore", "9999")` | Save a value (async) |
 | `api.storage.remove("highScore")` | Delete a saved value (async) |
 
-### Session Management
+### Advanced
+
+#### Extended State
+
+| Property | What it gives you |
+|----------|------------------|
+| `api.globalVariables` | Global scope variables (shared across all sessions) |
+| `api.personalVariables` | Per-user personal variables |
+| `api.roomPersonalVariables` | Per-user variables scoped to the current room |
+| `api.room` | Current room data (for multiplayer worlds): `{ id, name, ... }` or `null` |
+| `api.permissions` | Current user's permissions in this world: `{ canEdit, ... }` or `null` |
+| `api.pendingChoices` | Choice buttons waiting for player input: `["option1", "option2"]` |
+| `api.error` | Current error message (API failure, generation error) or `null` |
+| `api.streamingReasoning` | AI reasoning/thinking content during streaming |
+| `api.readOnly` | `true` when viewing someone else's session (no input allowed) |
+| `api.greetingContent` | Greeting text extracted from world entries, or `null` |
+| `api.canvasMode` | Current display mode: `"chat"`, `"custom"`, or `"fullscreen"` |
+
+#### Extended Actions
+
+| Method | What it does |
+|--------|-------------|
+| `api.setVariable("health", 50, { scope, targetUserId })` | Set a variable with options. `scope` specifies variable scope, `targetUserId` targets a specific player (for multiplayer) |
+| `api.clearPendingChoices()` | Dismiss pending choice buttons |
+| `api.swipeMessage(id, "left"/"right")` | Navigate between message swipes (alternate AI responses) |
+
+#### Assets
+
+| Method | What it does |
+|--------|-------------|
+| `api.resolveAssetUrl("@asset:abc123")` | Resolve an asset reference to a CDN URL |
+
+#### Session Management
 
 | Method | What it does |
 |--------|-------------|
@@ -383,14 +422,17 @@ The SDK is your connection to the platform. Call `useYumina()` inside your compo
 | `api.deleteSession(sessionId)` | Delete a play session |
 | `api.listSessions(worldId)` | List all saved sessions |
 
-### Checkpoints
+#### Model Management
 
 | Method | What it does |
 |--------|-------------|
-| `api.saveCheckpoint()` | Save current progress |
-| `api.loadCheckpoints()` | Load saved checkpoints list |
-| `api.restoreCheckpoint(id)` | Restore a saved checkpoint |
-| `api.deleteCheckpoint(id)` | Delete a checkpoint |
+| `api.selectedModel` | Currently selected AI model ID |
+| `api.userPlan` | User's subscription plan (`"free"`, `"go"`, `"plus"`, `"pro"`, `"ultra"`) |
+| `api.preferredProvider` | `"official"` (platform API) or `"private"` (user's own key) |
+| `api.setModel("claude-sonnet-4-6")` | Switch to a different AI model |
+| `api.getModels()` | Get available models, pinned models, and recently used (async) |
+| `api.pinModel("model-id")` | Pin a model to the user's favorites |
+| `api.unpinModel("model-id")` | Unpin a model from favorites |
 
 ---
 
@@ -626,6 +668,10 @@ Variables: playerAvatar (avatar URL), playerName (character name), level (level)
 
 ::: tip These prompts work as-is
 All three prompts above can be copied directly and sent to Studio AI or an external AI. Once you have the code, paste it in. If the effect isn't right, keep talking to the AI — adjust colors, sizes, layouts.
+:::
+
+::: info Message Template vs App Template: the full comparison
+Want to understand the technical differences between message-surface and app-surface components? See [Renderer vs Components](./07b-renderer-vs-components.md) for a detailed comparison.
 :::
 
 ::: info Deep dive

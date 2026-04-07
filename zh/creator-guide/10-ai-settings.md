@@ -59,23 +59,30 @@
 | `playerName` | 字符串 | `"User"` | 任意 | 玩家名字。提示词里的 `{{user}}` 宏会替换成这个值 |
 | `lorebookScanDepth` | 整数 | `2` | 正整数 | 扫描最近几条消息来匹配知识库关键词。默认2就是只看最近2条。想要更深的上下文触发就调高，但太高会增加匹配开销。在编辑器的 **知识库 → Entry Settings** 里可以修改 |
 | `lorebookRecursionDepth` | 整数 | `0` | `0 - 10` | 条目递归触发深度。`0` = 不递归，只做一轮关键词匹配。设成 `2` 的话，被第一轮触发的条目内容会再扫一轮关键词，以此类推最多2层。适合做复杂的关联世界设定，但小心：递归太深可能把你的token预算吃光。在编辑器的 **知识库 → Entry Settings** 里可以修改 |
-| `lorebookBudgetPercent` | 浮点数 | `100` | `0 - 100` | 世界书可以占用上下文的百分比。`100` = 不限制 |
-| `lorebookBudgetCap` | 整数 | `0` | >=0 | 世界书token硬上限。`0` = 不设上限 |
+| ~~`lorebookBudgetPercent`~~ | 浮点数 | `100` | `0 - 100` | **已弃用。** 世界书可以占用上下文的百分比。`100` = 不限制 |
+| ~~`lorebookBudgetCap`~~ | 整数 | `0` | >=0 | **已弃用。** 世界书token硬上限。`0` = 不设上限 |
 
-::: tip 关于 lorebookBudgetPercent 和 lorebookBudgetCap
-这两个参数目前在编辑器界面里没有暴露，使用默认值即可（不限制）。如果你确实需要调整，可以通过导出世界 JSON、手动编辑 `settings` 对象后再导入来修改。
+::: warning 已弃用：lorebookBudgetPercent 和 lorebookBudgetCap
+这两个参数已弃用，将在未来版本中移除。使用默认值即可（不限制）。如果你确实需要调整，可以通过导出世界 JSON、手动编辑 `settings` 对象后再导入来修改。
 :::
 
 ### UI与输出控制
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `fullScreenComponent` | 布尔 | `false` | 设为 `true` 时，自定义组件会接管整个屏幕。适合做完整的游戏界面（比如地下城探索、视觉小说），聊天窗口会让位给你的自定义UI |
 | `structuredOutput` | 布尔 | `false` | 设为 `true` 时，通过 `response_format: { type: "json_object" }` 要求AI返回JSON格式。适合需要严格解析AI输出的机制世界。注意：开了这个之后AI的回复不再是自然语言，而是JSON对象 |
 
 ::: warning 高级设置
 `structuredOutput` 目前在编辑器界面里没有暴露。如果你需要开启 JSON 模式，需要通过导出世界 JSON、在 `settings` 里手动加上 `"structuredOutput": true` 后再导入。这是一个面向进阶创作者的功能——大多数世界不需要它。
 :::
+
+### 玩家级别设置
+
+以下设置由每位玩家在自己的个人资料中配置，而非由世界创作者设置。它们在所有世界中全局生效。
+
+| 参数 | 类型 | 默认值 | 说明 |
+|------|------|--------|------|
+| `reasoningEffort` | 字符串 | `"low"` | 控制支持推理的模型（如 Claude）的思考深度。选项：`"none"`、`"low"`、`"medium"`、`"high"`。值越高 AI 思考越仔细，但消耗更多 token。玩家可在 **设置 → AI 配置** 中更改 |
 
 ---
 

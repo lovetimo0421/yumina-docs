@@ -64,56 +64,54 @@ That's all it takes. This entry is sent with every conversation because `alwaysS
 
 ## The detailed version
 
-### WorldEntry — full field reference
+### Entry fields — what you see in the editor
 
-The following covers every field in `worldEntrySchema`. Source: `packages/engine/src/world/schema.ts`.
+When you click **+ Add Entry** in the editor, you'll see the following fields. Here's what each one does and where to find it.
 
 #### Basic fields
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | string | Yes | Unique identifier, used internally to track the entry |
-| `name` | string (min 1) | Yes | Entry name, shown in the editor and also used to parse character names in example dialogue |
-| `content` | string | Yes | The entry's actual text. Supports macro replacement (e.g. `{{char}}`, `{{user}}`) |
-| `role` | enum | Yes | Entry role. Options: `system`, `character`, `personality`, `scenario`, `lore`, `plot`, `style`, `example`, `greeting`, `custom` |
-| `enabled` | boolean | No | Whether the entry is enabled, defaults to `true`. Disabled entries are completely excluded from matching and injection |
+| Editor field | Where to find it | What it does |
+|---|---|---|
+| **Name** | Top of the entry panel | The entry's title, shown in the sidebar list. Also used to parse character names in example dialogue |
+| **Content** | Main text area | The text the AI reads when this entry is active. Supports macros like `{{char}}` and `{{user}}` |
+| **Tags** | Below the name | Organizational categories (Characters, Plot, Style, Example, Preset, etc.). Tags automatically map to the internal `role` field — e.g. a `Characters` tag sets `role: character` |
+| **Enabled** toggle | Top-right corner | When OFF, this entry is completely excluded from matching and injection |
 
 #### Send control
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `section` | enum | -- (required) | Which section of the prompt this entry goes into. Four options — see "The Four Sections" below |
-| `position` | number | 0 | Sort priority within a section. Lower numbers go first. Supports decimals — `2.5` inserts between `2` and `3` |
-| `alwaysSend` | boolean | false | Always send, regardless of keywords |
-| `depth` | number (int) | -- | Only valid for `chat-history`. Specifies how many messages from the end of chat history to insert at. E.g. `depth: 4` inserts before the 4th-to-last message |
-| `apiRole` | enum | -- | Called **Send as** in the editor. `system` (Instruction) = AI treats as a rule; `user` (User) = AI thinks a player said it; `assistant` (AI) = AI thinks it said this itself. Use `assistant` to "pre-fill" the beginning of an AI reply |
+| Editor field | Where to find it | What it does |
+|---|---|---|
+| **Group** | Dropdown in the entry panel | Which section of the prompt this entry goes into: PRESETS, EXAMPLES, CHAT HISTORY, or POST. See "The Four Sections" below |
+| **Position** | Number input next to Group | Sort priority within a group. Lower numbers go first. Supports decimals — use `2.5` to slot between `2` and `3` |
+| **Always Send** toggle | Entry panel | When ON, this entry is included in every prompt regardless of keywords |
+| **Depth** | Number input (only visible when Group is CHAT HISTORY) | How many messages from the end of chat history to insert at. E.g. depth `4` inserts before the 4th-to-last message |
+| **Send as** | Dropdown in the entry panel | How the AI interprets this content: **Instruction** (system rule), **User** (AI thinks a player said it), or **AI** (AI thinks it said this itself — useful for "pre-filling" the start of a reply) |
 
 #### Keyword matching
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `keywords` | string[] | [] | Primary keyword list. Any single match counts (OR logic) |
-| `matchWholeWords` | boolean | false | Match whole words only. When on, `"for"` won't match `"forest"` |
-| `useFuzzyMatch` | boolean | false | Fuzzy matching (Levenshtein edit distance). Keywords ≤5 chars allow 1 typo; longer ones allow 2. Note: ineffective for CJK characters — Latin alphabet only |
-| `secondaryKeywords` | string[] | [] | Secondary keywords for further filtering after primary match |
-| `secondaryKeywordLogic` | enum | "AND_ANY" | Logic for combining secondary keywords (see below) |
+| Editor field | Where to find it | What it does |
+|---|---|---|
+| **Keywords** | Keyword input area | Primary keyword list. Any single match triggers the entry (OR logic) |
+| **Match Whole Words** | Checkbox near keywords | When checked, `"for"` won't match `"forest"` |
+| **Fuzzy Match** | Checkbox near keywords | Allows typo-tolerant matching. Keywords up to 5 chars allow 1 typo; longer ones allow 2. Latin alphabet only — does not work for CJK characters |
+| **Secondary Keywords** | Below primary keywords | Extra keywords for further filtering after the primary keywords match |
+| **Secondary Logic** | Dropdown next to secondary keywords | How secondary keywords combine: AND_ANY, AND_ALL, NOT_ANY, NOT_ALL (see "Secondary keyword logic" below) |
 
 #### Conditions and recursion
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `conditions` | Condition[] | [] | Variable-based trigger conditions. Each has `variableId`, `operator` (eq/neq/gt/gte/lt/lte/contains), and `value` |
-| `conditionLogic` | "all" \| "any" | "all" | Logic for combining conditions. `all` = all must pass, `any` = any one passing is enough |
-| `preventRecursion` | boolean | false | Prevents this entry's content from being used in recursive scans. Even if this entry is triggered, its content won't be used to trigger other entries |
-| `excludeRecursion` | boolean | false | Prevents this entry from participating in recursive scans at all. Only direct matching against player messages can trigger it |
+| Editor field | Where to find it | What it does |
+|---|---|---|
+| **Conditions** | Conditions section of the entry | Variable-based trigger conditions. Each condition has a variable, an operator (equals, greater than, etc.), and a target value |
+| **Condition Logic** | Dropdown in conditions section | How multiple conditions combine: **All** (every condition must pass) or **Any** (one passing is enough) |
+| **Prevent Recursion** | Checkbox in advanced settings | This entry can be triggered, but its content won't be used to scan for and trigger other entries |
+| **Exclude Recursion** | Checkbox in advanced settings | This entry is completely excluded from recursive scans — only direct matching against player messages can trigger it |
 
 #### Organization
 
-| Field | Type | Description |
-|-------|------|-------------|
-| `tags` | string[] | Custom tags for organizing and filtering |
-| `folderId` | string | ID of the folder this entry belongs to |
-| `presetId` | string | Associated preset ID (internal use) |
+| Editor field | Where to find it | What it does |
+|---|---|---|
+| **Tags** | Below the entry name | Custom tags for organizing and filtering entries in the sidebar |
+| **Folder** | Sidebar drag-and-drop or folder picker | Which folder this entry belongs to — purely organizational, no effect on runtime |
 
 ---
 
@@ -321,6 +319,61 @@ Entries with `role: example` must follow a specific format for the engine to cor
 The engine doesn't scan all history — that would be too slow and wasteful. The world setting `lorebookScanDepth` (default 2) controls how many recent messages to scan for keyword matching. Set it to 4 to scan the last 4 messages. In the editor, expand **Entry Settings** in the **Lorebook** section to modify.
 
 There's also token budget control: `lorebookBudgetPercent` (default 100%) and `lorebookBudgetCap` (default 0 = unlimited) limit how many tokens triggered entries can use in total. When over budget, entries with higher match scores take priority.
+
+---
+
+::: details Technical reference: JSON fields
+
+The following maps editor fields to their underlying JSON field names in `worldEntrySchema` (source: `packages/engine/src/world/schema.ts`). Useful when exporting/importing world files or working with the API directly.
+
+**Basic fields**
+
+| JSON field | Type | Required | Editor equivalent |
+|---|---|---|---|
+| `id` | string | Yes | Auto-generated unique identifier |
+| `name` | string (min 1) | Yes | **Name** |
+| `content` | string | Yes | **Content** |
+| `role` | enum (`system`, `character`, `personality`, `scenario`, `lore`, `plot`, `style`, `example`, `greeting`, `custom`) | Yes | Auto-mapped from **Tags** |
+| `enabled` | boolean | No (default `true`) | **Enabled** toggle |
+
+**Send control**
+
+| JSON field | Type | Default | Editor equivalent |
+|---|---|---|---|
+| `section` | enum (`system-presets`, `examples`, `chat-history`, `post-history`) | -- (required) | **Group** dropdown |
+| `position` | number | 0 | **Position** |
+| `alwaysSend` | boolean | false | **Always Send** toggle |
+| `depth` | number (int) | -- | **Depth** (CHAT HISTORY group only) |
+| `apiRole` | enum (`system`, `user`, `assistant`) | -- | **Send as** dropdown |
+
+**Keyword matching**
+
+| JSON field | Type | Default | Editor equivalent |
+|---|---|---|---|
+| `keywords` | string[] | [] | **Keywords** |
+| `matchWholeWords` | boolean | false | **Match Whole Words** |
+| `useFuzzyMatch` | boolean | false | **Fuzzy Match** |
+| `secondaryKeywords` | string[] | [] | **Secondary Keywords** |
+| `secondaryKeywordLogic` | enum (`AND_ANY`, `AND_ALL`, `NOT_ANY`, `NOT_ALL`) | `AND_ANY` | **Secondary Logic** |
+
+**Conditions and recursion**
+
+| JSON field | Type | Default | Editor equivalent |
+|---|---|---|---|
+| `conditions` | Condition[] (each has `variableId`, `operator`, `value`) | [] | **Conditions** |
+| `conditionLogic` | `"all"` \| `"any"` | `"all"` | **Condition Logic** |
+| `preventRecursion` | boolean | false | **Prevent Recursion** |
+| `excludeRecursion` | boolean | false | **Exclude Recursion** |
+
+**Organization**
+
+| JSON field | Type | Editor equivalent |
+|---|---|---|
+| `tags` | string[] | **Tags** |
+| `folderId` | string | **Folder** |
+| `presetId` | string | Associated preset ID (internal use) |
+
+:::
 
 ---
 

@@ -45,21 +45,38 @@ When the AI writes `[health: -20]`, the engine changes 100 to 80. Then `[health:
 
 ## The detailed version
 
-### Variable — full field reference
+### Variable fields — what you see in the editor
 
-Each variable is an object with these fields:
+When you click **Add Variable** in the editor, you'll see the following fields. Here's what each one does.
 
-| Field | Type | Required | Description |
-|-------|------|----------|-------------|
-| `id` | string | Yes | Unique identifier. The AI uses this to reference the variable. Can be set manually in the editor (auto-converted to lowercase with underscores) |
-| `name` | string | Yes | Display name, at least 1 character. The AI can also reference the variable by name (the engine auto-maps name → id) |
-| `type` | `"number"` / `"string"` / `"boolean"` / `"json"` | Yes | Determines what the variable can store and what operations are valid |
-| `defaultValue` | number / string / boolean / object / array | Yes | The initial value when a new session starts or when the variable is reset. Called **Default Value** in the editor |
-| `description` | string | No | Notes for yourself. Not currently exposed in the editor UI, but can be set by editing the exported JSON |
-| `min` | number | No | Number type only — lower bound; values below this are auto-clamped |
-| `max` | number | No | Number type only — upper bound; values above this are auto-clamped |
-| `category` | see below | No | Category tag for organizing variables and grouping them in the prompt |
-| `behaviorRules` | string | No | Plain-language guidance for the AI — tells it how to understand and update this variable |
+| Editor field | Where to find it | What it does |
+|---|---|---|
+| **ID** | Below the name field (auto-generated, or set manually) | The identifier used in directives like `[health: -10]`. Auto-generated from the name (lowercase, underscores), or you can set it manually |
+| **Display Name** | Top of the variable panel | What you see in the editor sidebar and status panel. The AI can also reference the variable by this name — the engine auto-maps name to ID |
+| **Type** dropdown | Below the name | Number, String, Boolean, or JSON. Determines what the variable can store and which operations are valid |
+| **Default Value** | Main input area | What this variable starts at when a player begins a new session |
+| **Min / Max** | Number inputs (only visible for Number type) | The engine automatically clamps values within this range. Set min `0` and max `100` for health, and you'll never get negative HP or values above 100 |
+| **Category** dropdown | Below default value | Helps organize variables in the editor and in the prompt: Stat, Inventory, Resource, Flag, Relationship, or Custom |
+| **Behavior Rules** | Text area at the bottom | Plain-language instructions telling the AI when and how to update this variable. Included in the system prompt so the AI knows the rules |
+| **Description** | Not currently in the editor UI | Notes for yourself. Can be set via JSON export/import |
+
+::: details Technical reference: JSON fields
+
+Maps editor fields to their underlying JSON field names in the variable schema. Useful when exporting/importing world files.
+
+| JSON field | Type | Required | Editor equivalent |
+|---|---|---|---|
+| `id` | string | Yes | **ID** |
+| `name` | string (min 1) | Yes | **Display Name** |
+| `type` | `"number"` / `"string"` / `"boolean"` / `"json"` | Yes | **Type** dropdown |
+| `defaultValue` | number / string / boolean / object / array | Yes | **Default Value** |
+| `description` | string | No | **Description** (JSON-only) |
+| `min` | number | No | **Min** (Number type only) |
+| `max` | number | No | **Max** (Number type only) |
+| `category` | enum (see below) | No | **Category** dropdown |
+| `behaviorRules` | string | No | **Behavior Rules** |
+
+:::
 
 ### Category (category)
 

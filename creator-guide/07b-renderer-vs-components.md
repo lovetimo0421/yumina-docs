@@ -8,44 +8,44 @@
 
 ## One-sentence summary
 
-- **Message Renderer (`messageRenderer`)**: Changes how each AI message looks. Works in normal chat mode.
-- **Custom Components (`customComponents`)**: Take over the entire screen to build an independent game UI. Only work in fullscreen mode.
+- **Message Renderer** (also called **Message Template** in the editor) (`surface: "message"`): Changes how each AI message looks. Works in normal chat mode.
+- **App Component** (`surface: "app"`): Takes over the entire screen to build an independent game UI.
 
-**They don't work at the same time.** A single toggle controls which one is active: `fullScreenComponent`.
+Both are stored in the same `customUI` array — the `surface` field determines which mode a component belongs to.
 
 ---
 
 ## How they relate
 
+Every custom component has a `surface` field — either `"message"` or `"app"`:
+
 ```
-fullScreenComponent = false (default)
+surface: "message"
   → Player sees: Normal chat interface
-  → messageRenderer: ✅ Active (renders each message)
-  → customComponents: ❌ Not shown (even if you wrote code for them)
+  → Your component renders each message with custom styling
+  → Only one message-surface component allowed per world
 
-fullScreenComponent = true
+surface: "app"
   → Player sees: Fullscreen custom UI (no chat box, no input field)
-  → messageRenderer: ❌ Not active (never called)
-  → customComponents: ✅ Fill the entire screen
+  → Your component fills the entire screen
+  → Only one app-surface component allowed per world
 ```
 
-This is not "two things coexisting" — it's **one or the other**. Toggle off → message renderer path. Toggle on → custom component path.
+If any visible component has `surface: "app"`, the world enters fullscreen mode automatically. Otherwise, the default chat interface is used with the message renderer active.
 
 ---
 
 ## Detailed comparison
 
-| | Message Renderer | Custom Components |
+| | Message Renderer (`surface: "message"`) | App Components (`surface: "app"`) |
 |--|-----------------|-------------------|
-| **Where to configure** | Message Renderer tab in editor | Enter Studio → Code View |
-| **How many** | Only 1 | Multiple allowed |
-| **When visible** | Normal chat mode (default) | Fullscreen mode only |
+| **Where to configure** | Editor → Components → Add → choose **Message** | Editor → Components → Add → choose **App** |
+| **How many** | Only 1 | Only 1 |
+| **When visible** | Normal chat mode (no app components present) | When any app component exists and is visible |
 | **Where it appears** | Replaces each message's rendering | Fills the entire screen |
 | **Chat interface** | Normal (message list + input box) | **Completely hidden** |
 | **Data received** | Per-message `content`, `role`, `messageIndex` + `useYumina()` | Only `useYumina()` (no per-message data) |
 | **Typical use** | Chat bubbles, status panels, battle logs, interactive buttons | Full visual novel UI, complete game interface |
-| **In fullscreen mode** | Disabled | Active |
-| **In normal mode** | Active | Disabled |
 
 ---
 
@@ -81,17 +81,17 @@ export default function Renderer({
 
 ### Key limitations
 
-- **Only 1** — you can't have multiple renderers
-- **Disabled in fullscreen mode** — if `fullScreenComponent: true`, the renderer is never called
+- **Only 1** — you can't have multiple message renderers
+- **Disabled when app components exist** — if any visible `surface: "app"` component exists, the message renderer is not called
 - **Called for every message** — if you only want content on a specific message, you need to check `messageIndex` or `isLastMsg` yourself
 
 ---
 
-## Custom Components: How they work
+## App Components: How they work
 
-Custom components are **completely independent UI panels**. They don't replace message rendering — they **take over the entire screen**. The chat message list, input box, and even the top navigation bar all disappear, leaving only your components.
+App components are **completely independent UI panels**. They don't replace message rendering — they **take over the entire screen**. The chat message list, input box, and even the top navigation bar all disappear, leaving only your components.
 
-**You must enable fullscreen mode to see them.** In the editor's Overview tab or world settings, set `fullScreenComponent` to `true`.
+**They activate automatically when present.** If any visible component has `surface: "app"`, the world enters fullscreen mode. No manual toggle needed.
 
 ### Data they receive
 
@@ -119,7 +119,6 @@ Note: they do **not** receive `content`, `role`, `messageIndex`, or `renderMarkd
 
 ### Key limitations
 
-- **Only visible in fullscreen mode** — with `fullScreenComponent: false` (default), components don't render at all
 - **Chat interface disappears** — players can't see the message list or input box. You need to build your own chat using `api.messages` and `api.sendMessage()` if needed
 - **ESC exits the world** — in fullscreen mode, pressing ESC navigates away from the world entirely, not just exits fullscreen
 
@@ -130,15 +129,15 @@ Note: they do **not** receive `content`, `role`, `messageIndex`, or `renderMarkd
 ```
 What you want to do → Which to use
 ──────────────────────────────────
-Add HP bars above messages        → Message Renderer
-Add buttons below messages        → Message Renderer
-Change message appearance         → Message Renderer
-Build a fullscreen visual novel   → Custom Components + fullScreenComponent: true
-Build a complete game interface   → Custom Components + fullScreenComponent: true
-Keep chat but add a sidebar       → Not currently supported (components are fullscreen only)
+Add HP bars above messages        → Message Renderer (surface: "message")
+Add buttons below messages        → Message Renderer (surface: "message")
+Change message appearance         → Message Renderer (surface: "message")
+Build a fullscreen visual novel   → App Component (surface: "app")
+Build a complete game interface   → App Component (surface: "app")
+Keep chat but add a sidebar       → Not currently supported (app components are fullscreen only)
 ```
 
-> **Most creators only need the message renderer.** Custom components are for advanced creators who want full control over the interface. If you're unsure, start with the message renderer.
+> **Most creators only need the message renderer.** App components are for advanced creators who want full control over the interface. If you're unsure, start with the message renderer.
 
 ---
 
@@ -146,58 +145,58 @@ Keep chat but add a sidebar       → Not currently supported (components are fu
 
 ### Message Renderer
 
-1. Open editor → sidebar → **Message Renderer** tab
-2. Select "Custom TSX"
-3. Write your TSX code in the code box
+1. Open editor → **Components** section
+2. Click "Add Component" → choose **Message**
+3. Write your TSX code in the code editor
 4. Bottom shows "Compile Status: OK" when syntax is correct
 5. Save, start a new session to test
 
-### Custom Components
+### App Components
 
-1. Open editor → click **Enter Studio** at the top
-2. In the Studio's Code View panel, click **+** to add a component
+1. Open editor → **Components** section
+2. Click "Add Component" → choose **App**
 3. Write your TSX code
-4. Back in editor → **Overview** tab → confirm fullscreen mode is enabled
+4. The world automatically enters fullscreen mode when any app component is visible
 5. Save, start a new session to test
 
 ---
 
 ## Common misconceptions
 
-### "I wrote a custom component but can't see it"
+### "I wrote an app component but can't see it"
 
-Most common reason: **fullscreen mode is off**. Custom components only render when `fullScreenComponent: true`. Check this in the editor's Overview tab.
+Check that the component's `visible` toggle is on in the editor. App components only render when they exist and are marked visible. Also make sure the component's `surface` is set to `"app"` — a `"message"` surface component won't trigger fullscreen mode.
 
-### "I turned on fullscreen mode but the chat disappeared"
+### "I added an app component and the chat disappeared"
 
-This is expected. In fullscreen mode, custom components take over the entire screen — the chat interface doesn't render. If you want chat functionality, you need to build it yourself using `api.messages` and `api.sendMessage()` inside your component.
+This is expected. When app components are active, they take over the entire screen — the chat interface doesn't render. If you want chat functionality, you need to build it yourself using `api.messages` and `api.sendMessage()` inside your component.
 
 ### "Can I use both at the same time?"
 
 In the current version, **you can't have both visible to players simultaneously**:
-- Normal mode → only message renderer works
-- Fullscreen mode → only custom components work
+- No app components → message renderer works
+- App components present → only app components render
 
-If you want a chat window embedded in a fullscreen game UI, you need to implement it inside your custom component.
+If you want a chat window embedded in a fullscreen game UI, you need to implement it inside your app component.
 
 ### "Do they use the same API?"
 
 Yes. Both can call `useYumina()` and get the exact same API: `sendMessage`, `setVariable`, `executeAction`, `switchGreeting`, `playAudio`, `stopAudio`, `variables`, `messages`, etc.
 
-The only difference is that the message renderer also receives **per-message data** (`content`, `role`, `messageIndex`, `renderMarkdown`), while custom components don't.
+The only difference is that the message renderer also receives **per-message data** (`content`, `role`, `messageIndex`, `renderMarkdown`), while app components don't.
 
 ---
 
 ## Quick reference
 
-| What you want | Use | Need fullscreen? |
-|--------------|-----|-----------------|
-| Change message appearance | Message Renderer | No |
-| Add buttons/inputs to messages | Message Renderer | No |
-| Build chat bubbles / battle logs | Message Renderer | No |
-| Build a fullscreen visual novel | Custom Components | Yes |
-| Build a complete game UI | Custom Components | Yes |
-| Add a status panel next to messages | Message Renderer | No |
-| Build your own chat interface | Custom Components | Yes |
+| What you want | Use | Surface |
+|--------------|-----|---------|
+| Change message appearance | Message Renderer | `"message"` |
+| Add buttons/inputs to messages | Message Renderer | `"message"` |
+| Build chat bubbles / battle logs | Message Renderer | `"message"` |
+| Build a fullscreen visual novel | App Component | `"app"` |
+| Build a complete game UI | App Component | `"app"` |
+| Add a status panel next to messages | Message Renderer | `"message"` |
+| Build your own chat interface | App Component | `"app"` |
 
 </div>

@@ -363,7 +363,7 @@ const currentRule = String(api.variables.custom_rule || "");
 ```
 
 ::: info Why messageRenderer, not customComponent?
-In the current version of Yumina, `customComponent` panels only render in fullscreen mode (`fullScreenComponent: true`). In normal chat mode they don't show. So if you want interactive elements (buttons, inputs) in the chat interface, put them in the `messageRenderer`.
+In Yumina, components with `surface: "app"` take over the entire screen and replace the chat interface. In normal chat mode they don't show. So if you want interactive elements (buttons, inputs) in the chat interface, put them in a component with `surface: "message"` (the message renderer).
 :::
 
 #### Step 4: Test it

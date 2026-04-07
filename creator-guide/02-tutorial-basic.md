@@ -27,7 +27,6 @@ Let's create our own entry. Make sure you're under the **PRESETS** group and cli
 In this game, the AI isn't playing a character — it's acting as the **Game Master (GM)**, responsible for narrating scenes, playing all NPCs, and driving the story forward. So the first entry tells the AI its role and responsibilities.
 
 ![Creating the character setup entry](./images/tutorial-system-entry.png)
-<!-- Screenshot needed: New entry interface showing the Send as three-way toggle (Instruction selected) and Content text box -->
 
 | Field | Value |
 |-------|-------|
@@ -68,7 +67,6 @@ This entry is the "constitution" of your game — it defines everything about ho
 Switch to the **First Message** section and click **Add Greeting**. (Alternatively, create a new entry with `role: greeting` in the Lorebook — same effect.)
 
 ![Editing the first message](./images/tutorial-greeting.png)
-<!-- Screenshot needed: First Message editing area with the opening message already written -->
 
 ```
 **Night 1**
@@ -105,7 +103,6 @@ The key elements of a good opening:
 Switch to the **Variables** section and click **Add Variable**. Create 5 variables.
 
 ![Creating variables](./images/tutorial-variables.png)
-<!-- Screenshot needed: Variables section showing the 5 created variables in a list -->
 
 ### 1. Health
 
@@ -263,10 +260,8 @@ My variables:
 5. Satisfied? Click **Approve**. Want changes? Keep talking — "make the knocking effect more dramatic" or "the choice buttons are too spread out"
 
 ![Studio AI generating the interface](./images/tutorial-studio-ai2.png)
-<!-- Screenshot needed: Studio interface showing the above conversation in the AI Assistant panel on the left, and the preview in Canvas on the right -->
 
 ![Generated effect preview](./images/tutorial-studio-result.png)
-<!-- Screenshot needed: Close-up of the Canvas panel clearly showing the CRT-style renderer output -->
 
 Just like that — a slick frontend, assembled effortlessly!
 
@@ -390,7 +385,6 @@ Once testing passes, switch to **Overview** and fill in the pre-publish details:
 5. Click **Save** at the top
 
 ![Overview info](./images/tutorial-publish.png)
-<!-- Screenshot needed: Overview section showing cover image, description, tags, and language setting -->
 
 ---
 

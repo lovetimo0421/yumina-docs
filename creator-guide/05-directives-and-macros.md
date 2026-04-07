@@ -58,8 +58,8 @@ Three things inside the brackets: the variable ID, the operation, and the value.
 | Toggle | `[var: toggle]` | none | `[hasKey: toggle]` | Flip a boolean — true becomes false, false becomes true. No value needed |
 | Append | `[var: append "text"]` | none | `[log: append "found key"]` | Append text to a string variable |
 | Merge | `[var: merge {json}]` | none | `[stats: merge {"level": 2}]` | Merge a JSON object into a variable (for complex state) |
-| Push | `[var: push value]` | none | `[inventory: push "magic_sword"]` | Push an element onto an array variable |
-| Delete | `[var: delete key]` | none | `[stats: delete "buff"]` | Delete a key from an object variable |
+| Push | `[var: push [json]]` | none | `[inventory: push ["magic_sword"]]` | Push an element onto an array variable. Value must be a JSON array or object |
+| Delete | `[var: delete {json}]` | none | `[inventory: delete [0]]` | Delete a key/index from an object or array variable. Value must be a JSON value |
 
 #### Value syntax
 
@@ -157,6 +157,11 @@ The player sees clean text. The engine gets the effects list to update game stat
 | `{{lastUserMessage}}` | The player's last message | (last thing the player said) |
 | `{{lastCharMessage}}` | The character's last message | (last thing the character said) |
 | `{{model}}` | Name of the current AI model | claude-opus-4-6 |
+| `{{persona_name}}` | Active persona's name | Kai |
+| `{{persona_appearance}}` | Active persona's appearance description | (appearance text) |
+| `{{persona_personality}}` | Active persona's personality description | (personality text) |
+| `{{persona_backstory}}` | Active persona's backstory | (backstory text) |
+| `{{persona}}` | All persona fields combined | (full persona description) |
 | `{{// comment text}}` | Comment — expands to nothing (not sent to AI) | (empty string) |
 | `{{trim}}` | Eats surrounding whitespace (for precise formatting control) | (collapses adjacent whitespace) |
 

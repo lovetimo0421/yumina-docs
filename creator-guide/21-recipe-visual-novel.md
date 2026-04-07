@@ -14,7 +14,7 @@ A fullscreen visual novel interface:
 - **Character sprites** — the AI sets the current speaker and emotion via directives, and `YUI.Sprite` displays the matching sprite on screen
 - **Dialogue box** — a semi-transparent box at the bottom of the screen showing the character name and dialogue. *Italic text* is automatically treated as narration/inner monologue; plain text is character dialogue
 - **Choice buttons** — when the AI offers choices, `YUI.ChoiceButtons` overlays clickable buttons on screen
-- **Fullscreen mode** — `fullScreenComponent: true` turns the entire chat area into a VN canvas with no regular chat bubbles
+- **Fullscreen mode** — adding a component with `surface: "app"` turns the entire chat area into a VN canvas with no regular chat bubbles
 
 ### How it works
 
@@ -470,9 +470,9 @@ The code uses `/sprites/${speaker.toLowerCase()}_${emotion}.png` to assemble spr
 
 A visual novel should fill the entire screen, not show as chat bubbles.
 
-Editor → **Settings** tab → find "Fullscreen Component" → toggle it on
+Editor → **Components** section → add a component with `surface: "app"`
 
-This corresponds to `fullScreenComponent: true`. When enabled:
+When an app-surface component is present and visible:
 - The chat area no longer displays regular message bubbles
 - The message renderer's output fills the entire visible area
 - The player's input box remains at the bottom, but choice buttons can replace manual typing
@@ -638,7 +638,7 @@ Combined with Recipe #9 (day-night cycle)'s audio system, you can assign BGM to 
 | Switch expression | AI sends `[speaker_emotion: set "emotion"]` |
 | Show choice buttons | AI sends `[show_choices: set true]` + choices in `A) B) C)` format |
 | Distinguish narration from dialogue | `*italic*` = narration, plain text = dialogue |
-| Fullscreen VN experience | Editor → Settings → enable "Fullscreen Component" (`fullScreenComponent: true`) |
+| Fullscreen VN experience | Editor → Components → add component with `surface: "app"` |
 | Character sprites | Prepare `characterName_emotion.png` files in the `/sprites/` directory |
 | Send message when player clicks a choice | Button `onClick` calls `api.sendMessage(choiceText)` |
 
@@ -662,7 +662,7 @@ Download this JSON file and import it to experience the full effect:
 - 1 knowledge entry (visual novel system instructions telling the AI how to use directives and text formatting)
 - 1 first message (VN opening with initial directives)
 - A message renderer (complete VN interface: background + sprites + dialogue box + choice buttons)
-- `fullScreenComponent: true` fullscreen mode enabled
+- A component with `surface: "app"` for fullscreen mode
 
 ---
 

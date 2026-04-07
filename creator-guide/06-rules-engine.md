@@ -10,6 +10,8 @@
 
 ### What are rules?
 
+(In the editor, you'll find these under the **Behaviors** section.)
+
 Imagine hiring a butler. You tell him: "If a guest arrives at the door, turn on the lights. If the fridge is empty, go grocery shopping." Then you walk away — the butler will keep watching, and when conditions are met, he handles it automatically.
 
 Yumina's rules engine is that butler. Write the rules, and the engine checks them on every message and every state change. When something should trigger, it triggers. When something should execute, it executes. No code, no manual control — it's all declarative.
@@ -89,11 +91,21 @@ The editor organizes triggers into groups for easy browsing:
 |-------------|--------------|-------------|
 | Every N turns | `turn-count` | Fires at a specific turn (`atTurn`) or every N turns (`everyNTurns`) |
 
+**Manual**
+
+| Editor label | Internal type | Description |
+|-------------|--------------|-------------|
+| Manual trigger | `manual` | Fires only when explicitly triggered by a custom component calling `api.executeAction()`. Good for player-initiated actions like "open shop" or "use skill" |
+
 **Timers**
 
 | Editor label | Internal type | Description |
 |-------------|--------------|-------------|
-| Timer fires | `timer:fired` | Fires when a countdown created by a "start timer" action completes |
+| Timer fires | `timer:fired` | Fires when a countdown created by a "start timer" action completes. Handled via the Reaction system internally |
+
+::: warning Timer system status
+Timer triggers (`timer:fired`) and timer actions (`start-timer`, `cancel-timer`) are available in the editor, but the client-side timer runtime is not yet fully integrated. Timers you create in the editor will be saved but won't count down during gameplay in the current version. This feature is under active development.
+:::
 
 **`state-change` vs `variable-crossed`:** `state-change` is "tell me any time something moves" — very broad. `variable-crossed` is "only tell me when this specific variable crosses this specific line" — very precise. Analogy: `state-change` is asking the butler to check the front door every time there's any noise. `variable-crossed` is asking him to alert you only when the thermometer drops below zero.
 
@@ -237,7 +249,7 @@ Controls background music or sound effects.
 
 ##### Timers
 
-**9. `start-timer` — start a timer**
+**9. `start-timer` — start a timer** *(not yet functional)*
 
 Starts a countdown. When it expires, a `timer:fired` event triggers, which you can respond to with another behavior.
 
@@ -248,13 +260,21 @@ Starts a countdown. When it expires, a `timer:fired` event triggers, which you c
 | `duration` | Countdown duration in seconds |
 | `repeat` | Whether to repeat (optional, defaults to false) |
 
-**10. `cancel-timer` — cancel a timer**
+::: warning Not yet functional
+This action is configurable in the editor but timers do not currently count down during gameplay. The timer runtime is under active development.
+:::
+
+**10. `cancel-timer` — cancel a timer** *(not yet functional)*
 
 Cancels a running timer.
 
 | Field | Description |
 |-------|-------------|
 | `id` | Timer ID to cancel |
+
+::: warning Not yet functional
+See note above — timer functionality is not yet available at runtime.
+:::
 
 ---
 
@@ -542,4 +562,8 @@ Behavior B: Bomb explodes
     - Notify player "BOOM — you couldn't escape the room in time." (danger)
 ```
 
-**Key point:** Behavior A uses `start-timer` to start a 60-second countdown. When the timer expires, the engine automatically fires a `timer:fired` event, and Behavior B responds. If the player escapes the room within 60 seconds (location is no longer "secret_room"), the ONLY IF condition fails and the bomb does nothing — that's the power of condition checking (≧▽≦)
+**Key point:** Behavior A uses `start-timer` to start a 60-second countdown. When the timer expires, the engine fires a `timer:fired` event, and Behavior B responds. If the player escapes the room within 60 seconds (location is no longer "secret_room"), the ONLY IF condition fails and the bomb does nothing — that's the power of condition checking (≧▽≦)
+
+::: warning
+This timer example is a design preview. Timer countdown is not yet functional at runtime — see the timer warning above.
+:::

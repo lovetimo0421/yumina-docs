@@ -10,7 +10,7 @@ A quick-reference guide to Yumina creator terminology, sorted alphabetically.
 
 **Audio Directive** — a special directive the AI embeds in replies using `[audio: trackId action]` syntax to control audio playback. Supports play, stop, crossfade, volume, and chain operations.
 
-**Behavior** — a WHEN/ONLY IF/DO automation rule: when to check, what conditions to require, and what to do. The core mechanism that makes a world feel alive. Configured in the Behaviors section of the editor.
+**Behavior** (also called **Rule** in code and documentation) — a WHEN/ONLY IF/DO automation rule: when to check, what conditions to require, and what to do. The core mechanism that makes a world feel alive. Configured in the Behaviors section of the editor.
 
 **Bundle** — a package of selected world content (entries, variables, rules, components, etc.) exported as a shareable JSON file. Others can install it into their own worlds with one click.
 
@@ -24,9 +24,9 @@ A quick-reference guide to Yumina creator terminology, sorted alphabetically.
 
 **Directive** — the AI's way of changing game state, using `[variableName: operation value]` syntax in replies. Automatically parsed and executed by the engine; players only see clean narrative text.
 
-**Entry** — a content fragment in a world. Character profiles, scene descriptions, writing style instructions, example dialogue, world lore — all are entries. Each has a `role` tag telling the engine what kind of content it is.
+**Entry** — a content fragment in a world. Character profiles, scene descriptions, writing style instructions, example dialogue, world lore — all are entries. Each has a `role` tag telling the engine what kind of content it is. Entries are the individual items managed inside the **Lorebook** section of the editor.
 
-**Full-Screen Component** — a setting that makes custom components take over the entire screen when enabled, hiding the chat window completely. Good for character creation screens, maps, or fully custom experiences.
+**Full-Screen Component** — a component with `surface: "app"` that takes over the entire screen, hiding the default chat interface completely. Good for visual novel UIs, complete game interfaces, or fully custom experiences. See also **App Component** in the [Renderer vs Components](./07b-renderer-vs-components.md) guide.
 
 **Fuzzy Match** — typo-tolerant matching based on Levenshtein edit distance. Allows a small number of spelling errors in keywords to still trigger a match. Only effective for Latin alphabet characters — not supported for CJK.
 
@@ -36,11 +36,11 @@ A quick-reference guide to Yumina creator terminology, sorted alphabetically.
 
 **Language Variant** — a different language translation of the same world. Multiple language versions can be linked together in Overview so players see a language tab when starting the game.
 
-**Lorebook** — a collection of keyword-triggered entries. When matching keywords appear in chat, the corresponding entries automatically inject into the AI context — feeding information on demand to conserve token budget.
+**Lorebook** — the editor section that manages all entries. Supports keyword-triggered entries: when matching keywords appear in chat, the corresponding entries automatically inject into the AI context — feeding information on demand to conserve token budget. The Lorebook is the container/system; individual items inside it are called **Entries**.
 
 **Macro** — a `{{name}}` placeholder in entry text, automatically replaced with real content (like a variable value or system info) before being sent to the AI. E.g. `{{char}}`, `{{user}}`, `{{turnCount}}`.
 
-**Message Renderer** — a custom component written in TSX that replaces the default Markdown chat bubbles to give AI messages a personalized look: speech bubbles, visual novel dialogue boxes, battle logs, and more.
+**Message Renderer** (called **Message Template** in the editor) — a custom component written in TSX that replaces the default Markdown chat bubbles to give AI messages a personalized look: speech bubbles, visual novel dialogue boxes, battle logs, and more. Technically a `surface: "message"` component.
 
 **Playlist** — a BGM playlist configuration that chains multiple background music tracks and controls whether to loop, shuffle, or play sequentially, plus autoplay behavior and gap between tracks.
 
@@ -52,7 +52,7 @@ A quick-reference guide to Yumina creator terminology, sorted alphabetically.
 
 **Renderer** — the mechanism of using TSX code to fully take over how messages or interfaces are displayed. The key step from "chatbot" to "interactive experience."
 
-**Rule** — synonymous with Behavior (the formal term used in the underlying schema). See Behavior.
+**Rule** — the term used in code and the underlying schema for what the editor calls a **Behavior**. The two terms are synonymous. See Behavior.
 
 **Secondary Keywords** — a keyword list for additional filtering after a primary keyword matches. Supports four combination logics: AND_ANY, AND_ALL, NOT_ANY, NOT_ALL.
 

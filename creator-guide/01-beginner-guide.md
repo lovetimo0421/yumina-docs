@@ -16,14 +16,12 @@ In the left navigation of Yumina, click the **Create** button. You'll see the te
 For beginners, start with **Blank Project** — then click straight into the editor. Type a name for your world in the input field at the top.
 
 ![](./images/create-world.png)
-<!-- Screenshot needed: Create New template selection page with template cards side by side -->
 
 ## What the editor looks like
 
 When you first open it, you'll see something like this:
 
 ![Editor main interface](./images/editor-overview.png)
-<!-- Screenshot needed: Full editor view, left nav fully visible, right side showing one section's content -->
 
 The left side is the navigation panel with 8 sections. Don't let the number scare you — we'll go through them one by one (•̀ᴗ•́)و
 
@@ -40,7 +38,6 @@ A good first message should do two things:
 Click **Add Greeting** to start writing.
 
 ![First message editing interface](./images/first-message.png)
-<!-- Screenshot needed: First Message editing area with a sample greeting already written -->
 
 ::: tip Quick tip
 A world can have multiple first messages. Players see the first one by default, but can swipe left and right to see the others. Great for offering different starting scenarios to choose from.
@@ -55,7 +52,6 @@ This is where you'll spend most of your time in the editor.
 **Entries are everything you write for the AI to read** — character profiles, world-building lore, writing style notes, example dialogue, plot threads… it all lives in entries. Think of it as the AI's "script."
 
 ![Entry list interface](./images/lorebook-list.png)
-<!-- Screenshot needed: Lorebook section with the left group panel (PRESETS/EXAMPLES/CHAT HISTORY/POST) and right entry editing panel -->
 
 ### The four groups
 
@@ -96,7 +92,6 @@ For example: if you have an entry about a "black market" in CHAT HISTORY with th
 The lower the number, the higher the priority — the AI reads that entry first. If you have a particularly important setting, give it a low number (like 0) and the AI will weight it more heavily.
 
 ![Entry detail editing view](./images/lorebook-entry-detail.png)
-<!-- Screenshot needed: An entry's editing panel showing Send as (three options), Content text box, Tags, and Position -->
 
 ::: info Detailed reference
 For a deep dive on all entry configuration options — fuzzy matching, secondary keywords, recursive triggering, conditional triggering, and more — see → [Entries & Lorebook](./03-entries-and-lorebook.md)
@@ -111,7 +106,6 @@ Variables are your world's "memory." Anything you need to track — health, gold
 Click **Add Variable** to create one. Each variable needs a display name, a type, and a default value.
 
 ![Variable management interface](./images/variables.png)
-<!-- Screenshot needed: Variables section showing several variables of different types (number/string/boolean), preferably with one expanded editing panel -->
 
 Four types, each with its use case:
 
@@ -122,7 +116,7 @@ Four types, each with its use case:
 | Boolean | Yes/No | Has key: true |
 | JSON (Object / Array) | Complex data | Inventory: sword, potion, map |
 
-Once you create variables, the engine automatically teaches the AI how to update them — you don't need to write any format instructions. The AI will include updates at the end of its replies using syntax like `[health: -10]`, and the engine detects and executes these automatically. All you need to do is write **Behavior Rules** for each variable in plain language explaining "when should this variable change" — the engine handles everything else.
+Variables are updated automatically via AI directives — the tutorial covers how this works in practice.
 
 ::: info Detailed reference
 Operation syntax, nested paths, advanced JSON variable usage → [Variables](./04-variables.md) and [AI Directives & Macros](./05-directives-and-macros.md)
@@ -142,7 +136,6 @@ Behaviors are your world's "automated assistant." They let you set up effects li
 After clicking **Add Behavior**, every behavior has three parts: **WHEN** (what triggers it) → **ONLY IF** (an optional condition to check) → **DO** (what to execute)
 
 ![Behavior editing interface](./images/behaviors.png)
-<!-- Screenshot needed: Behaviors section showing a behavior list and one behavior's editing panel (WHEN, ONLY IF, DO blocks) -->
 
 A simple example:
 
@@ -165,70 +158,25 @@ All trigger types, action types, priority and cooldown mechanics → [Rules Engi
 By default, the AI's reply is just plain text. But those cool worlds you've seen — speech bubbles, visual novel scenes, game interfaces with health bars and inventory — those are all built with this section.
 
 ![Message renderer editor](./images/message-renderer.png)
-<!-- Screenshot needed: Message Renderer section showing Default/Custom TSX options, with the code editor visible under Custom TSX -->
 
 There are two options:
 - **Default (plain markdown)**: standard Markdown, no setup needed
 - **Custom TSX**: write code to fully customize how messages look
 
-"Wait, code?! I can't code!" — don't panic. Nobody's expected to hand-write this stuff (￣▽￣)ノ
-
-There are two ways to have AI do it for you:
+"Wait, code?! I can't code!" — don't panic. You don't need to write it yourself (￣▽￣)ノ
 
 ### Method 1: Use Yumina's built-in Studio AI
 
-In the editor, click **Enter Studio**, open the **AI Assistant** panel, and just describe what you want in plain language. For example:
-
-```
-Change how messages are displayed for me.
-
-I want a dark status bar above each message containing:
-- A red health bar showing the health variable, max 100
-- A blue mana bar showing the mp variable, max 50
-- Gold text on the right showing gold coin count from the gold variable
-
-Give the status bar a dark gray background with a slight blue glowing border,
-like a fantasy RPG aesthetic.
-Display the AI's reply text normally below the status bar.
-```
-
-The AI generates the code, and the Canvas panel on the right shows a live preview. Satisfied? Click **Approve**. Not quite? Keep talking — "make the health bar thicker," "add a character level display."
+In the editor, click **Enter Studio**, open the **AI Assistant** panel, and describe what you want in plain language — "add a health bar above each message," "make it look like a visual novel." Studio generates the code and shows a live preview. Click **Approve** when you're happy, or keep iterating.
 
 ![Studio AI generating a renderer](./images/beginner-studio-renderer.png)
 ![Studio AI generating a renderer](./images/beginner-studio-renderer2.png)
-<!-- Screenshot needed: Studio full view — left AI Assistant with the above conversation, right Canvas showing the generated status bar (dark background, red health bar, blue mana bar, gold coin text) -->
 
 ### Method 2: Use an external AI (Claude, ChatGPT, etc.)
 
-Describe what you want to an external AI, but add the Yumina technical context (since external AIs don't know the platform) so it can write valid code. Also note that external AI can't create variables for you — you'll need to set those up yourself first ヾ(•ω•`)o.
+Describe the effect you want, but include Yumina's technical context so the AI writes valid code. The [Custom UI Guide](./07-components.md) has a ready-to-copy technical info block you can append to any prompt. Paste the generated code into Message Renderer → Custom TSX — if it compiles, you're done.
 
-```
-I'm building a world on an AI interactive platform called Yumina.
-Help me write code to change how messages are displayed.
-
-What I want:
-A dark status bar above each message (dark gray background, blue glowing border, rounded corners) showing:
-- A red health bar for the health variable, max 100
-- A blue mana bar for the mp variable, max 50
-- Gold text showing coin count from the gold variable
-Normal message text below the status bar. Dark fantasy RPG aesthetic.
-
-Here's the Yumina technical info — your code must follow these rules:
-- TSX format, exported as: export default function Renderer({ content, renderMarkdown }) { ... }
-- Use useYumina() to access game variables, e.g. useYumina().variables.health
-- The YUI component library is built-in (no import needed): YUI.StatBar can make health bars
-- The Icons icon library is built-in (no import), e.g. Icons.Coins is the coin icon
-- renderMarkdown(content) renders text to formatted HTML
-- Supports Tailwind CSS and React hooks
-```
-
-Once you have the code → editor → Message Renderer → Custom TSX → paste it in → if you see **Compile Status: OK** at the bottom, you're good.
-
-::: tip What if there's an error?
-If you see a red error message at the bottom after pasting, send the error back to the AI verbatim: "This code has an error, please fix it." A couple of back-and-forth exchanges usually sorts it out ∠( ᐛ 」∠)＿
-:::
-
-Yumina also includes a built-in component library called **YUI** (health bars, dialogue boxes, item grids, scene backgrounds, etc.). When AI generates code, it'll automatically use these. You don't need to know how these components work — the AI knows.
+Yumina includes a built-in component library called **YUI** (health bars, dialogue boxes, item grids, scene backgrounds, etc.). AI-generated code uses these automatically — you don't need to learn them yourself.
 
 ::: tip What is Studio?
 Studio is the editor's "advanced mode." Besides the AI assistant, it has a code editor, live preview, and a test panel. Click **Enter Studio** at the top of the editor to get there. The [Custom UI Guide](./07-components.md) covers it in detail.
@@ -269,7 +217,6 @@ Playlists, conditional BGM, AI audio directives → [Audio](./09-audio.md)
 Where you upload image and audio files. Character sprites, scene backgrounds, item icons, BGM tracks — once uploaded, you can reference them in your renderer or audio settings.
 
 ![Asset management interface](./images/assets.png)
-<!-- Screenshot needed: Assets section showing thumbnails of several uploaded images -->
 
 ---
 
@@ -323,4 +270,4 @@ TL;DR: The engine assembles entries into a prompt and sends it to the AI → the
 
 ## Next step
 
-You've seen every corner of the editor. Now follow the [step-by-step tutorial](./02-tutorial-basic.md) and build a complete survival horror world from scratch. Doing it once is worth more than reading the docs ten times ᕕ( ᐛ )ᕗ
+You've seen where everything is. Now follow the [step-by-step tutorial](./02-tutorial-basic.md) to actually build something — that's where you'll learn how all these pieces work together. Doing it once is worth more than reading the docs ten times ᕕ( ᐛ )ᕗ

@@ -58,8 +58,8 @@
 | 开关 | `[var: toggle]` | 无 | `[hasKey: toggle]` | 布尔值翻转，true变false，false变true。不需要填值 |
 | 追加 | `[var: append "text"]` | 无 | `[log: append "找到了钥匙"]` | 在字符串末尾追加文本 |
 | 合并 | `[var: merge {json}]` | 无 | `[stats: merge {"level": 2}]` | 把一个JSON对象合并进变量（适合复杂状态） |
-| 推入 | `[var: push value]` | 无 | `[inventory: push "magic_sword"]` | 往数组变量里推入一个元素 |
-| 删除 | `[var: delete key]` | 无 | `[stats: delete "buff"]` | 从对象变量里删除某个键 |
+| 推入 | `[var: push [json]]` | 无 | `[inventory: push ["magic_sword"]]` | 往数组变量里推入元素。值必须是 JSON 数组或对象 |
+| 删除 | `[var: delete {json}]` | 无 | `[inventory: delete [0]]` | 从变量里删除元素。值必须是 JSON 值 |
 
 #### 值的写法
 
@@ -157,6 +157,11 @@ AI的回复从发出到玩家看到，中间经过了这么几步：
 | `{{lastUserMessage}}` | 玩家的上一条消息 | （玩家最后说的话） |
 | `{{lastCharMessage}}` | 角色的上一条消息 | （角色最后说的话） |
 | `{{model}}` | 当前使用的AI模型名 | claude-opus-4-6 |
+| `{{persona_name}}` | 当前角色扮演身份的名字 | Kai |
+| `{{persona_appearance}}` | 当前角色扮演身份的外貌描述 | （外貌文本） |
+| `{{persona_personality}}` | 当前角色扮演身份的性格描述 | （性格文本） |
+| `{{persona_backstory}}` | 当前角色扮演身份的背景故事 | （背景故事文本） |
+| `{{persona}}` | 所有角色扮演身份字段合并 | （完整角色描述） |
 | `{{// 注释内容}}` | 注释，展开后消失（不会发送给AI） | （空字符串） |
 | `{{trim}}` | 吃掉前后空白（用来精确控制排版） | （消除相邻空白） |
 
@@ -198,7 +203,7 @@ AI可能会这样回复：
 
 > 铁匠把一柄泛着蓝光的长剑递到你面前："这是我的得意之作，附魔霜刃，一百金币。"你掏出钱袋付了钱，接过剑的瞬间感到一股寒意从掌心蔓延开来。
 >
-> [inventory: push "frost_blade"]
+> [inventory: push ["frost_blade"]]
 > [gold: -100]
 
 玩家的背包里多了一把霜刃剑，钱袋少了100金。

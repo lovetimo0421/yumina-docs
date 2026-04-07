@@ -18,7 +18,7 @@ Three steps: 1) click **Create** to make a new world; 2) in **Lorebook**, create
 
 ### Q: Which AI models does Yumina support?
 
-Yumina connects to models through OpenRouter, which means basically anything available on OpenRouter — including Claude, GPT, Gemini, DeepSeek, Llama, and other major models. You'll need to configure your own API Key in settings. Different models vary in how well they follow directive format. We recommend tuning settings like temperature to match the model you choose. See [AI Model & Settings](./10-ai-settings.md).
+Yumina supports multiple AI providers — including Anthropic (Claude), OpenAI (GPT), Google (Gemini), and OpenRouter (which gives access to hundreds of models including DeepSeek, Llama, and more). You can use Yumina's official API or bring your own API key (BYOK) in Settings → API Keys. Different models vary in how well they follow directive format. We recommend tuning settings like temperature to match the model you choose. See [AI Model & Settings](./10-ai-settings.md).
 
 ### Q: Where is my world data stored? Can it get lost?
 
@@ -94,11 +94,11 @@ You can try. A few starting points: 1) use **Enter Studio** in the editor, and h
 
 ### Q: Where do components display? Can I customize their position?
 
-Built-in components (stat-bar, text-display, etc.) display in a header bar above the chat window. Currently `placement` only supports `"header"`. If you need a more flexible layout — like a sidebar or full-screen panel — use `customComponents` to write custom TSX, or enable `fullScreenComponent: true` to let custom components take over the full screen. Component order is controlled by the `order` field — lower numbers appear first. See [Custom UI Guide](./07-components.md).
+Built-in components (stat-bar, text-display, etc.) display in a header bar above the chat window. Currently `placement` only supports `"header"`. If you need a more flexible layout — like a sidebar or full-screen panel — add a custom component with `surface: "app"` to take over the entire screen with your own TSX code. Component order is controlled by the `order` field — lower numbers appear first. See [Custom UI Guide](./07-components.md).
 
 ### Q: What's the difference between messageRenderer and customComponents?
 
-`messageRenderer` replaces how each chat message is displayed — it takes over AI reply rendering, letting you turn plain text into speech bubbles, visual novel dialogue boxes, battle logs, etc. `customComponents` adds independent UI panels alongside the chat interface — like character creation screens, game sidebars, and maps. Simply put: messageRenderer changes "what messages look like"; customComponents adds "what else is alongside messages." Both can be used simultaneously, and both share the same underlying `CustomComponent` data structure. See [Custom UI Guide](./07-components.md).
+A component with `surface: "message"` (message renderer) replaces how each chat message is displayed — turning plain text into speech bubbles, visual novel dialogue boxes, battle logs, etc. A component with `surface: "app"` (app component) takes over the entire screen to build a completely custom game interface — visual novels, game UIs, custom experiences. Both are stored in the same `customUI` array and share the `useYumina()` API. The `surface` field determines which mode a component operates in. See [Custom UI Guide](./07-components.md) and [Renderer vs Components](./07b-renderer-vs-components.md).
 
 ---
 

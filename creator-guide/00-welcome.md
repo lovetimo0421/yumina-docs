@@ -8,7 +8,7 @@ This guide will walk you through Yumina's editor, taking you from a blank canvas
 
 The docs are split into three sections. Pick your starting point:
 
-**First-time creator?** Start with the [Beginner's Guide](./01-beginner-guide.md). It'll take you on a tour of every corner of the editor so you understand what each section does. After that, follow along with the [step-by-step tutorial](./02-tutorial-basic.md) to build a complete world from scratch. Finish that and you're ready to fly solo ∠( ᐛ 」∠)＿
+**First-time creator?** Start with [Core Concepts](./01-core-concepts.md) — a 5-minute read that gives you the big picture of how Yumina works (7 concepts, that's it). Then take the [Editor Tour](./01-beginner-guide.md) to see where everything lives, and follow along with the [step-by-step tutorial](./02-tutorial-basic.md) to build a complete world from scratch. Finish that and you're ready to fly solo ∠( ᐛ 」∠)＿
 
 **Already familiar, just looking something up?** Jump straight to the [Feature Reference](#feature-reference) section. Each chapter has two layers — a quick summary for a fast refresh, and a detailed version that covers every edge case.
 

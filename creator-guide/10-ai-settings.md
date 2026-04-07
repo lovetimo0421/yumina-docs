@@ -59,19 +59,26 @@ These together determine how the AI "picks its next word." Imagine the AI genera
 | `playerName` | string | `"User"` | any | Player name. `{{user}}` macros in the prompt are replaced with this |
 | `lorebookScanDepth` | integer | `2` | positive integer | How many recent messages to scan for lorebook keyword matching. Default 2 = only the last 2 messages. Increase for deeper context triggering, but too high adds matching overhead. Modifiable in the editor under **Lorebook → Entry Settings** |
 | `lorebookRecursionDepth` | integer | `0` | `0 - 10` | Lorebook recursive trigger depth. `0` = no recursion, single-pass keyword matching. Set to `2` and triggered entries' content gets scanned for keywords again, up to 2 layers deep. Good for complex interconnected lore, but watch out: deep recursion can eat through your token budget. Modifiable in **Lorebook → Entry Settings** |
-| `lorebookBudgetPercent` | float | `100` | `0 - 100` | Percentage of context that lorebook can use. `100` = unlimited |
-| `lorebookBudgetCap` | integer | `0` | >=0 | Hard token cap for lorebook. `0` = no cap |
+| ~~`lorebookBudgetPercent`~~ | float | `100` | `0 - 100` | **Deprecated.** Percentage of context that lorebook can use. Still functional on the server but not exposed in the editor UI and may be removed in a future version |
+| ~~`lorebookBudgetCap`~~ | integer | `0` | >=0 | **Deprecated.** Hard token cap for lorebook. Still functional on the server but not exposed in the editor UI and may be removed in a future version |
 
-::: tip About lorebookBudgetPercent and lorebookBudgetCap
-These parameters aren't currently exposed in the editor UI — use the defaults (unlimited). If you really need to adjust them, export the world JSON, manually edit the `settings` object, and re-import.
+::: warning Deprecated settings
+`lorebookBudgetPercent` and `lorebookBudgetCap` are deprecated and not exposed in the editor UI. The server still respects them if set in the world JSON, but they may be removed in a future version. For new worlds, leave these at their defaults (unlimited).
 :::
 
 ### UI & output control
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `fullScreenComponent` | boolean | `false` | When `true`, custom components take over the entire screen. Great for complete game interfaces (dungeon exploration, visual novels) where you want your custom UI instead of the chat window |
 | `structuredOutput` | boolean | `false` | When `true`, forces the AI to reply in JSON format via `response_format: { type: "json_object" }`. For mechanic-heavy worlds that need to strictly parse AI output. Note: with this on, AI replies are JSON objects, not natural language |
+
+### Player-level settings
+
+These settings are configured by each player in their own profile, not by the world creator. They apply globally across all worlds.
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `reasoningEffort` | string | `"low"` | Controls thinking depth for reasoning-capable models (e.g. Claude). Options: `"none"`, `"low"`, `"medium"`, `"high"`. Higher values make the AI think more carefully but cost more tokens. Players can change this in **Settings → AI Config** |
 
 ::: warning Advanced setting
 `structuredOutput` is not currently exposed in the editor UI. To enable JSON mode, you need to export the world JSON, manually add `"structuredOutput": true` to the `settings` object, and re-import. This is an advanced creator feature — most worlds don't need it.

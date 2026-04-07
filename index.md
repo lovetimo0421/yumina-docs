@@ -4,16 +4,10 @@ hero:
   name: Yumina
   text: Documentation
   tagline: Play AI interactive worlds — or build one of your own
-  image:
-    src: /logo.png
-    alt: Yumina
   actions:
     - theme: brand
       text: Player Guide
       link: /guide/01-what-is-yumina
-    - theme: alt
-      text: Discord
-      link: https://discord.gg/FsZ5PpV4Yu
     - theme: alt
       text: Vision
       link: /vision/

@@ -4,16 +4,10 @@ hero:
   name: Yumina
   text: 文档中心
   tagline: 玩转 AI 互动世界，或创造属于你的
-  image:
-    src: /logo.png
-    alt: Yumina
   actions:
     - theme: brand
       text: 基础教程
       link: /zh/guide/01-what-is-yumina
-    - theme: alt
-      text: Discord
-      link: https://discord.gg/FsZ5PpV4Yu
     - theme: alt
       text: 愿景
       link: /zh/vision/

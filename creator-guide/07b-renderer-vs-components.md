@@ -109,7 +109,7 @@ export default function MyComponent() {
 }
 ```
 
-Note: they do **not** receive `content`, `role`, `messageIndex`, or `renderMarkdown`. They're not rendering a specific message — they're a standalone fullscreen interface.
+Note: they do **not** receive `content`, `role`, or `messageIndex` as props. They're not rendering a specific message — they're a standalone fullscreen interface. `renderMarkdown` is available via `useYumina().renderMarkdown`.
 
 ### Good for
 
@@ -134,7 +134,7 @@ Add buttons below messages        → Message Renderer (surface: "message")
 Change message appearance         → Message Renderer (surface: "message")
 Build a fullscreen visual novel   → App Component (surface: "app")
 Build a complete game interface   → App Component (surface: "app")
-Keep chat but add a sidebar       → Not currently supported (app components are fullscreen only)
+Keep chat but add a sidebar       → App Component with `<ChatCanvas />` (embed chat + add sidebar)
 Custom messages + floating widgets → App component with `<ChatCanvas />` | Embed built-in chat + add overlay widgets
 ```
 
@@ -170,7 +170,7 @@ Check that the component's `visible` toggle is on in the editor. App components 
 
 ### "I added an app component and the chat disappeared"
 
-This is expected. When app components are active, they take over the entire screen — the chat interface doesn't render. If you want chat functionality, you need to build it yourself using `api.messages` and `api.sendMessage()` inside your component.
+This is expected. When app components are active, they take over the entire screen — the chat interface doesn't render. If you want chat functionality, use `<ChatCanvas />` to embed the built-in chat, or build it yourself using `api.messages` and `api.sendMessage()`.
 
 ### "Can I use both at the same time?"
 
@@ -200,6 +200,8 @@ The only difference is that the message renderer also receives **per-message dat
 | Build a fullscreen visual novel | App Component | `"app"` |
 | Build a complete game UI | App Component | `"app"` |
 | Add a status panel next to messages | Message Renderer | `"message"` |
+| Keep chat + add sidebar/widgets | App Component with `<ChatCanvas />` | `"app"` |
+| Custom messages + overlay widgets | App Component with `<ChatCanvas messageRenderer={...} />` | `"app"` |
 | Build your own chat interface | App Component | `"app"` |
 
 </div>

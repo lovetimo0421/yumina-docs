@@ -109,7 +109,7 @@ export default function MyComponent() {
 }
 ```
 
-注意：它**没有** `content`、`role`、`messageIndex`、`renderMarkdown` 这些参数。因为它不是在渲染某条消息——它是一个独立的全屏界面。
+注意：它**没有** `content`、`role`、`messageIndex` 这些 props。因为它不是在渲染某条消息——它是一个独立的全屏界面。`renderMarkdown` 可以通过 `useYumina().renderMarkdown` 使用。
 
 ### 适合做什么
 
@@ -134,7 +134,7 @@ export default function MyComponent() {
 改变消息的外观（气泡、颜色） → 消息渲染器 (surface: "message")
 做一个全屏视觉小说        → 应用组件 (surface: "app")
 做一个完整的游戏界面      → 应用组件 (surface: "app")
-保留聊天界面但加个侧边栏  → 目前不支持（应用组件只有全屏模式）
+保留聊天界面但加个侧边栏  → 应用组件 + `<ChatCanvas />`（嵌入聊天 + 添加侧边栏）
 自定义消息 + 浮动组件 → 应用组件 + `<ChatCanvas />` | 嵌入内置聊天 + 添加浮动组件
 ```
 
@@ -170,7 +170,7 @@ export default function MyComponent() {
 
 ### "我添加了应用组件后聊天消失了"
 
-这是正常行为。应用组件激活时会接管整个屏幕——聊天界面不再渲染。如果你想保留聊天功能，需要在应用组件里自己用 `api.messages` 和 `api.sendMessage()` 来实现。
+这是正常行为。应用组件激活时会接管整个屏幕——聊天界面不再渲染。如果你想保留聊天功能，可以用 `<ChatCanvas />` 嵌入内置聊天，或者自己用 `api.messages` 和 `api.sendMessage()` 来实现。
 
 ### "我能同时用两个吗？"
 
@@ -200,6 +200,8 @@ export default function MyComponent() {
 | 做全屏视觉小说 | 应用组件 | `"app"` |
 | 做完整游戏界面 | 应用组件 | `"app"` |
 | 加状态面板在消息旁边 | 消息渲染器 | `"message"` |
+| 保留聊天 + 加侧边栏/组件 | 应用组件 + `<ChatCanvas />` | `"app"` |
+| 自定义消息 + 浮动组件 | 应用组件 + `<ChatCanvas messageRenderer={...} />` | `"app"` |
 | 自己实现整个聊天界面 | 应用组件 | `"app"` |
 
 </div>

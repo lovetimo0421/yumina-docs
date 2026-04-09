@@ -44,11 +44,13 @@ With a message template, you can:
 
 ### Level 3: App Template (Complete Custom UI)
 
-You write a component that replaces the ENTIRE screen. Yumina's default chat disappears completely — no message list, no input box, no scrolling. Your component IS the entire experience. You build everything from scratch.
+You write a component that replaces the ENTIRE screen. Yumina's default chat disappears completely — no message list, no input box, no scrolling. Your component IS the entire experience.
 
 This is like tearing down the theater and building your own venue. You control every pixel.
 
-With an app template, you must handle:
+You can either build everything from scratch, or use `<ChatCanvas />` to embed the built-in chat and add your own widgets around it (see [ChatCanvas Shortcut](#chatcanvas-shortcut) below).
+
+If building from scratch, you must handle:
 - Displaying messages yourself (read from `api.messages`)
 - Providing your own input method (call `api.sendMessage()`)
 - Streaming display (check `api.isStreaming` and `api.streamingContent`)
@@ -470,6 +472,7 @@ These are automatically available — no imports needed:
 
 - **React** — `React.useState()`, `React.useEffect()`, `React.useMemo()`, `React.useRef()`
 - **useYumina()** — the SDK (see above)
+- **ChatCanvas** — Built-in chat UI component for app templates. `<ChatCanvas />` gives you messages, input, streaming, editing, swipes, checkpoints, and auto-scroll. Optional `messageRenderer` prop for custom message styling.
 - **Icons** — 1,400+ icons from Lucide: `Icons.Heart`, `Icons.Sword`, `Icons.Shield`, etc. Browse at https://lucide.dev/icons
 - **YUI** — Pre-built game UI components (see below)
 - **Tailwind CSS** — Full utility classes for styling
@@ -598,7 +601,7 @@ Use these Tailwind classes to match Yumina's dark theme automatically:
 | TypeScript errors | Remove generics `<T>`, interfaces, `as` casts |
 | Full-screen app shows blank | You need to read `api.messages` and render them yourself |
 | Full-screen app has no input | Add your own input and call `api.sendMessage()` |
-| `renderMarkdown` is undefined | Only message templates get this prop. App templates handle text themselves. |
+| `renderMarkdown` is undefined | In message templates, use the `renderMarkdown` prop directly. In app templates, use `useYumina().renderMarkdown`. |
 | Variables not updating | Make sure the AI's prompt tells it to output `[variableName: set value]` directives |
 
 ---

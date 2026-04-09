@@ -59,6 +59,34 @@ With an app template, you must handle:
 
 **Where to set it:** Editor → **Components** section → click "Add Component" → choose **App** surface
 
+#### ChatCanvas Shortcut
+
+If you need custom message styling **and** floating widgets, you don't have to rebuild the entire chat from scratch. Use `<ChatCanvas />` inside your app component to embed the built-in chat UI:
+
+```tsx
+export default function MyWorld() {
+  var api = useYumina();
+  var [showPanel, setShowPanel] = React.useState(false);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", height: "100%", position: "relative" }}>
+      <ChatCanvas />
+      {/* Your overlay widgets go here */}
+    </div>
+  );
+}
+```
+
+ChatCanvas handles everything: messages, input, streaming, editing, swipes, checkpoints. You just add your widgets around it.
+
+**Custom message styling:** Pass a `messageRenderer` prop to ChatCanvas:
+
+```tsx
+<ChatCanvas messageRenderer={({ content, role, renderMarkdown }) => (
+  <div dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
+)} />
+```
+
 ### How to choose
 
 | | Message Template | App Template |

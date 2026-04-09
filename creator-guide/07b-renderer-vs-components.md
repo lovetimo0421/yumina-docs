@@ -135,6 +135,7 @@ Change message appearance         → Message Renderer (surface: "message")
 Build a fullscreen visual novel   → App Component (surface: "app")
 Build a complete game interface   → App Component (surface: "app")
 Keep chat but add a sidebar       → Not currently supported (app components are fullscreen only)
+Custom messages + floating widgets → App component with `<ChatCanvas />` | Embed built-in chat + add overlay widgets
 ```
 
 > **Most creators only need the message renderer.** App components are for advanced creators who want full control over the interface. If you're unsure, start with the message renderer.
@@ -178,6 +179,8 @@ In the current version, **you can't have both visible to players simultaneously*
 - App components present → only app components render
 
 If you want a chat window embedded in a fullscreen game UI, you need to implement it inside your app component.
+
+**However**, if you need both custom message styling and independent widgets, you can use an **app component** with `<ChatCanvas messageRenderer={...} />`. This gives you the built-in chat UI with custom message rendering, plus the freedom to add overlay widgets. See [Components Guide — ChatCanvas Shortcut](07-components.md#chatcanvas-shortcut) for details.
 
 ### "Do they use the same API?"
 

@@ -23,8 +23,7 @@ For beginners, start with **Blank Project** — then click straight into the edi
 
 Right after picking a template (or importing a world), if this is your first time creating a world, a mode-selection dialog appears:
 
-![Mode selection dialog](./images/mode-selection.png)
-<!-- Screenshot needed: Simple / Advanced two-column dialog -->
+<!-- Screenshot needed: Mode selection dialog — Simple / Advanced two-column -->
 
 | Mode | What you see | Who it's for |
 |------|--------------|--------------|
@@ -285,7 +284,6 @@ If you want your world available in both Chinese and English (or any other combi
 3. You translate the content into the target language. Structure, variable names, and rules all stay the same — that way the gameplay is identical regardless of which language a player picks
 4. Save when done; back in either variant's editor, both tabs appear in the bar — click to switch
 
-![Variant tab bar](./images/variant-tab-bar.png)
 <!-- Screenshot needed: editor's top Variant Tab Bar showing two variant tabs (with language badges) + new button -->
 
 **Small actions on a variant tab**:

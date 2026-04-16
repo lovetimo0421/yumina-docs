@@ -75,6 +75,7 @@ Maps editor fields to their underlying JSON field names in the variable schema. 
 | `max` | number | No | **Max** (Number type only) |
 | `category` | enum (see below) | No | **Category** dropdown |
 | `behaviorRules` | string | No | **Behavior Rules** |
+| `updateHints` | string | No | **Update Hints** — extra guidance for the AI about how to update this variable (JSON-only, no editor UI yet) |
 
 :::
 

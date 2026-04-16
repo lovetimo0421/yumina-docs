@@ -214,8 +214,10 @@ At this point your world is playable. But all the player sees is plain text — 
 3. Send it the following (you can copy this directly):
 
 ```
-Build me a message renderer with a post-apocalyptic horror survival aesthetic.
+Rewrite the root component (index.tsx) as a post-apocalyptic horror survival UI.
 Reference the style of "No, I'm not a Human".
+Keep the outer shell as `<Chat renderBubble={(msg) => ...} />` — let the platform continue to
+handle the input box, streaming cursor, and swipes; we only take over the bubble style.
 
 I need these effects:
 
@@ -271,19 +273,23 @@ If you're more comfortable with another AI, that works too. Send the effect desc
 
 ```
 Yumina technical info (please follow these rules when writing code):
-- TSX format, exported as export default function Renderer({ content, renderMarkdown }) { ... }
-- Use useYumina() to access variables, e.g. useYumina().variables.player_hp
+- Root component: export `export default function MyWorld() { return <Chat renderBubble={(msg) => ...} /> }`
+- `<Chat />` is the platform-provided chat building block — it handles the input box, message
+  list, streaming cursor; we only customize each bubble via renderBubble
+- Inside renderBubble, the msg object exposes: `contentHtml` (pre-rendered HTML), `rawContent`
+  (raw text), `role` ("user" / "assistant"), `messageIndex`, `isStreaming`,
+  `renderMarkdown(text)` (turns markdown into formatted HTML)
+- useYumina() gives you variables, e.g. useYumina().variables.player_hp
 - useYumina().sendMessage(text) sends a message as the player (for clickable options)
 - Built-in Icons library (no import), e.g. Icons.Heart, Icons.Zap
-- renderMarkdown(content) converts text to formatted HTML
-- Supports Tailwind CSS and React hooks
+- Tailwind CSS and React hooks supported
 - Inject animations with useEffect + document.createElement("style")
-- Use var instead of const/let for top-level declarations
+- React, Chat, useYumina, Icons are all globally available in the sandbox — no imports needed
 ```
 
 Once you have the code:
-1. Go back to the editor → **Message Renderer** → select **Custom TSX**
-2. Paste the code in
+1. Go back to the editor → **Custom UI** section → open `index.tsx`
+2. Paste the code in (replace the default `return <Chat />`)
 3. If the bottom shows **Compile Status: OK**, you're done
 
 ::: tip You don't need to understand the code
@@ -368,7 +374,7 @@ Click **Save** at the top of the editor, then click the gold **PLAY** button at 
 | Check item | How to verify | If it's not working |
 |-----------|---------------|---------------------|
 | Opening message appears | First message shows automatically on entry | Check the First Message section for a written greeting |
-| Renderer is active | Messages have a CRT-style phase title and HUD | Check that Message Renderer is set to Custom TSX and Compile Status is OK |
+| Custom UI is active | Messages have a CRT-style phase title and HUD | Check that `index.tsx` has the renderBubble code and Compile Status is OK |
 | Directives working | Variables change after interactions (HUD values update) | Check that each variable's behavior rules are clearly written |
 | Lorebook triggers | Mentioning "peephole" makes AI follow the rules | Check keyword spelling and Scan Depth setting |
 

@@ -217,7 +217,8 @@ AI 回复的末尾会出现类似这样的内容：
 3. 把下面这段发给它（你可以直接复制）：
 
 ```
-帮我做一个末日恐怖生存游戏风格的消息渲染器。参考游戏 "No, I'm not a Human" 的风格。
+帮我改根组件（index.tsx），做一个末日恐怖生存游戏风格的 UI。参考游戏 "No, I'm not a Human" 的风格。
+根组件最外层保持 `<Chat renderBubble={(msg) => ...} />`——让平台继续处理输入框、流式光标、滑动切换，我们只接管气泡样式。
 
 我需要这些效果：
 
@@ -271,19 +272,20 @@ AI 回复的末尾会出现类似这样的内容：
 
 ```
 Yumina 技术信息（写代码时请遵守）：
-- 代码格式 TSX，用 export default function Renderer({ content, renderMarkdown }) { ... } 导出
+- 根组件：导出 `export default function MyWorld() { return <Chat renderBubble={(msg) => ...} /> }`
+- `<Chat />` 是平台内置的聊天积木，处理输入框、消息列表、流式光标；我们只通过 renderBubble 自定义气泡
+- renderBubble 的 msg 对象：`contentHtml`（已渲染 HTML）、`rawContent`（原文）、`role`（"user"/"assistant"）、`messageIndex`（消息序号）、`isStreaming`、`renderMarkdown(text)`（把文字转成带格式的 HTML）
 - useYumina() 可以拿到变量，比如 useYumina().variables.player_hp
 - useYumina().sendMessage(text) 可以以玩家身份发送消息（做可点击选项用）
 - 内置 Icons 图标库（不用 import），比如 Icons.Heart, Icons.Zap
-- renderMarkdown(content) 把文字变成带格式的 HTML
 - 支持 Tailwind CSS 和 React hooks
 - 注入动画用 useEffect + document.createElement("style")
-- 用 var 不用 const/let 做顶层声明
+- React、Chat、useYumina、Icons 都已在沙箱里全局可用，不需要 import
 ```
 
 AI 给你代码后：
-1. 回到编辑器 → **消息渲染器（Message Renderer）** 区域 → 选 **自定义 TSX（Custom TSX）**
-2. 把代码粘贴进去
+1. 回到编辑器 → **自定义 UI（Custom UI）** 区域 → 打开 `index.tsx`
+2. 把代码粘贴进去（替换掉默认的 `return <Chat />`）
 3. 底部显示 **编译状态：正常（Compile Status: OK）** 就说明成功了
 
 
@@ -426,7 +428,7 @@ AI 给你代码后：
 - **[音频系统](./09-audio.md)** — 加 BGM 和音效，进地下室自动切阴间音乐
 - **[条件条目](./03-entries-and-lorebook.md)** — 根据变量值激活条目，比如后期才出现的剧情
 
-**进阶教程**（以"壺中の毒 · 大逃杀"为蓝本）即将推出，会深入讲行为引擎、自定义渲染器和复杂状态管理。
+**进阶教程**（以"壺中の毒 · 大逃杀"为蓝本）即将推出，会深入讲行为引擎、根组件 TSX 和复杂状态管理。
 
 ---
 

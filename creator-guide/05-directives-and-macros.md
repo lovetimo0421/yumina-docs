@@ -180,6 +180,37 @@ If a macro name doesn't match any built-in macro but happens to match a game var
 
 If it's neither a built-in macro nor a variable name, the engine leaves `{{xxx}}` as-is — no errors, no crashes.
 
+#### What's the Player Persona
+
+The five `persona_*` macros in the table above all relate to Yumina's **Player Persona system**. This is a player-facing feature, but as a creator you should understand it because you can reference these macros in your entries.
+
+Players go to **Settings → My Personas**, where they can create any number of "identities," each with:
+
+- **Name** — e.g., "Elara of the Nightspeak," "Bartok the Dwarf Warrior"
+- **Avatar** — optional
+- **Appearance** — physical description
+- **Personality** — character traits
+- **Backstory** — history and origin
+
+Only one persona can be **active** at a time. Whichever persona is active, that's what the `{{persona_name}}`, `{{persona_appearance}}`, etc. macros expand to.
+
+**`{{user}}` and `{{persona_name}}`**: `{{user}}` first checks if there's an active persona — if so, it uses the persona's name; if not, it falls back to the world's `playerName` field. So old entries that use `{{user}}` don't need to change — when a player switches personas, `{{user}}` automatically follows.
+
+**The `{{persona}}` macro** joins all four fields into one block:
+
+```
+Name: Elara of the Nightspeak
+Appearance: A slender elven mage with silver hair to her waist, a scar crossing her left brow
+Personality: Cold and reserved, but bursts into eager monologue when something piques her curiosity
+Backstory: From the fallen kingdom of Moonshadow, searching for her lost sister
+```
+
+**Recommendation**: drop a `{{persona}}` into a preset-group entry (something like "About the player") and the AI will continuously see who the player is roleplaying as. Switch personas, and the AI catches up immediately. If you don't want all four fields, use the individual macros — e.g., `{{persona_appearance}}` if you only want the AI to know what the player looks like.
+
+::: tip Imported v1 character cards
+When importing a character card from SillyTavern, if it uses the `{{user}}` macro, Yumina handles it automatically. The player can create and activate a persona at any time and the old card immediately picks up the new name — no need to rewrite entries.
+:::
+
 ---
 
 ## Practical examples
@@ -203,7 +234,7 @@ Variables: `inventory` (array type), `gold` (number type, current value 500).
 
 > The blacksmith hands you a sword glowing with blue light: "This is my masterpiece — the Frost Blade, enchanted, one hundred gold." You pull out your coin purse and pay, and the moment you grip the sword you feel a chill spreading through your palm.
 >
-> [inventory: push "frost_blade"]
+> [inventory: push ["frost_blade"]]
 > [gold: -100]
 
 The player's inventory gains a Frost Blade and the coin purse loses 100 gold.

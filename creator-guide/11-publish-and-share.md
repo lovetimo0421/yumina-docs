@@ -12,7 +12,7 @@ Before you click "publish," make sure these are ready in the **Overview** sectio
 
 - **Name and description** — name up to 200 characters, description up to 10,000. A good name is your storefront; a good description is your guide.
 - **Cover image** — the first thing players see in the community listing. A world without a cover is like a movie theater without a poster — nobody knows what's playing inside.
-- **Tags** — up to 7. Tags help players discover your world: "fantasy," "romance," "battle royale," "multiplayer," and so on.
+- **Tags** — up to 10. Tags help players discover your world: "fantasy," "romance," "battle royale," "multiplayer," and so on.
 - **Age rating** — all ages (all), R18, or R18G. Choosing R18 or R18G automatically adds an NSFW flag.
 - **Visibility** — public (visible to everyone) or followers-only.
 
@@ -84,7 +84,7 @@ Defaults to `false`. This flag tells the platform whether the world is designed 
 
 **Tags (`tags`)**
 
-Up to 7 tags. Very useful for search and filtering on the Discover page — the platform tracks tag usage frequency across all published worlds, and players can browse and search by tag. Auto-complete suggests popular tags as you type.
+Up to 10 tags. Very useful for search and filtering on the Discover page — the platform tracks tag usage frequency across all published worlds, and players can browse and search by tag. Auto-complete suggests popular tags as you type.
 
 **Cover image (`thumbnailUrl`)**
 
@@ -112,21 +112,41 @@ A Bundle is a "component pack" containing selected parts of your world.
 
 ```typescript
 interface YuminaBundle {
-  bundleVersion: "1.0.0";     // Version, currently fixed at 1.0.0
-  name: string;                // Bundle name, e.g. "Turn-Based Combat System"
-  description: string;         // What this Bundle does
-  tags: string[];              // Tags
-  createdAt: string;           // Creation time (ISO format)
-  entries: WorldEntry[];       // Entries (character profiles, plot, style directives, etc.)
-  variables: Variable[];       // Variables (HP, gold, affection, etc.)
-  components: GameComponent[]; // Game components (health bars, inventory, etc.)
-  rules: Rule[];               // Rules (trigger death when HP hits zero, etc.)
-  customComponents: CustomComponent[];  // Custom TSX components
-  audioTracks: AudioTrack[];   // Audio (BGM, SFX, ambient)
-  customTags?: string[];       // Custom tag definitions (optional)
-  entryFolders?: EntryFolder[];  // Entry folder structure (optional)
+  bundleVersion: "2.0.0";        // Current version (older 1.0.0 still imports — auto-migrated)
+  name: string;                   // Bundle name, e.g. "Turn-Based Combat System"
+  description: string;            // What this Bundle does
+  tags: string[];                 // Tags
+  createdAt: string;              // Creation time (ISO format)
+
+  // ── Content ──
+  entries: WorldEntry[];          // Entries (character profiles, plot, style directives, etc.)
+  variables: Variable[];          // Variables (HP, gold, affection, etc.)
+  rules: Rule[];                  // Rules (trigger death when HP hits zero, etc.)
+  audioTracks: AudioTrack[];      // Audio (BGM, SFX, ambient)
+
+  // ── App template ──
+  rootComponent?: RootComponent;  // The Root Component — a multi-file TSX virtual
+                                  // filesystem that defines the entire world UI entry
+                                  // (index.tsx). Including it makes the Bundle a
+                                  // "full template"; leave it out for a "partial bundle."
+
+  // ── Legacy compatibility (optional) ──
+  customUI?: CustomUIComponent[]; // Legacy customUI array. Bundles exported before v18
+                                  // still carry this field and are auto-migrated into
+                                  // rootComponent on import. New bundles don't need it.
+
+  // ── Organization ──
+  customTags?: string[];          // Custom tag definitions (optional)
+  entryFolders?: EntryFolder[];   // Entry folder structure (optional)
 }
 ```
+
+::: tip Two ways to use a Bundle
+- **Partial bundle** — entries / variables / rules / audioTracks only, no `rootComponent`. **Merges** into an existing world. Great for sharing a combat system or a character card.
+- **Full template** — same plus a `rootComponent`. **Forks** into a brand-new world. Great for "VN skeleton," "card-battle shell," etc. — anyone importing it starts a fresh world built on your template.
+
+The seven official Resource Templates work exactly this way.
+:::
 
 Think of it as a "module" — plug it into another world and it works.
 
@@ -136,12 +156,12 @@ Click **Export Bundle** in the editor's top menu, then check what content to inc
 
 1. **Entries** — entries (character profiles, plot, style directives, etc.)
 2. **Variables** — variables (HP, gold, affection, etc.)
-3. **Components** — game components (status bars, choice lists, etc.)
-4. **Rules** — rules (trigger conditions + actions)
+3. **Rules** — rules (trigger conditions + actions)
+4. **Root Component** — the `index.tsx` entry file and all its siblings (the whole UI tree)
 
-A thoughtful feature: when you check a rule or component, the system automatically highlights the variables it depends on and marks them as "suggested" so you don't accidentally leave them out.
+A thoughtful feature: when you check a rule, the system automatically highlights the variables it depends on and marks them as "suggested" so you don't accidentally leave them out.
 
-You can also include custom components (`customComponents`) and audio tracks (`audioTracks`) for a more complete Bundle.
+You can also include the Root Component (`rootComponent`) and audio tracks (`audioTracks`) to upgrade a Bundle into a "full template" — instead of merging into an existing world, importers can fork it into a brand-new world built on your template.
 
 **Conflict handling on import**
 
@@ -167,8 +187,7 @@ Beyond the "partial export" of Bundles, you can also export a complete world JSO
 - All entries (`entries`) and entry folder structure (`entryFolders`)
 - All variables (`variables`)
 - All rules (`rules`) and reactions
-- All game components (`components`) and custom TSX components (`customComponents`)
-- Message renderer (`messageRenderer`)
+- Root Component (`rootComponent`) — the entire world UI entry, including `index.tsx` and all its sibling files
 - Audio tracks (`audioTracks`), BGM playlist (`bgmPlaylist`), conditional BGM (`conditionalBGM`)
 - UI blueprint (`uiBlueprint`)
 - World settings (`settings`) — temperature, token limits, layout mode, scan depth, etc.
@@ -182,20 +201,40 @@ Uses for full export:
 
 On import, the system automatically recognizes Yumina world JSON, SillyTavern character cards (including PNG-embedded V2 cards), and Bundle JSON — each processed differently. You don't need to pick the format; just drag and drop.
 
-### Multi-language support
+### Multi-language support: two systems
 
-If your world has versions in different languages (e.g., an English original and a Chinese translation), you can link them together. Once linked, players see a language tab when starting the game.
+Yumina has two multi-language mechanisms, **with completely different goals — pick whichever fits**:
 
-### How to set it up
+| Mechanism | What gets translated | When to use |
+|-----------|----------------------|-------------|
+| **Hub Translations** | Only the "storefront info" shown on Discover / your profile — title, description, cover image, gallery, tags | Your game content is single-language, but you want global players to see localized titles and descriptions while browsing |
+| **Variants** | An entire copy of the world, fully translated — entries, rules, component text, all of it | You want players to play your world in their own language, with the AI replying in that language too |
 
-1. In the editor's **Overview** section, set the **Language** for your world
-2. A **Language Variants** section appears
-3. Click **Add Language Version**
-4. Upload the translated world's `.json` file
-5. Select the translated world's language
-6. After import, the two worlds are automatically linked
+#### Hub Translations
 
-### Supported languages
+Find it in the editor's left navigation under **Hub Translations**.
+
+How to set it up:
+
+1. Go to the **Hub Translations** section
+2. Click **Add Language**
+3. Pick the target language from the dropdown (10 languages supported)
+4. The current world's name, description, cover, gallery, and tags are copied as a starting point
+5. Edit each field directly in the UI — translate them into the target language
+6. Upload a language-specific cover image if you want to
+7. Save — translations are stored as part of your world, no separate files generated
+
+When players browse the Discover page, Yumina automatically picks the best matching translation for their UI language. **The content players see in-game stays in the world's original language** — Hub Translations don't affect gameplay text.
+
+#### Variants
+
+If you want the in-game content translated too, you need the **Variant** system — create a new variant in the Variant Tab Bar at the top of the editor, picking the target language. See [Beginner's Guide → Multi-language Versions (Variants)](./01-beginner-guide.md#multi-language-versions-variants) for the full flow.
+
+The engine recognizes variants as "different language versions of the same world." On the world detail page, players switch between them with one click. In the community listing the variant group counts as a single world; view stats are merged.
+
+#### Supported languages
+
+Both mechanisms support the same 10 languages:
 
 | Code | Language |
 |------|---------|
@@ -210,13 +249,11 @@ If your world has versions in different languages (e.g., an English original and
 | `ru` | Русский |
 | `ar` | العربية |
 
-### Player experience
-
-Once linked, when a player opens any language version, they see language tabs at the top of the session picker (e.g. `EN English` | `中 Chinese` | `日 Japanese`). Switching tabs lets them choose a different language version to play. Save data is managed independently per language.
-
-### Unlinking
-
-In the **Language Variants** list, click the unlink button next to a variant. If a language group has only one world remaining, the link is automatically dissolved.
+::: tip Which one?
+- Just want a **decent cover and description** for overseas players → Hub Translations
+- Want **fully localized gameplay** → Variants
+- The two **can be combined**: variant A (Chinese version) with Chinese + English Hub Translations, variant B (English version) with English + Japanese Hub Translations — covers three audiences total
+:::
 
 ---
 
@@ -266,7 +303,7 @@ Your world is done and you're ready to go live. Don't rush to click — go throu
 [ ] Name — is it compelling? Can someone tell what kind of world it is at a glance?
 [ ] Description — did you write one? Don't leave it blank. At least two sentences telling players what they'll experience.
 [ ] Cover image — uploaded? Does it still look clear when thumbnail-sized on Discover?
-[ ] Tags — added 3–7 relevant tags? Think about what players would search for.
+[ ] Tags — added 3–10 relevant tags? Think about what players would search for.
 [ ] Age rating — R18 content gets r18, extreme content gets r18g, otherwise all. Don't get this wrong.
 [ ] Visibility — public if you want everyone to see it. Followers-only for limited testing first.
 [ ] allowEdit — open if you want others to fork and modify. Close to protect your original work.
@@ -301,7 +338,7 @@ The exported Bundle JSON (simplified):
 
 ```json
 {
-  "bundleVersion": "1.0.0",
+  "bundleVersion": "2.0.0",
   "name": "Turn-Based Combat System v1.0",
   "description": "A ready-to-use turn-based combat system with HP/MP management, death detection, and battle UI",
   "tags": ["combat", "rpg", "turn-based"],
@@ -329,7 +366,7 @@ The exported Bundle JSON (simplified):
   ],
   "components": [],
   "rules": [],
-  "customComponents": [],
+  "customUI": [],
   "audioTracks": [
     { "id": "bgm-battle", "name": "Battle BGM", "type": "bgm",
       "url": "https://example.com/battle.mp3", "loop": true, "volume": 0.6 }

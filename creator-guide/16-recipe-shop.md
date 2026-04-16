@@ -2,7 +2,7 @@
 
 # Shop & Trading
 
-> Build a shop UI — players browse items, click to buy, gold is deducted automatically, and items go straight into their inventory. This recipe shows you how to combine variables, behaviors, and a message renderer into a complete trading system.
+> Build a shop UI — players browse items, click to buy, gold is deducted automatically, and items go straight into their inventory. This recipe shows you how to combine variables, behaviors, and a Root Component into a complete trading system.
 
 ---
 
@@ -32,12 +32,12 @@ This shop system combines three core mechanisms:
 
 1. **Number variable + condition check** — Gold is a number variable. The behavior checks whether it's enough before executing.
 2. **JSON variable + push operation** — The inventory is a JSON array. Each purchase uses `push` to add an item to it.
-3. **Action trigger** — Each buy button corresponds to an action ID. Buttons in the message renderer call `executeAction()` to trigger behaviors.
+3. **Action trigger** — Each buy button corresponds to an action ID. Buttons in the Root Component call `executeAction()` to trigger behaviors.
 
 The full flow:
 
 ```
-Message Renderer (button UI)
+Root Component button UI
   → Player clicks "Buy Potion"
   → Calls api.executeAction("buy-potion")
   → Engine finds the behavior with action ID "buy-potion"
@@ -97,8 +97,8 @@ Editor → **Behaviors** tab → click **Add Behavior**
 
 | Field | Value | Why |
 |-------|-------|-----|
-| Trigger Type | Action button pressed | Fires when the message renderer calls `executeAction("buy-potion")` |
-| Action ID | `buy-potion` | Must match the `executeAction("buy-potion")` call in the renderer code |
+| Trigger Type | Action button pressed | Fires when the Root Component calls `executeAction("buy-potion")` |
+| Action ID | `buy-potion` | Must match the `executeAction("buy-potion")` call in the Root Component code |
 
 **ONLY IF (conditions):**
 
@@ -193,17 +193,16 @@ Just repeat the pattern — two behaviors per item (success + insufficient), cha
 
 ---
 
-### Step 3: Build the shop message renderer
+### Step 3: Add the shop panel in the Root Component
 
 This is the key step that makes the shop UI appear in the chat. We'll show three areas below each message: gold balance, item list (with buy buttons), and an inventory grid.
 
-Editor → **Message Renderer** tab → select **Custom TSX** → paste the following code:
+Editor → **Custom UI** section → open `index.tsx` → paste the following code (replacing the default `return <Chat />`):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   // Read variables
   const gold = Number(api.variables.gold ?? 100);
@@ -218,11 +217,14 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   ];
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
-      {/* Render message text normally */}
+      {/* Render message text normally (the platform already rendered HTML, use contentHtml directly) */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* Only show the shop below the last message */}
@@ -374,6 +376,8 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
@@ -389,11 +393,17 @@ Don't let the code length intimidate you — what it does is very straightforwar
 ```tsx
 const api = useYumina();
 const msgs = api.messages || [];
-const isLastMsg = messageIndex === msgs.length - 1;
+// ...
+<Chat renderBubble={(msg) => {
+  const isLastMsg = msg.messageIndex === msgs.length - 1;
+  // ...
+}} />
 ```
 
+- The Root Component `MyWorld()` is the entry for the world's UI. `<Chat renderBubble={...} />` lets the platform handle the message list, input box, and scrolling — we only take over how an individual bubble looks
 - `useYumina()` — Gets the Yumina API so you can read variables and trigger actions
-- `isLastMsg` — Checks whether this is the last message. The shop panel only shows below the last message so it doesn't repeat under every message in the chat
+- `msg.messageIndex` — The current bubble's index in the message list, used to check whether it's the last. The shop panel only shows below the last message so it doesn't repeat under every message in the chat
+- `msg.contentHtml` — The HTML the platform already rendered from Markdown, can be used directly in `dangerouslySetInnerHTML`
 
 #### Reading variables
 
@@ -480,7 +490,7 @@ At the top of the editor, click **Enter Studio** → AI Assistant panel → desc
 
 | Symptom | Likely cause | Fix |
 |---------|-------------|-----|
-| Shop panel doesn't appear | Message renderer code wasn't saved or has a syntax error | Check the compile status at the bottom of the renderer — it should show a green "OK" |
+| Shop panel doesn't appear | Root Component code wasn't saved or has a syntax error | Check the compile status at the bottom of the Custom UI section — it should show a green "OK" |
 | Buttons don't respond to clicks | Action IDs in behaviors don't match the code | Confirm the behavior action IDs are `buy-potion` / `buy-sword`, exactly matching the `executeAction()` arguments in the code |
 | Gold is deducted but inventory doesn't change | The push action in the behavior isn't set up correctly | Check the modify variable action: variable should be `inventory`, operation should be `push`, value should be `"Potion"` (with quotes) |
 | Not enough gold but no warning appears | The "not enough gold" behavior condition is inverted | Confirm the condition is `gold lt 20` (less than), not `gold gte 20` |
@@ -495,7 +505,7 @@ Once you've got the basics down, you can use the same patterns to build more com
 
 ### Adding more items
 
-Add a line to the `shopItems` array in the message renderer:
+Add a line to the `shopItems` array in the Root Component:
 
 ```tsx
 const shopItems = [
@@ -524,7 +534,7 @@ Right now the player can only spend gold, not earn it. You can use behaviors to 
 
 - **Per-turn reward**: Create a behavior with the trigger "Every N turns" (e.g., every 3 turns), with the action `Modify Variable gold add 10`. The player automatically earns 10 gold every 3 conversation rounds.
 - **Keyword reward**: Use the trigger "AI said keyword" with a keyword like "battle won" or "quest complete". When the AI mentions these words in a reply, gold is automatically added.
-- **Manual earn button**: Add a "Work for Gold" button in the message renderer using `executeAction("earn-gold")` to trigger a behavior with the action `gold add 15`.
+- **Manual earn button**: Add a "Work for Gold" button in the Root Component using `executeAction("earn-gold")` to trigger a behavior with the action `gold add 15`.
 
 ---
 
@@ -539,8 +549,8 @@ Right now the player can only spend gold, not earn it. You can use behaviors to 
 | Check if player can afford it | Behavior condition: `gold gte price` |
 | Show "not enough gold" warning | Separate behavior, condition `gold lt price`, action: Show Notification (warning) |
 | Show "purchase successful" alert | Behavior action: Show Notification (achievement style) |
-| Button triggers purchase | In the message renderer, call `api.executeAction("actionId")` |
-| Display inventory grid | In the message renderer, use CSS Grid + `inventory.map()` to render |
+| Button triggers purchase | In the Root Component, call `api.executeAction("actionId")` |
+| Display inventory grid | In the Root Component, use CSS Grid + `inventory.map()` to render |
 | Add more items | Add a line to the shopItems array + create two behaviors in the editor |
 
 ---
@@ -555,13 +565,13 @@ Download this JSON file and import it to experience the complete shop system:
 1. Go to Yumina → **My Worlds** → **Create New World**
 2. In the editor, click **More Actions** → **Import Package**
 3. Select the downloaded `.json` file
-4. A new world is created with all variables, behaviors, and renderer pre-configured
+4. A new world is created with all variables, behaviors, and Root Component pre-configured
 5. Start a new session and try it out
 
 **What's included:**
 - 2 variables (`gold` + `inventory`)
 - 4 behaviors (potion buy success/insufficient + iron sword buy success/insufficient)
-- A message renderer (gold display + item list + inventory grid)
+- A Root Component (gold display + item list + inventory grid)
 
 ---
 

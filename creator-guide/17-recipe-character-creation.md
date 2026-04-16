@@ -8,7 +8,7 @@
 
 ## What you'll build
 
-The first message isn't a story — it's a **character creation form**. The form is rendered by the message renderer and includes:
+The first message isn't a story — it's a **character creation form**. The form is rendered by the Root Component and includes:
 
 - A text input — for the player to type their character's name
 - Three class selection buttons — Warrior / Mage / Rogue
@@ -34,7 +34,7 @@ Full sequence:
 
 ```
 1. Player starts a new session → sees greeting #1 (the character creation form)
-2. Message renderer detects messageIndex === 0, renders the form UI
+2. Root Component's `<Chat renderBubble>` detects `msg.messageIndex === 0`, renders the form UI
 3. Player types a name, picks a class, writes a backstory
 4. Player clicks "Start Adventure"
    → code calls api.setVariable("player_name", "Elara")
@@ -80,7 +80,7 @@ Editor → sidebar → **Variables** tab → click "Add Variable", and create th
 | Display Name | Character Class | For your own reference |
 | ID | `player_class` | The `{{player_class}}` macro in entries looks up this ID |
 | Type | String | Because the class is text ("Warrior", "Mage", "Rogue") |
-| Default Value | *leave empty* | Empty means not yet chosen. The message renderer checks this value to decide which button to highlight |
+| Default Value | *leave empty* | Empty means not yet chosen. The Root Component checks this value to decide which button to highlight |
 | Category | Custom | Organizational label |
 | Behavior Rules | `Do not modify this variable. It is set by the player via the character creation form.` | Tells the AI not to change the class on its own |
 
@@ -115,7 +115,7 @@ Click the "Create First Message" button. In the text box, write:
 "Welcome, traveler. Before you step into this world, tell me — who are you?"
 ```
 
-> This text is atmospheric decoration — the actual form UI is rendered by the message renderer below this text. What the player sees is: a mood-setting passage up top, and an interactive character creation form underneath.
+> This text is atmospheric decoration — the actual form UI is rendered by the Root Component below this text. What the player sees is: a mood-setting passage up top, and an interactive character creation form underneath.
 
 **Create the second greeting (the real story opening):**
 
@@ -136,7 +136,7 @@ Notice the `{{player_name}}` and `{{player_class}}` in the second greeting. Thes
 :::
 
 ::: warning Greeting order = index
-Tab 1 = index 0 (the character creation screen, shown by default), Tab 2 = index 1 (the story opening). The `switchGreeting(1)` call in the message renderer jumps to the second one.
+Tab 1 = index 0 (the character creation screen, shown by default), Tab 2 = index 1 (the story opening). The `switchGreeting(1)` call in the Root Component jumps to the second one.
 :::
 
 ---
@@ -175,14 +175,14 @@ If a variable is an empty string, the corresponding spot is blank. For example, 
 
 ---
 
-### Step 4: Build the character creation form in the message renderer
+### Step 4: Build the character creation form in the Root Component
 
 This is the core step — rendering an interactive character creation form inside the chat.
 
-Editor → **Message Renderer** tab → select **Custom TSX** → paste this code:
+Editor → **Custom UI** section → open `index.tsx` → paste this code (replacing the default `return <Chat />`):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
 
   // ---- Form state ----
@@ -216,15 +216,16 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   };
 
   return (
+    <Chat renderBubble={(msg) => (
     <div>
-      {/* Render message text */}
+      {/* Render message text (platform already rendered HTML, use msg.contentHtml directly) */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* Character creation form — only on first message & not yet created */}
-      {messageIndex === 0 && !hasCreated && (
+      {msg.messageIndex === 0 && !hasCreated && (
         <div
           style={{
             marginTop: "20px",
@@ -391,6 +392,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+    )} />
   );
 }
 ```
@@ -408,7 +410,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 
 **Form UI:**
 
-- `messageIndex === 0 && !hasCreated` — only show the form on the first message and only before the character is created
+- `msg.messageIndex === 0 && !hasCreated` — only show the form on the first message and only before the character is created (`msg` is passed in by `<Chat renderBubble>`)
 - `classes.map(...)` — iterates over the class list, rendering a button for each. The selected class gets a highlighted border and gradient background
 - `selectedClass === cls.id` — checks if this is the currently selected class, used for highlighting
 - `disabled={!selectedClass}` — the button is grayed out and unclickable until a class is selected
@@ -459,7 +461,7 @@ If the AI isn't using this information, check the troubleshooting table below.
 
 | Symptom | Likely Cause | Fix |
 |---------|-------------|-----|
-| Can't see the character creation form | Message renderer code wasn't saved or has a syntax error | Check the compile status at the bottom of the message renderer — it should show a green "OK" |
+| Can't see the character creation form | Root Component code wasn't saved or has a syntax error | Check the compile status at the bottom of the Custom UI section — it should show a green "OK" |
 | Clicking "Start Adventure" does nothing | No class was selected | The button is grayed out (`disabled`) when no class is picked — click a class first |
 | Clicked the button but greeting didn't switch | Only one greeting exists | Confirm the **First Message** tab has 2 greetings (tab 1 and tab 2) |
 | Greeting switched but you see `{{player_name}}` as raw text | Macros aren't being replaced | Check that the variable ID is spelled correctly (`player_name`, not `playerName`) |
@@ -499,7 +501,7 @@ This way each class doesn't just get a different label — it gets entirely diff
 
 ### Showing character info in subsequent messages
 
-You can add a "character info bar" to the message renderer that displays the character name and class at the top of every message:
+You can add a "character info bar" to the Root Component's `<Chat renderBubble>` that displays the character name and class at the top of every message:
 
 ```tsx
 {/* In the return, above the message content */}
@@ -544,14 +546,14 @@ Download this JSON and import it as a new world to see everything in action:
 1. Go to Yumina → **My Worlds** → **Create New World**
 2. In the editor, click **More Actions** → **Import Package**
 3. Select the downloaded `.json` file
-4. A new world is created with all greetings, variables, and renderer pre-configured
+4. A new world is created with all greetings, variables, and Root Component pre-configured
 5. Start a new session and try it out
 
 **What's included:**
 - 2 greetings (character creation form + story opening)
 - 3 variables (`player_name` for name, `player_class` for class, `player_backstory` for backstory)
 - 1 lore entry (character profile using `{{player_name}}`, `{{player_class}}`, `{{player_backstory}}` macros)
-- A complete message renderer (character creation form UI)
+- A complete Root Component (character creation form UI)
 
 ---
 

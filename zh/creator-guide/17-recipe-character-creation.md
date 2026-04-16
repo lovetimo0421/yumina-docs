@@ -8,7 +8,7 @@
 
 ## 你要做的东西
 
-第一条消息不是故事，而是一个**角色创建表单**。表单由消息渲染器绘制，包含：
+第一条消息不是故事，而是一个**角色创建表单**。表单由根组件（Root Component）绘制，包含：
 
 - 一个文本输入框——让玩家输入角色名字
 - 三个职业选择按钮——战士 / 法师 / 盗贼
@@ -34,7 +34,7 @@
 
 ```
 1. 玩家开始新会话 → 看到第 1 个问候语（角色创建表单）
-2. 消息渲染器检测到 messageIndex === 0，渲染表单 UI
+2. 根组件在 `<Chat renderBubble>` 里检测到 `msg.messageIndex === 0`，渲染表单 UI
 3. 玩家输入名字、选择职业、写背景故事
 4. 玩家点击「开始冒险」
    → 代码调用 api.setVariable("player_name", "艾琳")
@@ -80,7 +80,7 @@
 | 显示名称 | 角色职业 | 给你自己看的 |
 | ID | `player_class` | 条目里的 `{{player_class}}` 宏会找这个 ID |
 | 类型 | 字符串 | 因为职业是文字（"战士"、"法师"、"盗贼"） |
-| 默认值 | *留空* | 留空表示还没选。消息渲染器会检查这个值来决定高亮哪个按钮 |
+| 默认值 | *留空* | 留空表示还没选。根组件会检查这个值来决定高亮哪个按钮 |
 | 分类 | 自定义 | 纯分类标签 |
 | 行为规则 | `不要修改这个变量。它由玩家通过角色创建表单设置。` | 告诉 AI 不要自己改职业 |
 
@@ -115,7 +115,7 @@
 "欢迎，旅人。在你踏入这个世界之前，请告诉我——你是谁？"
 ```
 
-> 这段文字是装饰性的——真正的表单 UI 由消息渲染器在这段文字下方渲染。玩家看到的是：上面一段氛围文字，下面一个可交互的角色创建表单。
+> 这段文字是装饰性的——真正的表单 UI 由根组件在这段文字下方渲染。玩家看到的是：上面一段氛围文字，下面一个可交互的角色创建表单。
 
 **创建第二个问候语（真正的故事开场）：**
 
@@ -136,7 +136,7 @@
 :::
 
 ::: warning 问候语顺序 = index
-标签 1 = index 0（默认显示的角色创建界面），标签 2 = index 1（故事开场）。后面消息渲染器里的 `switchGreeting(1)` 就是跳到第二个。
+标签 1 = index 0（默认显示的角色创建界面），标签 2 = index 1（故事开场）。后面根组件里的 `switchGreeting(1)` 就是跳到第二个。
 :::
 
 ---
@@ -175,14 +175,14 @@
 
 ---
 
-### 第 4 步：做角色创建表单的消息渲染器
+### 第 4 步：在根组件里画角色创建表单
 
 这是核心步骤——在聊天界面里渲染一个可交互的角色创建表单。
 
-编辑器 → **消息渲染器** 标签页 → 选「自定义 TSX」→ 粘贴以下代码：
+编辑器 → **自定义 UI（Custom UI）** 区域 → 打开 `index.tsx` → 粘贴以下代码（替换默认的 `return <Chat />`）：
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
 
   // ---- 表单状态 ----
@@ -216,15 +216,16 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   };
 
   return (
+    <Chat renderBubble={(msg) => (
     <div>
-      {/* 渲染消息原文 */}
+      {/* 渲染消息原文（平台已经把 Markdown 转好 HTML，直接用 msg.contentHtml） */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* 角色创建表单——只在第一条消息 & 尚未创建时显示 */}
-      {messageIndex === 0 && !hasCreated && (
+      {msg.messageIndex === 0 && !hasCreated && (
         <div
           style={{
             marginTop: "20px",
@@ -391,6 +392,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+    )} />
   );
 }
 ```
@@ -408,7 +410,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 
 **表单 UI：**
 
-- `messageIndex === 0 && !hasCreated` — 只在第一条消息上、且尚未创建角色时显示表单
+- `msg.messageIndex === 0 && !hasCreated` — 只在第一条消息上、且尚未创建角色时显示表单（`msg` 由 `<Chat renderBubble>` 传进来）
 - `classes.map(...)` — 遍历职业列表，为每个职业渲染一个按钮。选中的职业有高亮边框和渐变背景
 - `selectedClass === cls.id` — 判断当前点击的是不是这个职业，用于高亮显示
 - `disabled={!selectedClass}` — 没选职业时按钮灰显、不可点击
@@ -459,7 +461,7 @@ setVariable × 3  →  switchGreeting(1)
 
 | 现象 | 可能的原因 | 解决方法 |
 |------|-----------|---------|
-| 看不到角色创建表单 | 消息渲染器代码没保存或有语法错误 | 检查消息渲染器底部的编译状态，应该显示绿色「OK」 |
+| 看不到角色创建表单 | 根组件代码没保存或有语法错误 | 检查自定义 UI 底部的编译状态，应该显示绿色「OK」 |
 | 点「开始冒险」没反应 | 没有选择职业 | 按钮在未选职业时是灰色的（`disabled`），必须先点一个职业 |
 | 点了按钮开场白没切换 | 只有一个问候语 | 确认「首条消息」标签页里有 2 个问候语（标签 1 和标签 2） |
 | 开场白切换了但看到 `{{player_name}}` 原文 | 宏没有被替换 | 检查变量的 ID 是否拼写正确（`player_name`，不是 `playerName`） |
@@ -499,7 +501,7 @@ const classes = [
 
 ### 把创建信息显示在后续消息里
 
-你可以在消息渲染器里加一个"角色信息栏"，在每条消息的顶部显示角色名和职业：
+你可以在根组件的 `<Chat renderBubble>` 里加一个"角色信息栏"，在每条消息的顶部显示角色名和职业：
 
 ```tsx
 {/* 在 return 里、消息内容的上方 */}
@@ -544,14 +546,14 @@ const classes = [
 1. 进入 Yumina → 我的世界 → 创建新世界
 2. 在编辑器顶部点「更多操作」→「导入包」
 3. 选择下载的 `.json` 文件
-4. 世界会被创建，所有问候语、变量和渲染器都已预配置好
+4. 世界会被创建，所有问候语、变量和根组件都已预配置好
 5. 开一个新会话试试看
 
 **包含内容：**
 - 2 个问候语（角色创建表单 + 故事开场）
 - 3 个变量（`player_name` 角色名、`player_class` 职业、`player_backstory` 背景故事）
 - 1 个知识库条目（使用 `{{player_name}}`、`{{player_class}}`、`{{player_backstory}}` 宏的角色档案）
-- 一个完整的消息渲染器（角色创建表单 UI）
+- 一个完整的根组件（角色创建表单 UI）
 
 ---
 

@@ -63,7 +63,8 @@ I need these variables:
 Write me a system setup entry, an opening message, and keyword-triggered lorebook entries
 (knocking event, peephole observation, room search).
 
-Also build me a CRT monitor-style message renderer:
+Also build me a CRT monitor-style root component (`index.tsx`) that keeps the outer
+`<Chat renderBubble={(msg) => ...} />` shell and customizes the bubbles:
 - Night/day phase title (extract "🌑 **NIGHT X**" or "☀️ **DAY X**" from AI replies, render as CRT
   green glow / amber title with scanline effect)
 - Knocking animation (extract ***triple-asterisk text***, render as red shaking large text)
@@ -81,7 +82,7 @@ The AI gets to work. You'll watch it think through the changes, then propose a p
 For example:
 - `create_variable` — create the health variable
 - `create_entry` — create the system setup entry
-- `write_message_renderer` — write the renderer code
+- `write_root_component` — write the root component code (`index.tsx`)
 
 Scan the list of operations, and if everything looks right, click **Approve**. The AI continues to the next step.
 
@@ -102,7 +103,7 @@ Once the AI is done, exit Studio and go back to the editor to see what it built.
 - **Lorebook** — is the system setup right? Are there enough lorebook entries?
 - **Variables** — are the types, default values, and behavior rules reasonable?
 - **First Message** — does the opening message have the right atmosphere?
-- **Message Renderer** — is the preview effect satisfying?
+- **Custom UI** — does the `index.tsx` preview look the way you wanted?
 
 If anything needs adjusting, you have two options:
 1. **Go back to Studio and keep chatting** — tell the AI "make the opening message shorter" or "change the health bar color to dark red"
@@ -150,18 +151,18 @@ Round 1: "Build me a horror survival game — start with the system setup, varia
 Round 2: "Now add lorebook entries: knocking event, peephole observation, and room search"
 → Review, approve
 
-Round 3: "Finally, build a dark horror-style message renderer showing health and day count"
+Round 3: "Finally, rewrite the root component with a dark horror-style UI showing health and day count"
 → Review, approve
 ```
 
 ### 3. Give specific feedback
 
-❌ "The renderer doesn't look good" — the AI doesn't know what's wrong
+❌ "The UI doesn't look good" — the AI doesn't know what's wrong
 ✅ "The health bar is too thin, double the height. The background is too bright, change it to pure black #000" — the AI knows exactly what to fix
 
 ### 4. Use the Canvas preview
 
-The Canvas panel on the right side of Studio gives live renderer previews. After the AI modifies the renderer, check Canvas to see the effect. If it's not right, keep talking.
+The Canvas panel on the right side of Studio gives a live preview of your root component. After the AI modifies `index.tsx`, check Canvas to see the effect. If it's not right, keep talking.
 
 ---
 

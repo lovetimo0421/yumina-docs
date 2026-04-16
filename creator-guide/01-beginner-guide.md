@@ -17,6 +17,36 @@ For beginners, start with **Blank Project** — then click straight into the edi
 
 ![](./images/create-world.png)
 
+---
+
+## Two editor modes: Simple vs Advanced
+
+Right after picking a template (or importing a world), if this is your first time creating a world, a mode-selection dialog appears:
+
+![Mode selection dialog](./images/mode-selection.png)
+<!-- Screenshot needed: Simple / Advanced two-column dialog -->
+
+| Mode | What you see | Who it's for |
+|------|--------------|--------------|
+| **Simple** | Three guided fields (AI Role, Setting, Tone) + character list + Overview. Only the bare essentials are shown | First-timers who want to turn an idea into something playable, fast |
+| **Advanced** | Full eight sections: First Message, Lorebook, Variables, Behaviors, Custom UI, Audio, Assets, Overview | Creators with a clear gameplay design who want to use variables, rules, custom UI, etc. |
+
+**The data is shared between the two modes** — anything you fill in Simple mode isn't lost, it's just a different view. Entries and overview fields you see in Advanced mode are the same data; Simple mode just hides the "variables, behaviors, custom UI, audio" sections.
+
+::: tip Switch any time
+At the top right of the editor there's a **Simple / Advanced** toggle — one click swaps the view. The choice is remembered, so the next world you create opens in the same mode.
+
+If you start in Simple mode, fill out a few things, then realize you need more, **just switch to Advanced** — your AI Role, Setting, and Tone show up as preset entries in the Lorebook, characters become character entries, everything carries over. The reverse works too, but if you've added variables, behaviors, or custom UI in Advanced, switching back to Simple just hides them — they aren't deleted.
+:::
+
+::: info What Simple mode actually is
+Think of Simple mode as **"the creator onboarding form"** — under the hood it still uses entries (the same as Advanced). The UI just pulls a few key fields (entries tagged `simple:prompt`, `simple:setting`, `simple:tone`) into a focused form so you can fill them in without distraction. Once you understand this, the seamless data sharing makes sense.
+:::
+
+The rest of this guide covers **Advanced mode**'s full eight sections. If you're in Simple mode you only see First Message, Lorebook, and Overview — reading the sections below will show you what Simple is hiding and when to switch.
+
+---
+
 ## What the editor looks like
 
 When you first open it, you'll see something like this:
@@ -87,6 +117,8 @@ Entries aren't sent to the AI every single time (the AI can only read so much at
 
 For example: if you have an entry about a "black market" in CHAT HISTORY with the keyword `black market`, that content only gets sent to the AI when the player mentions "black market." This way you don't waste the AI's reading budget, but you also make sure the AI has the right info when it needs it. Pretty smart (≧▽≦)
 
+How far back does it look? The engine scans the last N messages for keywords — that's the **Scan Depth** setting under **Entry Settings** (defaults to 2, bump it to 4 if triggering feels unresponsive).
+
 ### Position (ordering)
 
 The lower the number, the higher the priority — the AI reads that entry first. If you have a particularly important setting, give it a low number (like 0) and the AI will weight it more heavily.
@@ -117,6 +149,8 @@ Four types, each with its use case:
 | JSON (Object / Array) | Complex data | Inventory: sword, potion, map |
 
 Variables are updated automatically via AI directives — the tutorial covers how this works in practice.
+
+Each variable also has a **Behavior Rules** field — plain-language notes for the AI describing when and how that variable should change. This is a per-variable field, different from the **Behaviors** section you'll see next in the left menu (which is automation logic, not AI guidance).
 
 ::: info Detailed reference
 Operation syntax, nested paths, advanced JSON variable usage → [Variables](./04-variables.md) and [AI Directives & Macros](./05-directives-and-macros.md)
@@ -153,15 +187,23 @@ All trigger types, action types, priority and cooldown mechanics → [Rules Engi
 
 ---
 
-## Message Renderer
+## Custom UI
 
 By default, the AI's reply is just plain text. But those cool worlds you've seen — speech bubbles, visual novel scenes, game interfaces with health bars and inventory — those are all built with this section.
 
-![Message renderer editor](./images/message-renderer.png)
+![Custom UI editor](./images/message-renderer.png)
 
-There are two options:
-- **Default (plain markdown)**: standard Markdown, no setup needed
-- **Custom TSX**: write code to fully customize how messages look
+Custom UI is organized as a tiny **virtual filesystem** of TSX files. The entry point is **`index.tsx`** — this is your world's **Root Component**. Whatever this file exports becomes your entire UI.
+
+The default Root Component is just:
+
+```tsx
+export default function MyWorld() {
+  return <Chat />
+}
+```
+
+That one line gives you the standard chat — message list, input box, streaming, scrolling, the whole thing. You customize by either swapping out parts (pass `renderBubble` to `<Chat />`) or composing `<Chat />` with your own layout (add a sidebar next to it, or drop `<MessageInput />` into a custom screen).
 
 "Wait, code?! I can't code!" — don't panic. You don't need to write it yourself (￣▽￣)ノ
 
@@ -169,22 +211,21 @@ There are two options:
 
 In the editor, click **Enter Studio**, open the **AI Assistant** panel, and describe what you want in plain language — "add a health bar above each message," "make it look like a visual novel." Studio generates the code and shows a live preview. Click **Approve** when you're happy, or keep iterating.
 
-![Studio AI generating a renderer](./images/beginner-studio-renderer.png)
-![Studio AI generating a renderer](./images/beginner-studio-renderer2.png)
+![Studio AI generating custom UI](./images/beginner-studio-renderer.png)
+![Studio AI generating custom UI](./images/beginner-studio-renderer2.png)
 
 ### Method 2: Use an external AI (Claude, ChatGPT, etc.)
 
-Describe the effect you want, but include Yumina's technical context so the AI writes valid code. The [Custom UI Guide](./07-components.md) has a ready-to-copy technical info block you can append to any prompt. Paste the generated code into Message Renderer → Custom TSX — if it compiles, you're done.
+Describe the effect you want, but include Yumina's technical context so the AI writes valid code. The [Custom UI Guide](./07-components.md) has a ready-to-copy technical info block you can append to any prompt. Paste the generated code into Custom UI → `index.tsx` — if it compiles, you're done.
 
-Yumina includes a built-in component library called **YUI** (health bars, dialogue boxes, item grids, scene backgrounds, etc.). AI-generated code uses these automatically — you don't need to learn them yourself.
+The core building blocks are surprisingly few: a single `<Chat />` gives you the entire chat UI, `renderBubble` lets you customize individual messages, and Tailwind plus a handful of tiny components (stat bars, dialogue boxes, choice buttons) are enough to assemble almost any scene. Studio AI and the [Custom UI Guide](./07-components.md) both ship ready-to-copy skeletons.
 
 ::: tip What is Studio?
 Studio is the editor's "advanced mode." Besides the AI assistant, it has a code editor, live preview, and a test panel. Click **Enter Studio** at the top of the editor to get there. The [Custom UI Guide](./07-components.md) covers it in detail.
 :::
 
 ::: info Detailed reference
-Full UI customization tutorial (three levels, SDK reference, YUI component library, AI prompts) → [Custom UI Guide](./07-components.md)
-Renderer deep dive (architecture, TSX syntax, styling, debugging) → [Message Renderer Deep Dive](./08-message-renderer.md)
+Full UI customization tutorial (Root Component, `<Chat />`, `renderBubble`, full-custom layouts with `<MessageList />` / `<MessageInput />`, SDK reference, AI prompts) → [Custom UI Guide](./07-components.md)
 :::
 
 ---
@@ -214,7 +255,7 @@ Playlists, conditional BGM, AI audio directives → [Audio](./09-audio.md)
 
 ## Assets
 
-Where you upload image and audio files. Character sprites, scene backgrounds, item icons, BGM tracks — once uploaded, you can reference them in your renderer or audio settings.
+Where you upload image and audio files. Character sprites, scene backgrounds, item icons, BGM tracks — once uploaded, you can reference them in your custom UI or audio settings.
 
 ![Asset management interface](./images/assets.png)
 
@@ -233,16 +274,40 @@ The world's "profile page." Set up:
 - **Language** — the language your world is written in (supports 10 languages including English, Chinese, Japanese, Korean, and more)
 - **Allow Multiplayer** — whether to enable multiplayer
 
-### Multi-language support
+### Multi-language Versions (Variants)
 
-Once you set a language, a **Language Variants** section appears. You can link different language versions of the same world — for example, if you made a Chinese version and an English version, link them together and players will see a language tab when starting the game, letting them pick their preferred language.
+If you want your world available in both Chinese and English (or any other combination) so global players can play it, Yumina has a **Variant** system — link different language translations of the same world together as one group. On the world detail page players can switch language with one click. In the community listing the group counts as a single world; view stats are merged.
 
-How to do it:
-1. Set the current world's language (e.g., `Chinese`)
-2. Click **Add Language Version**
-3. Upload the translated world's JSON file
-4. Select the translated world's language (e.g., `English`)
-5. After import, the two worlds are automatically linked
+**How variants work**: At the top of the editor there's a **Variant Tab Bar**. At first it shows just one tab (the current world) plus a **+ New Variant** button. Click that button:
+
+1. A language picker appears — choose **English** (or whatever language you want to make)
+2. Yumina **copies the entire current world** (entries, variables, rules, components, audio…) as the starting point of the new variant, and jumps you to its editor
+3. You translate the content into the target language. Structure, variable names, and rules all stay the same — that way the gameplay is identical regardless of which language a player picks
+4. Save when done; back in either variant's editor, both tabs appear in the bar — click to switch
+
+![Variant tab bar](./images/variant-tab-bar.png)
+<!-- Screenshot needed: editor's top Variant Tab Bar showing two variant tabs (with language badges) + new button -->
+
+**Small actions on a variant tab**:
+
+- **Rename** — hover the tab and click the pencil icon. Change "Variant 2" to something clearer (e.g., "Translator's edit").
+- **Change language** — click the language badge on the left of the tab (e.g., `EN` / `ZH`) to pick a different language.
+- **Delete** — hover and click the X. The first click is a confirmation; the second actually deletes.
+
+::: tip Variants aren't only for translations
+Under the hood, variants are **independent worlds** linked together. So you can also use variants for:
+- **Difficulty editions** of the same world (Normal / Hard)
+- **Fan-edit branches** (same setting, different protagonist POV)
+- **Holiday specials** (Lunar New Year edition, Halloween edition)
+
+Players will see them as a "language switcher" in the published UI — so if your variants aren't language-based, label them clearly (give both variants the same `ZH` badge and use the rename to say "Normal" and "Hard" — players will figure it out).
+:::
+
+::: warning Edits don't auto-sync
+Once you have two variants, **changes don't propagate between them**. Add an entry in the Chinese version and the English version doesn't get it automatically. If your world is still iterating heavily, finalize the content first and then make translation variants; or after adding new content to the primary language, manually copy it across.
+
+Translation sync and AI-assisted translation are planned for the future, but right now it's manual.
+:::
 
 When you've finished the world and it's tested and ready, go back to the **Discover** page and click the **Publish** button at the top to make it live.
 

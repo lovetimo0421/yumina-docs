@@ -2,7 +2,7 @@
 
 # 任务追踪
 
-> 做一个任务追踪面板——显示所有任务的完成状态（打勾或打叉），实时显示金币奖励。玩家完成任务时自动弹出成就通知、发放奖励。这篇教你怎么用变量、行为和消息渲染器搭出来。
+> 做一个任务追踪面板——显示所有任务的完成状态（打勾或打叉），实时显示金币奖励。玩家完成任务时自动弹出成就通知、发放奖励。这篇教你怎么用变量、行为和根组件（Root Component）搭出来。
 
 ---
 
@@ -33,7 +33,7 @@
 
 1. **boolean 变量 + 关键词触发**——每个任务用一个布尔变量记录完成状态。当玩家的消息里出现特定关键词时，行为规则自动把变量设为 `true`
 2. **条件检查**——行为在触发前先检查任务是否已经完成。已完成的任务不会重复触发（不会重复发奖励）
-3. **消息渲染器读变量**——面板实时从变量读取任务状态和金币数量，动态渲染勾号或叉号
+3. **根组件读变量**——面板实时从变量读取任务状态和金币数量，动态渲染勾号或叉号
 
 ---
 
@@ -41,7 +41,7 @@
 
 ### 第 1 步：创建变量
 
-我们需要 5 个变量——两个记录任务完成状态，一个记录金币，另外两个记录任务名称（方便消息渲染器动态显示）。
+我们需要 5 个变量——两个记录任务完成状态，一个记录金币，另外两个记录任务名称（方便根组件动态显示）。
 
 编辑器 → 左侧边栏 → **变量** 标签页 → 逐个点击「添加变量」
 
@@ -50,7 +50,7 @@
 | 字段 | 填什么 | 为什么这样填 |
 |------|--------|-------------|
 | 显示名称 | 任务1完成 | 给你自己看的，方便在变量列表里识别 |
-| ID | `quest_1_complete` | 行为规则和消息渲染器代码用这个 ID 来读写 |
+| ID | `quest_1_complete` | 行为规则和根组件代码用这个 ID 来读写 |
 | 类型 | 布尔 | 只有「完成」和「未完成」两个状态 |
 | 默认值 | `false` | 新会话开始时任务还没完成 |
 | 分类 | 标记 | 这是一个状态标记，不是数值属性 |
@@ -61,7 +61,7 @@
 | 字段 | 填什么 | 为什么这样填 |
 |------|--------|-------------|
 | 显示名称 | 任务2完成 | 方便识别 |
-| ID | `quest_2_complete` | 行为规则和消息渲染器代码用这个 ID |
+| ID | `quest_2_complete` | 行为规则和根组件代码用这个 ID |
 | 类型 | 布尔 | 同样只有两个状态 |
 | 默认值 | `false` | 新会话开始时未完成 |
 | 分类 | 标记 | 状态标记 |
@@ -84,7 +84,7 @@
 | 字段 | 填什么 | 为什么这样填 |
 |------|--------|-------------|
 | 显示名称 | 任务1名称 | 方便识别 |
-| ID | `quest_1_name` | 消息渲染器用这个 ID 来显示任务名 |
+| ID | `quest_1_name` | 根组件用这个 ID 来显示任务名 |
 | 类型 | 字符串 | 任务名是文字 |
 | 默认值 | `寻找草药` | 第一个任务的名称 |
 | 分类 | 自定义 | 只是描述性数据 |
@@ -95,7 +95,7 @@
 | 字段 | 填什么 | 为什么这样填 |
 |------|--------|-------------|
 | 显示名称 | 任务2名称 | 方便识别 |
-| ID | `quest_2_name` | 消息渲染器用这个 ID |
+| ID | `quest_2_name` | 根组件用这个 ID |
 | 类型 | 字符串 | 任务名是文字 |
 | 默认值 | `击败森林狼` | 第二个任务的名称 |
 | 分类 | 自定义 | 描述性数据 |
@@ -177,17 +177,16 @@
 
 ---
 
-### 第 3 步：做任务追踪面板（消息渲染器）
+### 第 3 步：在根组件里加任务追踪面板
 
 这是让任务面板出现在聊天界面的关键步骤。
 
-编辑器 → **消息渲染器** 标签页 → 选「自定义 TSX」→ 粘贴以下代码：
+编辑器 → **自定义 UI（Custom UI）** 区域 → 打开 `index.tsx` → 粘贴以下代码（替换默认的 `return <Chat />`）：
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   // 读取变量
   const quest1Done = api.variables.quest_1_complete === true;
@@ -205,11 +204,14 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   const completedCount = quests.filter(q => q.done).length;
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
-      {/* 正常渲染消息文字 */}
+      {/* 正常渲染消息文字（平台已经转好 HTML，直接用 contentHtml） */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* 任务追踪面板——只在最后一条消息显示 */}
@@ -358,6 +360,8 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
@@ -373,11 +377,17 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 ```tsx
 const api = useYumina();
 const msgs = api.messages || [];
-const isLastMsg = messageIndex === msgs.length - 1;
+// ...
+<Chat renderBubble={(msg) => {
+  const isLastMsg = msg.messageIndex === msgs.length - 1;
+  // ...
+}} />
 ```
 
+- 根组件 `MyWorld()` 是世界 UI 的入口。`<Chat renderBubble={...} />` 让平台继续管消息列表、输入框、滚动，我们只接管单条气泡的样子
 - `useYumina()` — 获取 Yumina API，可以读变量
-- `isLastMsg` — 判断当前消息是不是最后一条。任务面板只在最后一条消息下面显示，避免每条消息都重复一个面板
+- `msg.messageIndex` — 这条气泡在消息列表里的索引。任务面板只在最后一条消息下面显示，避免每条消息都重复一个面板
+- `msg.contentHtml` — 平台已经把 Markdown 渲染好的 HTML，直接 `dangerouslySetInnerHTML` 就行
 
 #### 读取变量
 
@@ -465,7 +475,7 @@ const completedCount = quests.filter(q => q.done).length;
 
 | 现象 | 可能的原因 | 解决方法 |
 |------|-----------|---------|
-| 看不到任务面板 | 消息渲染器代码没保存或有语法错误 | 检查消息渲染器底部的编译状态，应该显示绿色「OK」 |
+| 看不到任务面板 | 根组件代码没保存或有语法错误 | 检查自定义 UI 底部的编译状态，应该显示绿色「OK」 |
 | 发了包含草药的消息但任务没完成 | 行为的关键词和你的实际用词不一致 | 检查你发送的消息里是否真的包含"草药"这两个字。注意触发器是玩家关键词，只检测玩家消息，不检测 AI 回复 |
 | 任务完成了但金币没变 | 行为里缺少「修改变量 gold add」动作 | 回到行为编辑器，确认在「修改变量 quest_1_complete」之后有「修改变量 gold add 30」 |
 | 同一个任务重复触发奖励 | 条件没有配置 | 确认行为的 ONLY IF 条件里有 `quest_1_complete eq false`——只有未完成时才触发 |
@@ -481,7 +491,7 @@ const completedCount = quests.filter(q => q.done).length;
 
 ### 加更多任务
 
-在变量标签页增加新的布尔变量（`quest_3_complete`）和字符串变量（`quest_3_name`），然后在行为标签页创建对应的关键词触发行为。最后在消息渲染器的 `quests` 数组里加一行：
+在变量标签页增加新的布尔变量（`quest_3_complete`）和字符串变量（`quest_3_name`），然后在行为标签页创建对应的关键词触发行为。最后在根组件的 `quests` 数组里加一行：
 
 ```tsx
 const quests = [
@@ -527,8 +537,8 @@ const quests = [
 | 完成时弹成就通知 | 行为动作：显示通知，样式 `achievement` |
 | 完成时发金币 | 行为动作：修改变量，`gold` add 数量 |
 | 让 AI 知道任务完成了 | 行为动作：告诉 AI，写一句话说明发生了什么 |
-| 显示任务面板 | 消息渲染器里读变量、渲染勾/叉和金币 |
-| 只在最后一条消息显示面板 | 消息渲染器里判断 `isLastMsg` |
+| 显示任务面板 | 根组件里读变量、渲染勾/叉和金币 |
+| 只在最后一条消息显示面板 | 在 `<Chat renderBubble>` 里判断 `msg.messageIndex === msgs.length - 1` |
 | 任务完成后划线 | 用 `textDecoration: "line-through"` 样式 |
 | 显示完成进度 | 用 `quests.filter(q => q.done).length` 计数 |
 | 所有任务完成时特殊提示 | 判断 `completedCount === quests.length` |
@@ -551,7 +561,7 @@ const quests = [
 **包含内容：**
 - 5 个变量（`quest_1_complete` 和 `quest_2_complete` 任务状态、`gold` 金币、`quest_1_name` 和 `quest_2_name` 任务名称）
 - 2 条行为（寻找草药完成 + 击败森林狼完成，各含条件检查、变量修改、通知和告诉 AI）
-- 一个消息渲染器（任务追踪面板：任务列表 + 状态徽章 + 金币计数器 + 完成进度）
+- 一个根组件（任务追踪面板：任务列表 + 状态徽章 + 金币计数器 + 完成进度）
 
 ---
 

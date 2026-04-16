@@ -1,6 +1,6 @@
 # Core Concepts at a Glance
 
-Creating interactive experiences in Yumina comes down to understanding seven core concepts. No more, no less — just right.
+Creating interactive experiences in Yumina comes down to understanding six core concepts. No more, no less — just right.
 
 ---
 
@@ -10,7 +10,7 @@ A complete, self-contained interactive experience.
 
 If Yumina is a game platform, then a world is one "game" on that platform. It's not just a single character or a plot excerpt — it's everything bundled together: characters, story, rules, UI, music, all in one package. When a player opens a world, they step into a fully immersive experience.
 
-Technically speaking, a world contains entries, variables, rules, components, a renderer, audio tracks, settings… everything you need is in this one bundle. Think of it as a self-sufficient little universe.
+Technically speaking, a world contains entries, variables, behaviors, a root component, audio tracks, settings… everything you need is in this one bundle. Think of it as a self-sufficient little universe.
 
 ---
 
@@ -69,56 +69,54 @@ Creators don't write any code. Variables + behavior rules + the engine's auto-in
 
 ---
 
-## Rule
+## Behavior
 
-Automated behavior in your world. (In the editor, rules are called **Behaviors**.)
+Your world's automated logic. (Under the hood, behaviors are also known as **Rules** — the two names refer to the same thing. Early docs and the code schema may say "rule," but the editor UI uses "behavior.")
 
-"When HP drops to 0, trigger the death ending." "Every 3 turns, increase hunger by 1." "When the player enters the forest, play forest background music." These are all rules.
+"When HP drops to 0, trigger the death ending." "Every 3 turns, increase hunger by 1." "When the player enters the forest, play forest background music." These are all behaviors.
 
-Every rule has three parts, like a micro cause-and-effect chain:
+Every behavior has three parts, like a micro cause-and-effect chain:
 
-- **WHEN (trigger)**: What sets it off. Could be "when a variable changes," "every N turns," "when a specific keyword appears," "when a session starts," etc. This is the rule's "alarm clock."
-- **IF (condition)**: An optional prerequisite. Like "HP ≤ 0" or "gold > 100." Multiple conditions can be combined with AND or OR logic. If no condition is set, the rule fires immediately when triggered.
-- **THEN (action)**: The actual work. Can modify variables, inject a temporary prompt for the AI, toggle entries or rules on/off, send a player notification, play a sound effect… A single rule can chain multiple actions.
+- **WHEN (trigger)**: What sets it off. Could be "when a variable changes," "every N turns," "when a specific keyword appears," "when a session starts," etc. This is the behavior's "alarm clock."
+- **ONLY IF (condition)**: An optional prerequisite. Like "HP ≤ 0" or "gold > 100." Multiple conditions can be combined with AND or OR logic. If no condition is set, the behavior fires immediately when triggered.
+- **DO (action)**: The actual work. Can modify variables, inject a temporary prompt for the AI, toggle entries or behaviors on/off, send a player notification, play a sound effect… A single behavior can chain multiple actions.
 
-Rules are the core mechanism that makes a world feel alive. Without rules, all state changes depend on the AI being "mindful" about them. With rules, you have a reliable safety net — even if the AI occasionally forgets to deduct health, the rule will catch it.
-
----
-
-## Component
-
-The UI panels the player sees.
-
-Components are custom TSX code that change how your world looks and feels. Each component has a `surface` field that determines where it renders:
-
-| Surface | What it does | Example |
-|---------|-------------|---------|
-| **`"message"`** | Replaces how each chat message is displayed. The chat interface stays — you just restyle each message. | Custom chat bubbles, stat bars below messages, interactive greeting screens |
-| **`"app"`** | Takes over the entire screen. The default chat disappears — you build everything yourself. | Visual novel engine, complete game UI, custom experiences |
-
-You can write components yourself in TSX, or use the Studio AI to generate them for you. Components have access to the `useYumina()` SDK for reading game state and triggering actions, plus the **YUI** pre-built component library (stat bars, item grids, dialogue boxes, etc.).
-
-Think of components as the visual layer of your world. The engine quietly updates the data in the background; components turn that data into something the player can see and interact with.
+Behaviors are the core mechanism that makes a world feel alive. Without them, all state changes depend on the AI being "mindful" about them. With behaviors, you have a reliable safety net — even if the AI occasionally forgets to deduct health, the behavior will catch it.
 
 ---
 
-## Renderer
+## Root Component
 
-How chat messages look.
+The entire UI the player sees.
 
-By default, AI replies are displayed as plain Markdown text — similar to what you'd see in ChatGPT. That works, but it's not very immersive.
+Every new world comes with a **Root Component** — a tiny tree of TSX files whose default entry point is `index.tsx`. The React component this file exports becomes the whole UI the player sees when they open your world.
 
-A message-surface component lets you use TSX code to completely take over how messages are presented. You can turn the AI's text into:
+The minimum version is one line:
 
-- Speech bubbles with character avatars
-- Visual novel-style sprites and dialogue boxes
-- Pixel-art battle logs
-- Full-screen interactive scenes
-- …anything you can imagine
+```tsx
+export default function MyWorld() {
+  return <Chat />;
+}
+```
 
-The renderer receives the AI's raw reply text and the current game state, and outputs a custom React interface. This means you can dynamically adjust the display based on variable values — like turning text red when a character is near death, or showing different backgrounds in different scenes.
+That's the default chat experience: message list, input box, streaming cursor, swipe-to-alternate, checkpoints — all built in.
 
-The renderer is the key step in elevating your world from "chatbot" to "interactive experience."
+Customizing usually means one of three levels:
+
+- **Just want different message bubbles?** Pass `renderBubble` to `<Chat />`. You take over each bubble; the rest of the chat keeps using the platform's defaults:
+  ```tsx
+  <Chat renderBubble={(msg) => <MyBubble {...msg} />} />
+  ```
+- **Want a fully custom full-screen UI** (visual novel, map navigation, etc.)? Write your own layout directly in the Root Component — skip `<Chat />` and compose from the finer-grained `<MessageList />` and `<MessageInput />` blocks.
+- **Want chat + floating side panels** (sidebar, status bar)? Drop `<Chat />` and your own components into the same flex layout.
+
+The Root Component can read current game state via `useYumina()` — when a variable changes, the UI reacts instantly without any manual refresh logic.
+
+Think of the Root Component as your world's presentation layer. The engine quietly updates data in the background; the Root Component turns that data into something the player can see and interact with.
+
+::: tip Legacy "message renderer / app component"
+Pre-v18 worlds used the `customUI[]` + `surface: "message" / "app"` model. The editor now marks those worlds with a **Legacy** badge for backwards compatibility. New worlds always use the Root Component. When you import an old Bundle, the engine auto-migrates the `messageRenderer` field into the Root Component.
+:::
 
 ---
 
@@ -127,7 +125,7 @@ The renderer is the key step in elevating your world from "chatbot" to "interact
 When a player sends a message, the engine runs through these phases in sequence:
 
 ```
-Entries --> Build prompt --> AI generates reply --> Parse directives --> Update variables --> Trigger rules --> Render to player
+Entries --> Build prompt --> AI generates reply --> Parse directives --> Update variables --> Trigger behaviors --> Render to player
 ```
 
 Breaking it down:
@@ -140,9 +138,9 @@ Breaking it down:
 
 4. **Parse directives → Update variables**: The engine applies the directives one by one to update variable values in the game state. Numbers are clamped to their min/max range, types are validated.
 
-5. **Update variables → Trigger rules**: After variables change, the engine scans all rules to see which ones' WHEN conditions are met and IF conditions pass, then executes the corresponding THEN actions. Actions may modify further variables, which can trigger more rules — but the engine limits recursion depth to prevent infinite loops.
+5. **Update variables → Trigger behaviors**: After variables change, the engine scans all behaviors to see which ones' WHEN triggers are met and ONLY IF conditions pass, then executes the corresponding DO actions. Actions may modify further variables, which can trigger more behaviors — but the engine limits recursion depth to prevent infinite loops.
 
-6. **Trigger rules → Render to player**: The final reply text and updated game state are handed to the frontend. If the world has a custom renderer, it uses that to display the message; otherwise it renders as plain Markdown. The component panel refreshes to reflect the latest variable values.
+6. **Trigger behaviors → Render to player**: The final reply text and updated game state are handed to the Root Component. It re-renders with the latest variable values — whether you're using the default `<Chat />` bubbles, `<Chat renderBubble={...} />` custom bubbles, or a fully custom full-screen layout, everything refreshes at this step.
 
 This entire flow runs every time a player sends a message. From the player's perspective, they just see the AI write back something great, the health bar ticks down a bit, and the background music shifts — the whole pipeline is completely transparent.
 
@@ -152,6 +150,6 @@ This entire flow runs every time a player sends a message. From the player's per
 
 No need to memorize all of this at once.
 
-These seven concepts build on each other in layers: the world is the container, entries and variables are the content, directives are the bridge between AI and engine, rules are the automation, and components and the renderer are the presentation layer. Having this big picture in your head is enough for now.
+These six concepts build on each other in layers: the world is the container, entries and variables are the content, directives are the bridge between AI and engine, behaviors are the automation, and the Root Component is the presentation layer. Having this big picture in your head is enough for now.
 
 The following chapters go deep on each concept — the details, best practices, and common pitfalls. Whenever something's unclear, flip back here for the overview.

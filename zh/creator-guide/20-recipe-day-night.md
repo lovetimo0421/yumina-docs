@@ -29,7 +29,7 @@
   → 行为执行：time_period 设为下一个时段，turn_counter 重置为 0
   → 禁用旧时段条目，启用新时段条目
   → 渐变切换到新时段的 BGM
-  → 消息渲染器更新时间徽章
+  → 根组件读取变量，更新时间徽章
 ```
 
 有两种实现方式，效果一样，但适合不同的理解习惯：
@@ -56,7 +56,7 @@
 | 字段 | 填什么 | 为什么这样填 |
 |------|--------|-------------|
 | 显示名称 | 当前时段 | 给你自己看的，方便识别 |
-| ID | `time_period` | 行为和消息渲染器用这个 ID 来读写 |
+| ID | `time_period` | 行为和根组件用这个 ID 来读写 |
 | 类型 | 字符串 | 因为值是文字（`"早晨"`、`"中午"`、`"傍晚"`、`"夜晚"`） |
 | 默认值 | `早晨` | 新会话从早晨开始 |
 | 分类 | 自定义 | 时间系统专用分类 |
@@ -376,14 +376,14 @@
 
 ---
 
-### 第 5 步：做时间徽章消息渲染器
+### 第 5 步：在根组件里加时间徽章
 
 在聊天界面最后一条消息上显示当前时段的小图标，让玩家一眼知道现在几点。
 
-编辑器 → **消息渲染器** 标签页 → 选「自定义 TSX」→ 粘贴以下代码：
+编辑器 → **自定义 UI（Custom UI）** 区域 → 打开 `index.tsx` → 粘贴以下代码（替换默认的 `return <Chat />`）：
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
 
   // ---- 读取变量 ----
@@ -398,39 +398,42 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   };
 
   const current = timeConfig[timePeriod] || timeConfig["早晨"];
-
-  // ---- 判断是否是最后一条消息 ----
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   return (
-    <div>
-      {/* 正常渲染消息文字 */}
-      <div
-        style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
-      />
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
 
-      {/* 时间徽章——只在最后一条消息上显示 */}
-      {isLastMsg && (
-        <div style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "6px",
-          marginTop: "12px",
-          padding: "4px 12px",
-          background: current.bg,
-          border: `1px solid ${current.color}33`,
-          borderRadius: "999px",
-          fontSize: "13px",
-          color: current.color,
-          fontWeight: "600",
-        }}>
-          <span style={{ fontSize: "16px" }}>{current.icon}</span>
-          <span>{current.label}</span>
+      return (
+        <div>
+          {/* 正常渲染消息文字——contentHtml 已经是渲染好的 HTML */}
+          <div
+            style={{ color: "#e2e8f0", lineHeight: 1.7 }}
+            dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
+          />
+
+          {/* 时间徽章——只在最后一条消息上显示 */}
+          {isLastMsg && (
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              marginTop: "12px",
+              padding: "4px 12px",
+              background: current.bg,
+              border: `1px solid ${current.color}33`,
+              borderRadius: "999px",
+              fontSize: "13px",
+              color: current.color,
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "16px" }}>{current.icon}</span>
+              <span>{current.label}</span>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      );
+    }} />
   );
 }
 ```
@@ -466,7 +469,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 | 第 3 回合没切换 | 阈值设错了 | 确认「变量越过阈值」的阈值是 `2`（不是 3），方向是「上升」 |
 | 切换后条目没变化 | 条目 ID 不匹配 | 检查行为里「启用知识条目」/「禁用知识条目」选择的条目是否和你创建的条目名称一致 |
 | 四条行为同时触发 | ONLY IF 条件没写 | 每条时段推进行为都必须有 ONLY IF 条件，限定当前 `time_period` 的值 |
-| 看不到时间徽章 | 消息渲染器代码有语法错误 | 检查消息渲染器底部的编译状态，应该显示绿色「OK」 |
+| 看不到时间徽章 | 根组件代码有语法错误 | 检查自定义 UI 底部的编译状态，应该显示绿色「OK」 |
 | BGM 没切换 | 音轨 ID 不匹配或没上传音频 | 确认行为里的 `trackId` 和音频标签页里的音轨 ID 一致 |
 
 ---
@@ -510,7 +513,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 | 切换知识条目 | 动作用「启用知识条目」/「禁用知识条目」 |
 | 渐变切歌 | 动作用「播放音乐」，操作选 `crossfade`，填渐变时长 |
 | 让 AI 知道发生了什么 | 动作用「告诉 AI」，写一段临时系统指令 |
-| 在消息上显示状态徽章 | 消息渲染器里读取变量，用 JSX 渲染 |
+| 在消息上显示状态徽章 | 根组件 `<Chat renderBubble>` 里读取变量，用 JSX 渲染 |
 | 模拟 if-else 分支 | 多条行为用同一个触发器 + 不同的 ONLY IF 条件 |
 
 ---
@@ -532,7 +535,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 - 2 个变量（`time_period` 追踪当前时段，`turn_counter` 回合计数器）
 - 4 个知识条目（早晨 / 中午 / 傍晚 / 夜晚氛围，默认只启用早晨）
 - 6 条行为（1 条每回合计数 + 4 条时段推进 + 1 条会话初始化）
-- 一个消息渲染器（时段图标徽章）
+- 一个根组件（`<Chat renderBubble>` 里加的时段图标徽章）
 - 4 条 BGM 音轨（需要你自己上传音频文件替换 URL）
 
 ---

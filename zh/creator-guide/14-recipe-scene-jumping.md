@@ -168,88 +168,92 @@
 
 ---
 
-#### 第 4 步：做带按钮的消息渲染器
+#### 第 4 步：在根组件里加路线选择按钮
 
 这是让按钮出现在聊天界面的关键步骤。
 
-编辑器 → **消息渲染器** 标签页 → 选「自定义 TSX」→ 粘贴以下代码：
+编辑器 → **自定义 UI（Custom UI）** 区域 → 打开 `index.tsx` → 粘贴以下代码（替换默认内容）：
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
   const hasChosen = api.variables.current_route !== "none";
 
   return (
-    <div>
-      {/* 正常渲染消息文字 */}
-      <div
-        style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
-      />
+    <Chat renderBubble={(msg) => (
+      <div>
+        {/* 正常渲染消息文字 */}
+        <div
+          style={{ color: "#e2e8f0", lineHeight: 1.7 }}
+          dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
+        />
 
-      {/* 路线选择按钮 */}
-      {/* messageIndex === 0 表示只在第一条消息上显示 */}
-      {/* !hasChosen 表示选了之后就不再显示 */}
-      {messageIndex === 0 && !hasChosen && (
-        <div style={{
-          display: "flex",
-          gap: "12px",
-          marginTop: "16px",
-        }}>
-          <button
-            onClick={() => {
-              api.setVariable("current_route", "dark");   // 记录选择，让按钮消失
-              api.executeAction("choose-dark");            // 触发行为规则，开关世界观条目
-              api.switchGreeting?.(1);                     // 切换到第 2 个问候语
-            }}
-            style={{
-              flex: 1,
-              padding: "16px",
-              background: "linear-gradient(135deg, #1e1b4b, #312e81)",
-              border: "1px solid #4338ca",
-              borderRadius: "12px",
-              color: "#c7d2fe",
-              fontSize: "15px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            进入黑暗洞穴
-          </button>
+        {/* 路线选择按钮 */}
+        {/* msg.messageIndex === 0 表示只在第一条消息上显示 */}
+        {/* !hasChosen 表示选了之后就不再显示 */}
+        {msg.messageIndex === 0 && !hasChosen && (
+          <div style={{
+            display: "flex",
+            gap: "12px",
+            marginTop: "16px",
+          }}>
+            <button
+              onClick={() => {
+                api.setVariable("current_route", "dark");   // 记录选择，让按钮消失
+                api.executeAction("choose-dark");            // 触发行为规则，开关世界观条目
+                api.switchGreeting?.(1);                     // 切换到第 2 个问候语
+              }}
+              style={{
+                flex: 1,
+                padding: "16px",
+                background: "linear-gradient(135deg, #1e1b4b, #312e81)",
+                border: "1px solid #4338ca",
+                borderRadius: "12px",
+                color: "#c7d2fe",
+                fontSize: "15px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              进入黑暗洞穴
+            </button>
 
-          <button
-            onClick={() => {
-              api.setVariable("current_route", "light");
-              api.executeAction("choose-light");
-              api.switchGreeting?.(2);                     // 切换到第 3 个问候语
-            }}
-            style={{
-              flex: 1,
-              padding: "16px",
-              background: "linear-gradient(135deg, #365314, #4d7c0f)",
-              border: "1px solid #65a30d",
-              borderRadius: "12px",
-              color: "#ecfccb",
-              fontSize: "15px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            走向阳光草地
-          </button>
-        </div>
-      )}
-    </div>
+            <button
+              onClick={() => {
+                api.setVariable("current_route", "light");
+                api.executeAction("choose-light");
+                api.switchGreeting?.(2);                     // 切换到第 3 个问候语
+              }}
+              style={{
+                flex: 1,
+                padding: "16px",
+                background: "linear-gradient(135deg, #365314, #4d7c0f)",
+                border: "1px solid #65a30d",
+                borderRadius: "12px",
+                color: "#ecfccb",
+                fontSize: "15px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              走向阳光草地
+            </button>
+          </div>
+        )}
+      </div>
+    )} />
   );
 }
 ```
 
 **代码逐行解释：**
 
+- `<Chat renderBubble={...} />` — 用平台默认的聊天界面（输入框、滑动切换、存档点都是现成的），只接管气泡的渲染方式
 - `const api = useYumina()` — 获取 Yumina 的 API，可以读变量、改变量、触发动作、切换问候语
 - `api.variables.current_route` — 读取当前路线变量的值
 - `hasChosen` — 如果不是 `"none"` 说明已经选过了
-- `messageIndex === 0` — 只在第一条消息上显示按钮（不是每条消息都显示）
+- `msg.contentHtml` — renderBubble 传入的预渲染 HTML（Markdown 已经处理好了）
+- `msg.messageIndex === 0` — 只在第一条消息上显示按钮（不是每条消息都显示）
 - `!hasChosen` — 选了之后按钮消失
 - `api.setVariable("current_route", "dark")` — 把变量设为 `"dark"`，这样 `hasChosen` 变为 `true`，按钮消失
 - `api.executeAction("choose-dark")` — 触发我们第 3 步创建的行为规则
@@ -274,10 +278,10 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 
 | 现象 | 可能的原因 | 解决方法 |
 |------|-----------|---------|
-| 看不到按钮 | 消息渲染器代码没保存或有语法错误 | 检查消息渲染器底部的编译状态，应该显示绿色「OK」 |
+| 看不到按钮 | 根组件代码没保存或有语法错误 | 检查自定义 UI 区域底部的编译状态，应该显示绿色「OK」 |
 | 按钮点了没反应 | `switchGreeting` 还没部署到服务端 | 确认你使用的是最新版本 |
 | 按钮点了开场白没切换 | 问候语数量不够 | 确认「首条消息」标签页里有 3 个问候语 |
-| 按钮点了但没消失 | 变量没有被正确设置 | 回到编辑器检查变量的默认值是否是 `none`，以及消息渲染器代码是否正确检查了 `current_route` |
+| 按钮点了但没消失 | 变量没有被正确设置 | 回到编辑器检查变量的默认值是否是 `none`，以及根组件代码是否正确检查了 `current_route` |
 | 世界观没切换 | 行为规则没正确配置 | 检查行为的动作 ID 是否和代码里的一致（`choose-dark` / `choose-light`） |
 
 ---
@@ -362,21 +366,23 @@ Yumina 的条目支持**宏语法**。你可以在条目内容里写 `{{variable
 
 ---
 
-#### 第 3 步：在消息渲染器里加输入框
+#### 第 3 步：在根组件里加输入框
 
-我们需要在聊天界面里放一个输入框，让玩家能输入新规则。这个输入框放在**消息渲染器**里，只在最后一条消息的下方显示（避免每条消息都重复显示一个输入框）。
+我们需要在聊天界面里放一个输入框，让玩家能输入新规则。这个输入框写在根组件的 `renderBubble` 里，只在最后一条消息的下方显示（避免每条消息都重复显示一个输入框）。
 
-在你的消息渲染器 TSX 代码里，加上以下内容。如果你已经有第一部分的代码，就把这段加在 `return` 里面、消息文字后面：
+在你的 `index.tsx` 里，加上以下内容。如果你已经有第一部分的代码，就把这段加在 `renderBubble` 返回的 JSX 里面、消息文字后面：
 
 ```tsx
-// 在 Renderer 函数的开头，加上这些变量声明
-const api = useYumina();                           // 如果已经有了就不用重复
+// 根组件函数顶部（<Chat> 外面）加上这些变量声明
+const api = useYumina();                                    // 如果已经有了就不用重复
 const msgs = api.messages || [];
-const isLastMsg = messageIndex === msgs.length - 1; // 判断是不是最后一条消息
 const [ruleInput, setRuleInput] = React.useState("");
 const currentRule = String(api.variables.custom_rule || "");
 
-// 在 return 的 JSX 里，放在消息文字的下面
+// renderBubble 内部加一个判断
+const isLastMsg = msg.messageIndex === msgs.length - 1;    // 判断是不是最后一条消息
+
+// 在 renderBubble 返回的 JSX 里，放在消息文字的下面
 {isLastMsg && (
   <div style={{
     marginTop: "12px",
@@ -435,8 +441,8 @@ const currentRule = String(api.variables.custom_rule || "");
 - `api.setVariable("custom_rule", ...)` — 把玩家输入的文字写入变量。下次 AI 回复时，条目里的 `{{custom_rule}}` 就会被替换成这个文字
 - `setRuleInput("")` — 提交后清空输入框
 
-::: info 为什么放在消息渲染器里？
-在 Yumina 中，具有 `surface: "app"` 的组件会接管整个屏幕并替换聊天界面。在普通聊天模式下它们不会显示。因此，如果你想在聊天界面中添加交互元素（按钮、输入框），请将它们放在具有 `surface: "message"` 的组件（消息渲染器）中。
+::: info 为什么放在 renderBubble 里？
+Yumina 的根组件是 TSX 文件，默认返回 `<Chat />` 就能用平台自带的聊天界面。要在聊天里插入按钮、输入框之类的交互元素，有两条路：1）塞进 `<Chat renderBubble={...} />`，像这里一样，让它和消息气泡一起渲染；2）把 `<Chat />` 和你的浮动组件放进同一个 flex 布局（做侧边栏用）。如果你想做一个完全脱离聊天的全屏 UI（比如纯视觉小说），就不用 `<Chat />`，直接写自己的布局、需要的话用 `<MessageList />` + `<MessageInput />` 自己拼。
 :::
 
 ---
@@ -472,7 +478,7 @@ const currentRule = String(api.variables.custom_rule || "");
 |-----------|--------|
 | 跳转到预写的开场白 | `switchGreeting(index)` — index 对应「首条消息」标签页里问候语的顺序（从 0 开始） |
 | 让玩家输入内容改变 AI 行为 | 创建字符串变量 + 条目里写 `{{variableId}}` + UI 里调 `setVariable()` |
-| 按钮只在第一条消息显示 | TSX 里判断 `messageIndex === 0` |
+| 按钮只在第一条消息显示 | 在 `<Chat renderBubble>` 里判断 `msg.messageIndex === 0` |
 | 按钮选了就消失 | 用变量追踪选择状态，TSX 里判断 `hasChosen` |
 | 选路线后切换世界观 | 创建行为，用「启用知识条目」/「禁用知识条目」动作 |
 | 切换时播放音效 | 在行为里加「播放音乐」或「播放音效」动作 |
@@ -497,7 +503,7 @@ const currentRule = String(api.variables.custom_rule || "");
 - 3 个问候语（主开场 + 黑暗洞穴 + 阳光草地）
 - 2 个变量（`current_route` 追踪路线，`custom_rule` 玩家可编辑的规则）
 - 2 个动作行为（选择路线时开关世界观条目）
-- 一个消息渲染器（路线选择按钮 + 规则编辑器）
+- 一个根组件（`<Chat renderBubble>` 里的路线选择按钮 + 规则编辑器）
 - 一个使用 `{{custom_rule}}` 宏的世界观条目
 
 ---

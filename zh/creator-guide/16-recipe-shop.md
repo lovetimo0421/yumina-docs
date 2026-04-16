@@ -2,7 +2,7 @@
 
 # 商店与交易
 
-> 做一个商店 UI——玩家浏览商品、点击购买，金币自动扣除，物品自动进入背包。这篇教你怎么把变量、行为和消息渲染器组合成一个完整的交易系统。
+> 做一个商店 UI——玩家浏览商品、点击购买，金币自动扣除，物品自动进入背包。这篇教你怎么把变量、行为和根组件（Root Component）组合成一个完整的交易系统。
 
 ---
 
@@ -32,12 +32,12 @@
 
 1. **number 变量 + 条件检查** — 金币是一个数字变量，行为在执行前先检查它是否够用
 2. **json 变量 + push 操作** — 背包是一个 json 数组，每次购买用 `push` 往里面添加物品
-3. **action 触发器** — 每个购买按钮对应一个动作 ID，消息渲染器里的按钮通过 `executeAction()` 触发行为
+3. **action 触发器** — 每个购买按钮对应一个动作 ID，根组件里的按钮通过 `executeAction()` 触发行为
 
 整个流程：
 
 ```
-消息渲染器（按钮 UI）
+根组件里的按钮 UI
   → 玩家点击「购买药水」
   → 调用 api.executeAction("buy-potion")
   → 引擎找到动作 ID 为 "buy-potion" 的行为
@@ -97,8 +97,8 @@
 
 | 字段 | 填什么 | 为什么这样填 |
 |------|--------|-------------|
-| 触发器类型 | 动作按钮被按下 | 当消息渲染器调用 `executeAction("buy-potion")` 时触发 |
-| 动作 ID | `buy-potion` | 和消息渲染器代码里的 `executeAction("buy-potion")` 一致 |
+| 触发器类型 | 动作按钮被按下 | 当根组件调用 `executeAction("buy-potion")` 时触发 |
+| 动作 ID | `buy-potion` | 和根组件代码里的 `executeAction("buy-potion")` 一致 |
 
 **ONLY IF（条件）：**
 
@@ -193,17 +193,16 @@
 
 ---
 
-### 第 3 步：做商店消息渲染器
+### 第 3 步：在根组件里加商店面板
 
 这是让商店 UI 出现在聊天界面的关键步骤。我们会在消息下方显示三个区域：金币余额、商品列表（带购买按钮）、背包物品栏。
 
-编辑器 → **消息渲染器** 标签页 → 选「自定义 TSX」→ 粘贴以下代码：
+编辑器 → **自定义 UI（Custom UI）** 区域 → 打开 `index.tsx` → 粘贴以下代码（替换默认的 `return <Chat />`）：
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   // 读取变量
   const gold = Number(api.variables.gold ?? 100);
@@ -218,11 +217,14 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   ];
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
-      {/* 正常渲染消息文字 */}
+      {/* 正常渲染消息文字（平台已经转好 HTML，直接用 contentHtml） */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* 只在最后一条消息下方显示商店 */}
@@ -374,6 +376,8 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
@@ -389,11 +393,17 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 ```tsx
 const api = useYumina();
 const msgs = api.messages || [];
-const isLastMsg = messageIndex === msgs.length - 1;
+// ...
+<Chat renderBubble={(msg) => {
+  const isLastMsg = msg.messageIndex === msgs.length - 1;
+  // ...
+}} />
 ```
 
+- 根组件 `MyWorld()` 是世界 UI 的入口。`<Chat renderBubble={...} />` 让平台继续负责消息列表、输入框、滚动，我们只接管单条消息气泡的样子
 - `useYumina()` — 获取 Yumina API，可以读变量、触发动作
-- `isLastMsg` — 判断当前消息是不是最后一条。商店面板只在最后一条消息下面显示，避免每条消息都重复一个商店
+- `msg.messageIndex` — 当前这条气泡在消息列表里的索引，用来判断是不是最后一条。商店面板只在最后一条消息下面显示，避免每条消息都重复一个商店
+- `msg.contentHtml` — 平台已经把 Markdown 渲染好的 HTML，直接 `dangerouslySetInnerHTML` 就行
 
 #### 读取变量
 
@@ -480,7 +490,7 @@ opacity: gold >= item.price ? 1 : 0.6,
 
 | 现象 | 可能的原因 | 解决方法 |
 |------|-----------|---------|
-| 看不到商店面板 | 消息渲染器代码没保存或有语法错误 | 检查消息渲染器底部的编译状态，应该显示绿色「OK」 |
+| 看不到商店面板 | 根组件代码没保存或有语法错误 | 检查自定义 UI 底部的编译状态，应该显示绿色「OK」 |
 | 按钮点了没反应 | 行为的动作 ID 和代码里的不一致 | 确认行为的动作 ID 是 `buy-potion` / `buy-sword`，和代码里 `executeAction()` 的参数一模一样 |
 | 金币扣了但背包没变 | 行为里的 push 操作没设置对 | 检查修改变量动作：变量选 `inventory`，操作选 `push`，值填 `"药水"`（要带引号） |
 | 金币不够但没弹警告 | 「金币不足」的行为条件写反了 | 确认条件是 `gold lt 20`（小于），不是 `gold gte 20` |
@@ -495,7 +505,7 @@ opacity: gold >= item.price ? 1 : 0.6,
 
 ### 加更多商品
 
-在消息渲染器的 `shopItems` 数组里加一行：
+在根组件的 `shopItems` 数组里加一行：
 
 ```tsx
 const shopItems = [
@@ -524,7 +534,7 @@ const shopItems = [
 
 - **每回合奖励**：创建一条行为，触发器选「每 N 回合」（比如每 3 回合），动作是 `修改变量 gold add 10`。每 3 轮对话自动获得 10 金币。
 - **关键词奖励**：触发器选「AI 说了关键词」，关键词填「战斗胜利」或「完成任务」。当 AI 在回复中提到这些词时，自动给玩家加金币。
-- **手动奖励按钮**：在消息渲染器里加一个「工作赚钱」按钮，用 `executeAction("earn-gold")` 触发一条行为，动作是 `gold add 15`。
+- **手动奖励按钮**：在根组件里加一个「工作赚钱」按钮，用 `executeAction("earn-gold")` 触发一条行为，动作是 `gold add 15`。
 
 ---
 
@@ -539,8 +549,8 @@ const shopItems = [
 | 检查金币够不够 | 行为条件：`gold gte 价格` |
 | 金币不足弹提示 | 另一条行为，条件 `gold lt 价格`，动作 显示通知（warning） |
 | 购买成功弹提示 | 行为动作：显示通知（achievement 样式） |
-| 按钮触发购买 | 消息渲染器里调 `api.executeAction("动作ID")` |
-| 显示物品栏网格 | 消息渲染器里用 CSS Grid + `inventory.map()` 渲染 |
+| 按钮触发购买 | 根组件里调 `api.executeAction("动作ID")` |
+| 显示物品栏网格 | 根组件里用 CSS Grid + `inventory.map()` 渲染 |
 | 加更多商品 | 往 shopItems 数组加一行 + 行为里加两条规则 |
 
 ---
@@ -561,7 +571,7 @@ const shopItems = [
 **包含内容：**
 - 2 个变量（`gold` 金币 + `inventory` 背包）
 - 4 条行为（药水购买成功/不足 + 铁剑购买成功/不足）
-- 一个消息渲染器（金币显示 + 商品列表 + 物品栏网格）
+- 一个根组件（金币显示 + 商品列表 + 物品栏网格）
 
 ---
 

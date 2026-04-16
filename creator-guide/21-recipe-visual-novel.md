@@ -2,7 +2,7 @@
 
 # Visual Novel Mode
 
-> Turn the chat interface into a full visual novel — scene backgrounds, character sprites, dialogue boxes, choice buttons, all driven by AI directives. Combine YUI.Scene, YUI.Sprite, YUI.DialogueBox, YUI.ChoiceButtons, and YUI.Fullscreen for an immersive VN experience.
+> Turn the chat interface into a full visual novel — scene backgrounds, character sprites, dialogue boxes, choice buttons, all driven by AI directives. The Root Component (`index.tsx`) takes over the entire screen: no more `<Chat />`, just your own fullscreen layout with `<MessageInput />` embedded wherever the player needs to speak. Plain Tailwind + inline styles — no prebuilt component library required.
 
 ---
 
@@ -10,11 +10,11 @@
 
 A fullscreen visual novel interface:
 
-- **Scene backgrounds** — the AI switches background images via directives (classroom, street, night sky...), and the message renderer displays them fullscreen with `YUI.Scene`
-- **Character sprites** — the AI sets the current speaker and emotion via directives, and `YUI.Sprite` displays the matching sprite on screen
-- **Dialogue box** — a semi-transparent box at the bottom of the screen showing the character name and dialogue. *Italic text* is automatically treated as narration/inner monologue; plain text is character dialogue
-- **Choice buttons** — when the AI offers choices, `YUI.ChoiceButtons` overlays clickable buttons on screen
-- **Fullscreen mode** — adding a component with `surface: "app"` turns the entire chat area into a VN canvas with no regular chat bubbles
+- **Scene backgrounds** — the AI switches background images via directives (classroom, street, night sky...), and the Root Component displays them as a fullscreen `background-image`
+- **Character sprites** — the AI sets the current speaker and emotion via directives, and the Root Component renders the matching `<img>` sprite in the center of the screen
+- **Dialogue box** — a semi-transparent box at the bottom of the screen shows the character name and dialogue. *Italic text* is automatically treated as narration/inner monologue; plain text is character dialogue
+- **Choice buttons** — when the AI offers choices, the Root Component overlays clickable buttons on screen
+- **Fullscreen mode** — the Root Component returns its own fullscreen layout without nesting `<Chat />`, so there are no regular chat bubbles at all
 
 ### How it works
 
@@ -34,18 +34,18 @@ Good morning! You're here early today.
 ```
 
 After the engine parses these directives:
-1. `current_bg` becomes `"classroom_morning.jpg"` → the message renderer uses `YUI.Scene` to swap the background to a classroom
+1. `current_bg` becomes `"classroom_morning.jpg"` → the Root Component swaps `background-image` to a classroom
 2. `current_speaker` becomes `"Yuki"` → the dialogue box displays the name "Yuki"
-3. `speaker_emotion` becomes `"happy"` → `YUI.Sprite` shows Yuki's happy sprite
-4. The message renderer parses the text — *italic* sections render as narration, plain text renders as character dialogue
+3. `speaker_emotion` becomes `"happy"` → the Root Component assembles the sprite path from `speaker + emotion` and renders it
+4. The Root Component parses the latest message's text — *italic* sections render as narration, plain text renders as character dialogue
 
 ```
 Engine processing flow:
-  AI response → engine extracts directives → updates variables → message renderer reads variables
-    → YUI.Scene renders background
-    → YUI.Sprite renders sprite
-    → YUI.DialogueBox renders dialogue box (distinguishing narration vs. dialogue)
-    → YUI.ChoiceButtons renders choices (if show_choices = true)
+  AI response → engine extracts directives → updates variables → Root Component reads variables and redraws
+    → background layer: <div style={{ backgroundImage: ... }} />
+    → sprite layer: <img src={`/sprites/${speaker}_${emotion}.png`} />
+    → dialogue box layer: distinguishes narration (gray italic) vs. dialogue (white upright)
+    → choice layer: buttons appear when show_choices = true
 ```
 
 ---
@@ -103,7 +103,7 @@ Editor → sidebar → **Variables** tab → click "Add Variable" for each one
 | Behavior Rules | `Use [show_choices: set true] when you want to offer the player a choice. Keep it false otherwise.` | Tells the AI to only enable this when a player choice is needed |
 
 ::: info Why let the AI control the screen with directives?
-This is Yumina's core design — the AI doesn't execute code. Instead, it uses structured directives to tell the engine what to do. The engine parses directives, updates variables, and the renderer reads variables to update the screen. The full chain is: AI writes directives → engine parses → variables update → renderer refreshes.
+This is Yumina's core design — the AI doesn't execute code. Instead, it uses structured directives to tell the engine what to do. The engine parses directives, updates variables, and the Root Component reads variables to update the screen. The full chain is: AI writes directives → engine parses → variables update → Root Component re-renders.
 :::
 
 ---
@@ -151,7 +151,7 @@ Format rules:
 6. Always update current_bg when switching scenes. Always update current_speaker and speaker_emotion when a character speaks.
 ```
 
-> **Why so detailed?** Because the AI doesn't know how your renderer works. You have to explicitly tell it "italic = narration, plain text = dialogue" — otherwise the AI might use random formatting, and the renderer won't be able to distinguish narration from dialogue correctly.
+> **Why so detailed?** Because the AI doesn't know how your Root Component works. You have to explicitly tell it "italic = narration, plain text = dialogue" — otherwise the AI might use random formatting, and the component won't be able to distinguish narration from dialogue correctly.
 
 ---
 
@@ -169,7 +169,7 @@ A visual novel needs background images and character sprites. Two ways to provid
 3. After upload, each file gets an `@asset:` reference (like `@asset:a1b2c3d4-e5f6-7890`)
 4. Click an uploaded asset to **copy its reference**
 
-> **What is an `@asset:` reference?** It's Yumina's internal asset identifier. In your message renderer TSX code, `<img src="@asset:xxx" />` is automatically resolved to a real CDN URL at render time. You don't need to convert it manually — the renderer handles it. Variables can also store `@asset:xxx` values and they'll be auto-resolved too.
+> **What is an `@asset:` reference?** It's Yumina's internal asset identifier. In the Root Component's TSX code, `<img src="@asset:xxx" />` is automatically resolved to a real CDN URL at render time. You don't need to convert it manually — the component handles it. Variables can also store `@asset:xxx` values and they'll be auto-resolved too.
 
 #### Recommended assets to prepare
 
@@ -214,10 +214,10 @@ When using directives, use the @asset: references above as values. For example:
 [current_bg: set "@asset:your-classroom-reference"]
 ```
 
-> The AI reads this table and uses the correct `@asset:` references in its directives. The renderer automatically converts `@asset:` to real image URLs when displaying.
+> The AI reads this table and uses the correct `@asset:` references in its directives. The Root Component automatically converts `@asset:` to real image URLs when displaying.
 
 ::: tip No assets yet? You can still test
-The renderer shows a solid color background when images fail to load. Get the logic working first — add assets later. You can also use free stock image URLs instead of `@asset:` references for quick prototyping.
+The Root Component shows a solid color background when images fail to load. Get the logic working first — add assets later. You can also use free stock image URLs instead of `@asset:` references for quick prototyping.
 :::
 
 ---
@@ -243,19 +243,23 @@ Editor → **First Message** tab → create a first message
 *A transfer student? You don't remember anyone like her in your class.*
 ```
 
-> **Why put directives in the first message too?** Because the message renderer relies on variables to decide what to display. The first message's directives get parsed by the engine, setting up the initial background and character state. Without directives, the defaults kick in (`default_bg.jpg` + `Narrator` + `neutral`), but the screen might not match the opening scene.
+> **Why put directives in the first message too?** Because the Root Component relies on variables to decide what to display. The first message's directives get parsed by the engine, setting up the initial background and character state. Without directives, the defaults kick in (`default_bg.jpg` + `Narrator` + `neutral`), but the screen might not match the opening scene.
 
 ---
 
-### Step 5: Build the visual novel message renderer
+### Step 5: Write the visual novel Root Component
 
-This is the core step. The message renderer transforms ordinary chat messages into a visual novel screen.
+This is the core step. The Root Component takes over the entire screen — instead of nesting `<Chat />`, it paints its own background, sprites, dialogue box, and choice buttons. Player input is handled by `<MessageInput />` placed at the bottom of the screen.
 
-Editor → **Message Renderer** tab → select **Custom TSX** → paste the following code:
+Editor → **Custom UI** section → open `index.tsx` → paste the following (replace the default `return <Chat />`):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
+  const renderMarkdown = api.renderMarkdown;
+  const msgs = api.messages || [];
+  const lastMsg = msgs[msgs.length - 1];
+  const content = lastMsg ? String(lastMsg.content || "") : "";
 
   // ---- Read variables ----
   const bgUrl = String(api.variables.current_bg || "default_bg.jpg");
@@ -306,7 +310,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
       overflow: "hidden",
       background: "#000",
     }}>
-      {/* ===== Background layer (YUI.Scene) ===== */}
+      {/* ===== Background layer ===== */}
       <div style={{
         position: "absolute",
         inset: 0,
@@ -317,7 +321,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         transition: "background-image 0.8s ease",
       }} />
 
-      {/* ===== Character sprite layer (YUI.Sprite) ===== */}
+      {/* ===== Character sprite layer ===== */}
       {spriteUrl && (
         <div style={{
           position: "absolute",
@@ -340,7 +344,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
 
-      {/* ===== Dialogue box layer (YUI.DialogueBox) ===== */}
+      {/* ===== Dialogue box layer ===== */}
       <div style={{
         position: "absolute",
         bottom: 0,
@@ -398,7 +402,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       </div>
 
-      {/* ===== Choice button layer (YUI.ChoiceButtons) ===== */}
+      {/* ===== Choice button layer ===== */}
       {showChoices && choices.length > 0 && (
         <div style={{
           position: "absolute",
@@ -446,6 +450,18 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
           ))}
         </div>
       )}
+
+      {/* ===== Player input layer ===== */}
+      {/* No <Chat /> wrapper — drop <MessageInput /> in directly so the player can still type */}
+      <div style={{
+        position: "absolute",
+        bottom: 0,
+        left: 0,
+        right: 0,
+        zIndex: 5,
+      }}>
+        <MessageInput />
+      </div>
     </div>
   );
 }
@@ -453,7 +469,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 
 **Block-by-block explanation:**
 
-- **Clean content** — `cleanContent` filters out directive lines like `[current_bg: set "xxx"]` (matching all 9 operation types: set/add/subtract/multiply/toggle/append/merge/push/delete, plus shorthand directives like `[hp: -10]`). Directives have already been parsed by the engine, so the renderer doesn't need to display them
+- **Clean content** — `cleanContent` filters out directive lines like `[current_bg: set "xxx"]` (matching all operation types: set/add/subtract/multiply/toggle/append/merge/push/delete, plus shorthand directives like `[hp: -10]`). Directives have already been parsed by the engine, so the component doesn't need to display them
 - **Parse paragraphs** — splits text on blank lines into paragraphs, classifying each as narration (starts with `*`), dialogue (plain text), or a choice (starts with `A)` format)
 - **Background layer** — uses `backgroundImage` to display the current scene background. `filter: brightness(0.7)` darkens it slightly to keep foreground text readable. `transition` adds a crossfade animation when switching backgrounds
 - **Sprite layer** — assembles the sprite file path from `speaker` and `emotion`. `onError` handles missing images (silently hides them). No sprite is shown in Narrator mode
@@ -466,18 +482,15 @@ The code uses `/sprites/${speaker.toLowerCase()}_${emotion}.png` to assemble spr
 
 ---
 
-### Step 6: Enable fullscreen mode
+### Step 6: No toggle needed — the Root Component is already fullscreen
 
-A visual novel should fill the entire screen, not show as chat bubbles.
+A visual novel naturally fills the screen. As long as your `index.tsx` root element uses `width: "100%"` + `minHeight: "500px"` (or `100vh`) — which the code above already does — your TSX takes over the whole canvas. **There's no separate "fullscreen" switch to flip**, because the Root Component *is* the world's UI entry point.
 
-Editor → **Components** section → add a component with `surface: "app"`
+Two patterns side by side:
+- **Normal chat + custom bubble**: `return <Chat renderBubble={...} />` — keep the platform's chat shell, just restyle the bubbles
+- **Pure visual novel (this recipe)**: `return <div>...all VN elements...<MessageInput /></div>` — no `<Chat />` at all; every pixel is yours
 
-When an app-surface component is present and visible:
-- The chat area no longer displays regular message bubbles
-- The message renderer's output fills the entire visible area
-- The player's input box remains at the bottom, but choice buttons can replace manual typing
-
-> **When should you go fullscreen?** If you want a pure VN experience — fullscreen backgrounds, sprites, dialogue box, no trace of a chat interface — turn it on. If you want to keep normal chat functionality and only use VN styling on certain messages, leave it off.
+> **Want to toggle between chat and VN?** If you want the "normal chat most of the time, VN during special moments" experience, branch inside the Root Component on a variable (say `vn_mode`). Return `<Chat />` when it's off and the VN fullscreen layout when it's on. The AI flips the variable with a directive and you swap between modes mid-session.
 
 ---
 
@@ -557,7 +570,7 @@ Rendered result: background transitions to the hallway (with a crossfade animati
 
 ### Step 8: Italic narration vs. plain dialogue — parsing rules
 
-The message renderer distinguishes two types of text with a simple rule:
+The Root Component distinguishes two types of text with a simple rule:
 
 | Format | Recognized As | Display Style | Purpose |
 |--------|--------------|---------------|---------|
@@ -565,7 +578,7 @@ The message renderer distinguishes two types of text with a simple rule:
 | `This is plain text` | Dialogue | White (#e2e8f0), upright | What the character says |
 | `A) Choice text` | Choice | Button | Clickable player selection |
 
-The AI has already been told these rules in the knowledge entry. But if the AI occasionally gets the format wrong (e.g., uses italic for dialogue), the renderer's fallback logic treats uncertain text as dialogue — so at least nothing breaks.
+The AI has already been told these rules in the knowledge entry. But if the AI occasionally gets the format wrong (e.g., uses italic for dialogue), the fallback logic treats uncertain text as dialogue — so at least nothing breaks.
 
 > **Why not use Markdown's `>` blockquotes or `**bold**` to distinguish?** Because `*italic*` is the most natural markup — most AI models in roleplay scenarios already default to using italic for narration and action descriptions without extra training. Pick a format the AI is most likely to follow consistently, and save yourself the headache of fighting the model.
 
@@ -590,7 +603,7 @@ The AI has already been told these rules in the knowledge entry. But if the AI o
 | Directive lines show on screen | Directive format is non-standard and the regex didn't match | Confirm the format is `[variableName: set "value"]` — note the space after the colon |
 | All text is narration / all text is dialogue | The AI isn't following the format rules | Check that the knowledge entry's format instructions are clear. You can reinforce them in the behavior rules |
 | Choice buttons don't appear | `show_choices` wasn't set to `true`, or there are no `A)` format choices | Check that the AI's response includes `[show_choices: set true]` and choices in `A)` format |
-| Screen isn't fullscreen | Fullscreen component not enabled | Go back to editor → Settings → toggle on "Fullscreen Component" |
+| Screen isn't fullscreen | The root element doesn't fill the visible area | Add `minHeight: "100vh"` or `height: "100%"` to the outermost div in the Root Component, and make sure the parent container has a height |
 
 ---
 
@@ -613,7 +626,7 @@ Alright everyone, class is starting. Please take your seats.
 *The classroom falls silent in an instant.*
 ```
 
-The message renderer processes these in order; the final screen shows the sprite of the last `current_speaker`. If you want each dialogue segment to display its corresponding character's sprite, you can modify the renderer to parse the nearest preceding `[current_speaker: set ...]` directive for each paragraph.
+The Root Component processes these in order; the final screen shows the sprite of the last `current_speaker`. If you want each dialogue segment to display its corresponding character's sprite, you can modify the component to parse the nearest preceding `[current_speaker: set ...]` directive for each paragraph.
 
 ### Transition effects
 
@@ -638,7 +651,7 @@ Combined with Recipe #9 (day-night cycle)'s audio system, you can assign BGM to 
 | Switch expression | AI sends `[speaker_emotion: set "emotion"]` |
 | Show choice buttons | AI sends `[show_choices: set true]` + choices in `A) B) C)` format |
 | Distinguish narration from dialogue | `*italic*` = narration, plain text = dialogue |
-| Fullscreen VN experience | Editor → Components → add component with `surface: "app"` |
+| Fullscreen VN experience | Root Component `index.tsx` returns the VN fullscreen layout directly (no `<Chat />`), with `<MessageInput />` at the bottom for player input |
 | Character sprites | Prepare `characterName_emotion.png` files in the `/sprites/` directory |
 | Send message when player clicks a choice | Button `onClick` calls `api.sendMessage(choiceText)` |
 
@@ -654,20 +667,19 @@ Download this JSON file and import it to experience the full effect:
 1. Go to Yumina → **My Worlds** → **Create New World**
 2. In the editor, click **More Actions** → **Import Package**
 3. Select the downloaded `.json` file
-4. A new world is created with all variables, entries, behaviors, and renderer pre-configured
+4. A new world is created with all variables, entries, behaviors, and the Root Component pre-configured
 5. Start a new session and try it out
 
 **What's included:**
 - 4 variables (`current_bg` background, `current_speaker` speaker, `speaker_emotion` emotion, `show_choices` choice toggle)
 - 1 knowledge entry (visual novel system instructions telling the AI how to use directives and text formatting)
 - 1 first message (VN opening with initial directives)
-- A message renderer (complete VN interface: background + sprites + dialogue box + choice buttons)
-- A component with `surface: "app"` for fullscreen mode
+- A Root Component (complete VN interface: background + sprites + dialogue box + choice buttons + `<MessageInput />`)
 
 ---
 
 ::: tip This is Recipe #10
-Visual novel mode showcases Yumina at its most powerful — the AI isn't just a chat partner, it's a narrative engine. By driving the screen with directives, using format conventions to distinguish text types, and reshaping the interface with a fullscreen renderer, you can turn an ordinary chat box into any interactive experience you can imagine. The same approach works for adventure games, interactive comics, or even management sims.
+Visual novel mode showcases Yumina at its most powerful — the AI isn't just a chat partner, it's a narrative engine. By driving the screen with directives, using format conventions to distinguish text types, and letting the Root Component reshape the entire interface, you can turn an ordinary chat box into any interactive experience you can imagine. The same approach works for adventure games, interactive comics, or even management sims.
 :::
 
 </div>

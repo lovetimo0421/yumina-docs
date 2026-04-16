@@ -16,7 +16,7 @@ Yumina's audio system has multiple entry points for controlling sound at differe
 | Conditional BGM | **Audio** tab | Automatically switches tracks when variable/keyword/turn-count conditions are met, no behaviors needed |
 | Behavior + Play Audio action | **Behaviors** tab | Crossfade on scene transitions, combine with variable changes and entry toggling |
 | AI audio directives | AI writes `[audio: ...]` in its reply | AI decides what to play and when — most flexible, also least predictable |
-| Message renderer API | **Message Renderer** tab | Trigger from custom buttons, great for jukebox-style interactive UI |
+| Root Component audio API | **Custom UI** section | Trigger from custom buttons, great for jukebox-style interactive UI |
 
 This guide covers 7 patterns one by one. Pick what you need, or combine them.
 
@@ -124,9 +124,9 @@ Editor → **Behaviors** tab → Add Behavior
 
 Create a matching "Return to Village" behavior with action ID `go-village` that does the reverse (crossfade to `village_bgm`, swap entry toggles).
 
-#### Step 4: Trigger from the message renderer
+#### Step 4: Trigger from the Root Component
 
-In the **Message Renderer** TSX code, call `executeAction` on button click:
+In the Root Component `index.tsx` (inside the `<Chat renderBubble>` callback or on any custom button), call `executeAction`:
 
 ```tsx
 <button onClick={() => api.executeAction("go-dungeon")}>
@@ -338,11 +338,11 @@ BGM: typically 0.5-0.7. Ambient: 0.2-0.4. SFX: 0.7-1.0. With these three layers 
 
 ---
 
-## Pattern 6: Controlling Audio from Custom Components
+## Pattern 6: Controlling Audio from the Root Component
 
 ### What you'll build
 
-A "jukebox" in the message renderer — a few buttons that each play a different track, plus a "Stop" button. This is pure UI control — no behaviors or conditional rules needed.
+A "jukebox" in the Root Component — a few buttons that each play a different track, plus a "Stop" button. This is pure UI control — no behaviors or conditional rules needed.
 
 ### How it works
 
@@ -351,7 +351,7 @@ A "jukebox" in the message renderer — a few buttons that each play a different
 - `api.playAudio?.(trackId, opts)` — play the specified track
 - `api.stopAudio?.(trackId?)` — stop the specified track (omit the ID to stop everything)
 
-Both methods can be called directly in message renderer TSX code.
+Both methods can be called directly in the Root Component `index.tsx` (inside `<Chat renderBubble>` callbacks, or on any button you add).
 
 ### Step by step
 
@@ -363,15 +363,14 @@ Make sure the **Audio** tab has the tracks you want to play (create them as in P
 - `rock_bgm` — rock
 - `classical_bgm` — classical
 
-#### Step 2: Write the message renderer code
+#### Step 2: Write the Root Component code
 
-Editor → **Message Renderer** tab → add the jukebox UI to your renderer code:
+Editor → **Custom UI** section → open `index.tsx` → paste the following (replace the default `return <Chat />`):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   const tracks = [
     { id: "jazz_bgm", label: "Jazz", color: "#7c3aed" },
@@ -380,10 +379,13 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   ];
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {isLastMsg && (
@@ -433,15 +435,18 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
 
 **Line-by-line breakdown:**
 
+- `MyWorld()` is the Root Component — the world's UI entry point. `<Chat renderBubble={...} />` keeps the platform in charge of the message list, input, and scrolling; we only customize the per-bubble layout
 - `api.playAudio?.(t.id, { fadeDuration: 1.5 })` — plays the specified track with a 1.5-second fade-in. If another track is currently playing, it automatically stops it first
 - `api.stopAudio?.()` — called with no arguments = stops all currently playing audio
-- `isLastMsg` — only shows the jukebox on the last message, so it doesn't repeat on every message
+- `msg.messageIndex === msgs.length - 1` — only shows the jukebox on the last message, so it doesn't repeat on every message
 
 ::: tip More advanced usage
 You can read variables to control UI state. For example, use a `now_playing` variable to track the current track ID, then show a "Now Playing" indicator on the button:
@@ -573,7 +578,7 @@ The AI won't always remember to insert audio directives, especially in long conv
 | Play SFX when player message contains a keyword | Conditional BGM (keyword trigger) | **Audio** tab → Conditional BGM |
 | Switch track at a specific turn number | Conditional BGM (turn-count trigger) | **Audio** tab → Conditional BGM |
 | Crossfade on scene transition | Behavior + Play Audio action | **Behaviors** tab |
-| Play/stop from a button click | Message renderer `api.playAudio?.()` / `api.stopAudio?.()` | **Message Renderer** tab |
+| Play/stop from a button click | Root Component `api.playAudio?.()` / `api.stopAudio?.()` | **Custom UI** section |
 | AI triggers audio during narration | AI audio directives `[audio: trackId action]` | **Entries** tab (tell the AI the rules) |
 
 ### AI audio directive reference
@@ -607,7 +612,7 @@ The AI won't always remember to insert audio directives, especially in long conv
 | Volume (`volume`) | 0-1, optional |
 | Fade Duration (`fadeDuration`) | Seconds, optional; 1.5-3 seconds recommended for crossfade |
 
-### Message renderer audio API
+### Root Component audio API
 
 | Method | Description |
 |--------|-------------|

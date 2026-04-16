@@ -29,7 +29,7 @@ Player sends message → AI replies → turn ends
   → actions execute: time_period set to next period, turn_counter reset to 0
   → old period entry disabled, new period entry enabled
   → crossfade to the new period's BGM
-  → message renderer updates the time badge
+  → the Root Component reads the variable and updates the time badge
 ```
 
 There are two ways to implement this. Same result, different mental models:
@@ -56,7 +56,7 @@ Editor → sidebar → **Variables** tab → click "Add Variable" for each
 | Field | Value | Why |
 |-------|-------|-----|
 | Name | Current Time Period | For your own reference |
-| ID | `time_period` | Behaviors and the message renderer read/write this ID |
+| ID | `time_period` | Behaviors and the Root Component read/write this ID |
 | Type | String | Because the values are text (`"Morning"`, `"Noon"`, `"Evening"`, `"Night"`) |
 | Default Value | `Morning` | New sessions start in the morning |
 | Category | Custom | Dedicated category for the time system |
@@ -376,14 +376,14 @@ All 4 advance behaviors can keep the default priority (0). Their ONLY IF conditi
 
 ---
 
-### Step 5: Build the time-badge message renderer
+### Step 5: Add the time badge to the Root Component
 
 Show the current period's icon on the last message in chat, so the player always knows what time it is at a glance.
 
-Editor → **Message Renderer** tab → select **Custom TSX** → paste:
+Editor → **Custom UI** section → open `index.tsx` → paste the following (replace the default `return <Chat />`):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
 
   // ---- Read variable ----
@@ -398,39 +398,42 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   };
 
   const current = timeConfig[timePeriod] || timeConfig["Morning"];
-
-  // ---- Check if this is the last message ----
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   return (
-    <div>
-      {/* Render message text normally */}
-      <div
-        style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
-      />
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
 
-      {/* Time badge — only on the last message */}
-      {isLastMsg && (
-        <div style={{
-          display: "inline-flex",
-          alignItems: "center",
-          gap: "6px",
-          marginTop: "12px",
-          padding: "4px 12px",
-          background: current.bg,
-          border: `1px solid ${current.color}33`,
-          borderRadius: "999px",
-          fontSize: "13px",
-          color: current.color,
-          fontWeight: "600",
-        }}>
-          <span style={{ fontSize: "16px" }}>{current.icon}</span>
-          <span>{current.label}</span>
+      return (
+        <div>
+          {/* Render message text normally — contentHtml is already rendered HTML */}
+          <div
+            style={{ color: "#e2e8f0", lineHeight: 1.7 }}
+            dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
+          />
+
+          {/* Time badge — only on the last message */}
+          {isLastMsg && (
+            <div style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
+              marginTop: "12px",
+              padding: "4px 12px",
+              background: current.bg,
+              border: `1px solid ${current.color}33`,
+              borderRadius: "999px",
+              fontSize: "13px",
+              color: current.color,
+              fontWeight: "600",
+            }}>
+              <span style={{ fontSize: "16px" }}>{current.icon}</span>
+              <span>{current.label}</span>
+            </div>
+          )}
         </div>
-      )}
-    </div>
+      );
+    }} />
   );
 }
 ```
@@ -466,7 +469,7 @@ Remove the `{isLastMsg && ...}` check and put the badge directly in the `return`
 | No switch on turn 3 | Threshold is wrong | Confirm the "variable crossed threshold" threshold is `2` (not 3), direction is "rises above" |
 | Entries don't change after switching | Entry names don't match | Check that the "Enable lore entry" / "Disable lore entry" actions in your behaviors reference the correct entry names |
 | All 4 behaviors fire at once | ONLY IF conditions are missing | Each advance behavior must have an ONLY IF condition restricting the current `time_period` value |
-| Time badge not visible | Syntax error in message renderer | Check the compilation status at the bottom of the message renderer — it should show a green "OK" |
+| Time badge not visible | Syntax error in the Root Component | Check the compilation status at the bottom of the Custom UI panel — it should show a green "OK" |
 | BGM doesn't switch | Track ID mismatch or no audio uploaded | Confirm the `trackId` in the behavior matches the track ID in the Audio tab |
 
 ---
@@ -510,7 +513,7 @@ Everything else (ONLY IF conditions, DO actions) stays exactly the same as Appro
 | Switch lore entries | Actions: "Enable lore entry" / "Disable lore entry" |
 | Crossfade music | Action: "Play music", operation: `crossfade`, set fade duration |
 | Let the AI know something happened | Action: "Tell AI", write a temporary system instruction |
-| Show a status badge on a message | Read a variable in the message renderer, render with JSX |
+| Show a status badge on a message | Read a variable inside the Root Component's `<Chat renderBubble>` and render with JSX |
 | Simulate if-else branching | Multiple behaviors sharing the same trigger + different ONLY IF conditions |
 
 ---
@@ -525,14 +528,14 @@ Download this JSON and import it as a new world to see everything in action:
 1. Go to Yumina → **My Worlds** → **Create New World**
 2. In the editor, click **More Actions** → **Import Package**
 3. Select the downloaded `.json` file
-4. A new world is created with all variables, entries, behaviors, and renderer pre-configured
+4. A new world is created with all variables, entries, behaviors, and the Root Component pre-configured
 5. Start a new session and try it out
 
 **What's included:**
 - 2 variables (`time_period` tracks the current period, `turn_counter` as the turn counter)
 - 4 lore entries (Morning / Noon / Evening / Night atmosphere, only Morning enabled by default)
 - 6 behaviors (1 per-turn counting + 4 period advancing + 1 session initialization)
-- A message renderer (time-period icon badge)
+- A Root Component (time-period icon badge in `<Chat renderBubble>`)
 - 4 BGM tracks (you'll need to upload your own audio files to replace the URLs)
 
 ---

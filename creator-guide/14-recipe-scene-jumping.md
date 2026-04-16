@@ -10,38 +10,32 @@
 
 ### What you'll build
 
-A world with multiple pre-written opening scenes. The player sees the "main" opening first, with clickable buttons. When they click one, the chat instantly shows a different pre-written opening — no AI generation needed.
+A world with multiple pre-written opening scenes. The player sees the "main" opening first, with clickable buttons. When they click one, the first message in chat **instantly** switches to another pre-written opening — no AI generation, just the text you wrote.
 
 ### How it works
 
-Yumina already stores all your greeting entries as **swipes** on the first message. The new `switchGreeting(index)` API lets custom components jump to any of them:
+In Yumina, you can create multiple greetings in the editor's **First Message** tab. When a player starts a new session, all greetings get packed as **swipes** (left/right to switch) on the first message. Players can already swipe manually — but what we want is: **let the player jump to a specific greeting with a single button click**.
+
+That's what the `switchGreeting(index)` API is for — it lets custom components jump directly to the Nth greeting via code.
 
 ```
 Player clicks "Enter the Dark Cave"
-  → api.switchGreeting(1)
-  → First message switches to greeting #2 (index 1)
-  → Game state restores to that greeting's snapshot
-  → Player sees the pre-written dark cave opening instantly
+  → code calls api.switchGreeting(1)
+  → First message switches to greeting #2 (index starts at 0, so 1 = the second one)
+  → Player instantly sees your pre-written dark cave opening
 ```
 
 ### Step by step
 
-#### Step 1: Create multiple greeting entries
+#### Step 1: Create multiple greetings in the First Message tab
 
-Each greeting entry becomes one swipe on the first message. The first enabled greeting (by position order) is shown by default.
+Open the editor and click the **First Message** tab in the left sidebar.
 
-Editor → **Entries** section:
+This tab is specifically for managing openings. You can create multiple greetings — each one becomes a swipe.
 
-**Greeting 1 (Main — route selection):**
+**Create the first greeting (main opening — presents the route choice):**
 
-| Field | Value |
-|-------|-------|
-| Name | Main Opening |
-| Tag | Greeting |
-| Section | System Presets |
-| Position | 0 |
-
-Content:
+Click "Create First Message". Write the main opening in the text box. This is what the player sees first when they open the session — describe the scene and guide them toward a choice:
 
 ```
 *You wake up in a mysterious forest. Morning mist swirls between ancient trees.*
@@ -55,16 +49,11 @@ Two paths diverge before you:
 Which way will you go?
 ```
 
-**Greeting 2 (Dark cave opening):**
+> Why only describe the scene instead of asking the AI to respond? Because the greeting is **fixed text you pre-wrote**, not AI-generated. You have precise control over every word the player sees.
 
-| Field | Value |
-|-------|-------|
-| Name | Dark Cave Opening |
-| Tag | Greeting |
-| Section | System Presets |
-| Position | 1 |
+**Create the second greeting (dark cave opening):**
 
-Content:
+Click "Add Greeting" at the bottom. You'll see numbered tabs **1** and **2** appear. Click **2** to switch to the second greeting's edit box. Write the dark cave route opening:
 
 ```
 *You step onto the left path. The canopy thickens overhead, swallowing the light. Within minutes, the trail narrows to a crack in a rock face — the entrance to a cave.*
@@ -76,16 +65,11 @@ Content:
 You are alone in the dark.
 ```
 
-**Greeting 3 (Sunlit meadow opening):**
+> This text only shows after the player clicks "Enter the Dark Cave". Before that, the player sees the first greeting (the main opening).
 
-| Field | Value |
-|-------|-------|
-| Name | Meadow Opening |
-| Tag | Greeting |
-| Section | System Presets |
-| Position | 2 |
+**Create the third greeting (sunlit meadow opening):**
 
-Content:
+Click "Add Greeting" again. Switch to tab **3** and write the sunlit meadow route opening:
 
 ```
 *You choose the right path. The trees thin out, and warm sunlight floods through the canopy. Within minutes, the forest opens into a vast meadow stretching to the horizon.*
@@ -97,127 +81,208 @@ Content:
 Welcome to the Everbloom Meadow.
 ```
 
-::: info Greeting order matters
-Greetings are ordered by their **Position** field. Position 0 = shown first (index 0), Position 1 = second greeting (index 1), and so on. The index you pass to `switchGreeting()` matches this order.
+::: info Greeting order is the index
+The order of numbered tabs at the bottom is the `index` parameter for `switchGreeting()`. Tab 1 = index 0 (shown by default), tab 2 = index 1, tab 3 = index 2. You'll use this index when writing button code later.
 :::
 
-#### Step 2: Build the UI with buttons
+Now you have 3 greetings. After saving the world, a new session will default to showing the first one (the main opening). Next we'll make buttons to let the player click through to the second or third.
 
-Editor → **Message Renderer** section → select **Custom TSX** → paste:
+---
+
+#### Step 2: Create a route-tracking variable
+
+We need a variable to record "which route did the player choose". This variable has two uses:
+- **Make the buttons disappear after choosing** (the TSX code checks this variable — if it's not `"none"`, don't show the buttons)
+- **Let later conversation know the current route** (behavior rules can switch lore entries based on this variable)
+
+Editor → left sidebar → **Variables** tab → click "Add Variable"
+
+| Field | What to fill in | Why |
+|-------|-----------------|-----|
+| Display Name | Current Route | For your own reference |
+| ID | `current_route` | Code reads/writes the variable using this ID |
+| Type | String | Because the value is text (`"none"`, `"dark"`, `"light"`) |
+| Default Value | `none` | Means "not yet chosen". Button code checks this value |
+| Category | Tag | Just a category label, makes it easier to find in the variable list |
+| Behavior Rules | `Do not modify this variable. It is controlled by the player's UI choice.` | Tells the AI not to modify this variable — only the button can |
+
+> The **Behavior Rules** field is an instruction for the AI. If you don't write it, the AI may decide on its own to change this variable's value in its reply (e.g., the AI thinks "the player walked into the cave" and sets `current_route` to `"dark"` itself). Once you write the rule, the AI won't touch it.
+
+---
+
+#### Step 3: (Optional) Create lore entries and behavior rules
+
+If you want the AI's later replies to reference different worldbuilding after the route is chosen, do this step. If you only want to switch the opening text without later world changes, you can skip it.
+
+**Create two lore entries (disabled by default):**
+
+Editor → **Entries** tab → create a new entry
+
+**Dark cave lore entry:**
+
+| Field | What to fill in | Why |
+|-------|-----------------|-----|
+| Name | Dark Cave Lore | For your own reference |
+| Section | System Presets | Entries in the presets section are sent to the AI every time |
+| Enabled | **No** (toggle off) | Disabled by default — after the player picks the dark route, a behavior rule will enable it |
+
+Content:
+
+```
+[World Setting: Shadowmaw Cave]
+The player is exploring Shadowmaw Cave. Key details:
+- Ancient dwarven ruins, abandoned for centuries
+- Bioluminescent fungi provide faint blue-green light
+- Strange creatures lurk in the deeper tunnels
+- Temperature drops the further in you go
+
+Maintain a tense horror-survival atmosphere. Describe echoing sounds, flickering shadows, water dripping, and the oppressive weight of stone overhead.
+```
+
+**Sunlit meadow lore entry:** Create another entry, also **disabled by default**, with content describing the meadow's setting and atmosphere.
+
+> **Why disabled by default?** Because before the player chooses a route, neither worldbuilding should influence the AI. Only after the player picks does the behavior rule enable the matching one and disable the other.
+
+**Create two behavior rules:**
+
+Editor → **Behaviors** tab → Add Behavior
+
+**Behavior 1: "Choose Dark Route"**
+
+| Field | What to fill in | Why |
+|-------|-----------------|-----|
+| Name | Choose Dark Route | For your own reference |
+| Trigger | Select "Action" → Action ID `choose-dark` | Fires when TSX code calls `executeAction("choose-dark")` |
+
+Then under "Execute Actions", add in order:
+
+| Action type | Settings | Effect |
+|-------------|----------|--------|
+| Modify variable | `current_route` set to `dark` | Records that the player chose the dark route |
+| Enable entry | Dark Cave Lore | Turns on the dark cave setting |
+| Disable entry | Sunlit Meadow Lore | Turns off the meadow setting (prevents both being active) |
+
+**Behavior 2: "Choose Light Route"** — create the same way. The action ID is `choose-light`, and the actions are reversed (enable the meadow lore, disable the cave lore).
+
+> **Why not just `setVariable` in the TSX code?** Because `setVariable` can only change variables — it can't toggle entries on/off. The behavior's "Enable Entry" / "Disable Entry" actions are what enable/disable entries at runtime. So when a button is clicked, we do three things at once: `setVariable` (change the variable) + `executeAction` (fire the behavior to toggle entries) + `switchGreeting` (switch the opening).
+
+---
+
+#### Step 4: Add route-selection buttons in the Root Component
+
+This is the key step that makes buttons appear in the chat interface.
+
+Editor → **Custom UI** section → open `index.tsx` → paste the following code (replacing the default):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
   const hasChosen = api.variables.current_route !== "none";
 
   return (
-    <div>
-      {/* Message text */}
-      <div
-        style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
-      />
+    <Chat renderBubble={(msg) => (
+      <div>
+        {/* Render the message text normally */}
+        <div
+          style={{ color: "#e2e8f0", lineHeight: 1.7 }}
+          dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
+        />
 
-      {/* Route buttons — only on first message, before choosing */}
-      {messageIndex === 0 && !hasChosen && (
-        <div style={{
-          display: "flex",
-          gap: "12px",
-          marginTop: "16px",
-        }}>
-          <button
-            onClick={() => {
-              api.setVariable("current_route", "dark");
-              api.executeAction("choose-dark");
-              api.switchGreeting?.(1);
-            }}
-            style={{
-              flex: 1,
-              padding: "16px",
-              background: "linear-gradient(135deg, #1e1b4b, #312e81)",
-              border: "1px solid #4338ca",
-              borderRadius: "12px",
-              color: "#c7d2fe",
-              fontSize: "15px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "transform 0.15s",
-            }}
-            onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.03)"}
-            onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
-          >
-            Enter the Dark Cave
-          </button>
+        {/* Route selection buttons */}
+        {/* msg.messageIndex === 0 means only show on the first message */}
+        {/* !hasChosen means hide once a choice has been made */}
+        {msg.messageIndex === 0 && !hasChosen && (
+          <div style={{
+            display: "flex",
+            gap: "12px",
+            marginTop: "16px",
+          }}>
+            <button
+              onClick={() => {
+                api.setVariable("current_route", "dark");   // Record the choice, making the buttons disappear
+                api.executeAction("choose-dark");            // Fire the behavior rule to toggle lore entries
+                api.switchGreeting?.(1);                     // Switch to the 2nd greeting
+              }}
+              style={{
+                flex: 1,
+                padding: "16px",
+                background: "linear-gradient(135deg, #1e1b4b, #312e81)",
+                border: "1px solid #4338ca",
+                borderRadius: "12px",
+                color: "#c7d2fe",
+                fontSize: "15px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              Enter the Dark Cave
+            </button>
 
-          <button
-            onClick={() => {
-              api.setVariable("current_route", "light");
-              api.executeAction("choose-light");
-              api.switchGreeting?.(2);
-            }}
-            style={{
-              flex: 1,
-              padding: "16px",
-              background: "linear-gradient(135deg, #365314, #4d7c0f)",
-              border: "1px solid #65a30d",
-              borderRadius: "12px",
-              color: "#ecfccb",
-              fontSize: "15px",
-              fontWeight: "bold",
-              cursor: "pointer",
-              transition: "transform 0.15s",
-            }}
-            onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.03)"}
-            onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
-          >
-            Walk to the Sunlit Meadow
-          </button>
-        </div>
-      )}
-    </div>
+            <button
+              onClick={() => {
+                api.setVariable("current_route", "light");
+                api.executeAction("choose-light");
+                api.switchGreeting?.(2);                     // Switch to the 3rd greeting
+              }}
+              style={{
+                flex: 1,
+                padding: "16px",
+                background: "linear-gradient(135deg, #365314, #4d7c0f)",
+                border: "1px solid #65a30d",
+                borderRadius: "12px",
+                color: "#ecfccb",
+                fontSize: "15px",
+                fontWeight: "bold",
+                cursor: "pointer",
+              }}
+            >
+              Walk to the Sunlit Meadow
+            </button>
+          </div>
+        )}
+      </div>
+    )} />
   );
 }
 ```
 
-::: tip Using Studio AI instead
-Paste this prompt in the Studio AI Assistant:
+**Line-by-line explanation:**
 
-```
-Build a messageRenderer. On the first message only (messageIndex === 0),
-show two buttons below the text:
-- "Enter the Dark Cave" (dark purple) → switchGreeting(1)
-- "Walk to the Sunlit Meadow" (warm green) → switchGreeting(2)
-Always render message text normally with renderMarkdown.
-Tech: useYumina() has switchGreeting, supports Tailwind.
-```
+- `<Chat renderBubble={...} />` — uses the platform's default chat interface (input box, swipe switching, save points are all built in), you only take over how bubbles render
+- `const api = useYumina()` — gets Yumina's API, letting you read variables, write variables, fire actions, switch greetings
+- `api.variables.current_route` — reads the current route variable's value
+- `hasChosen` — if it's not `"none"`, the player has already chosen
+- `msg.contentHtml` — the pre-rendered HTML that renderBubble passes in (Markdown is already processed)
+- `msg.messageIndex === 0` — only show buttons on the first message (not every message)
+- `!hasChosen` — buttons disappear after a choice is made
+- `api.setVariable("current_route", "dark")` — sets the variable to `"dark"`, so `hasChosen` becomes `true` and buttons disappear
+- `api.executeAction("choose-dark")` — fires the behavior rule we created in Step 3
+- `api.switchGreeting?.(1)` — switches the first message to index 1 (the second greeting). `?.` is optional chaining — if the API isn't available, it won't throw
+
+::: tip Don't want to write code yourself? Use Studio AI
+Editor top → click "Enter Studio" → AI Assistant panel → describe what you want in plain English and the AI will generate the code for you.
 :::
 
-#### Step 3: Test it
+---
 
-1. **Save** the world
-2. Start a **new session**
-3. You see the main opening with two buttons
-4. Click one — the first message **instantly** changes to the pre-written cave or meadow opening
-5. The buttons are still visible (because it's still `messageIndex === 0`). You can click the other one to switch again, or start chatting.
+#### Step 5: Save and test
 
-::: tip Want buttons to disappear after choosing?
-Track the choice in a variable. Add a `current_route` string variable (default `"none"`), and in a behavior triggered by `state-change`, check when it's no longer `"none"`. Or simply check in TSX:
+1. Click "Save" at the top of the editor
+2. Click "Start Game" or go back to the home page and start a new session
+3. You'll see the main opening with two buttons below
+4. Click "Enter the Dark Cave" — the first message **instantly** becomes your pre-written cave opening and the buttons disappear
+5. Send a few messages to the AI — if you did Step 3, the AI's replies will be influenced by the cave lore
+6. Want to test the other route? Go back home and start a new session, this time clicking the other button
 
-```tsx
-// In the renderer, use a variable to hide buttons after first switch
-const { variables, switchGreeting, setVariable } = useYumina();
-const hasChosen = variables.current_route !== "none";
+**Troubleshooting:**
 
-// Button onClick:
-onClick={() => {
-  setVariable("current_route", "dark");
-  switchGreeting(1);
-}}
-
-// Conditional rendering:
-{messageIndex === 0 && !hasChosen && ( <buttons.../> )}
-```
-:::
+| Symptom | Likely cause | Fix |
+|---------|--------------|-----|
+| Don't see buttons | Root Component code isn't saved or has a syntax error | Check the compile status at the bottom of the Custom UI section — it should show a green "OK" |
+| Button click does nothing | `switchGreeting` not deployed on the server yet | Make sure you're using the latest version |
+| Button clicks but opening doesn't switch | Not enough greetings | Confirm there are 3 greetings in the First Message tab |
+| Button clicks but doesn't disappear | Variable not being set correctly | Check the editor — is the variable's default `none`, and does the Root Component code correctly check `current_route`? |
+| Lore doesn't switch | Behavior rule misconfigured | Verify the behavior's action ID matches the code (`choose-dark` / `choose-light`) |
 
 ---
 
@@ -225,57 +290,67 @@ onClick={() => {
 
 ### What you'll build
 
-A text input in the UI where the player types something (e.g., a character name, a custom setting, a story instruction), and that text gets injected into an entry — changing what the AI reads.
+Add a text input in the chat interface. The player types something in it (e.g., a custom rule, a character name, or a story instruction). After they click "Apply", the text is injected into a lore entry — changing what the AI sees next.
 
 ### How it works
 
-Entries support **macro syntax**: `{{variableId}}` is a placeholder. Every time the engine builds the prompt (i.e., every time the player sends a message), it replaces the placeholder with the variable's current value.
+Yumina entries support **macro syntax**. You can write `{{variableId}}` in an entry's content — that's a placeholder. Every time the engine builds the prompt to send to the AI, it automatically replaces the placeholder with the variable's current value.
 
-Key timing: **the replacement happens when the prompt is built** — not the instant the variable changes. The AI sees the new content on the **next message**, not immediately.
+For example:
 
-Full flow:
+- You write in an entry: `Special rule: {{custom_rule}}`
+- Variable `custom_rule` has the value `"All magic is allowed"`
+- The prompt the AI receives has that line rewritten as: `Special rule: All magic is allowed`
+
+**Key point: the replacement isn't live.** It happens every time the prompt is built — i.e., when the player sends their next message and the AI is about to reply.
+
+Full timing:
 
 ```
 1. Entry content says: "Special rule: {{custom_rule}}"
-2. Variable custom_rule = "All magic is allowed"
-3. Player sends message → engine builds prompt → replaces macro
-   → AI receives "Special rule: All magic is allowed"
+2. Variable custom_rule's current value = "All magic is allowed"
+3. Player sends message → engine builds prompt → replaces {{custom_rule}} with variable value
+   → AI receives "Special rule: All magic is allowed" → AI replies accordingly
 
-4. Player types "Magic is forbidden" in the UI input box
-5. setVariable("custom_rule", "Magic is forbidden") → variable updated
-6. AI doesn't know yet. The entry still says {{custom_rule}}, only the variable changed.
+4. Player types "Magic is forbidden" in the input box, clicks "Apply"
+5. Code calls setVariable("custom_rule", "Magic is forbidden")
+   → variable value updates immediately
+6. But the AI doesn't know yet! The prompt hasn't been rebuilt.
 
-7. Player sends another message → engine rebuilds prompt → replaces macro
-   → AI receives "Special rule: Magic is forbidden"
-8. From this message on, AI follows the new rule.
+7. Player sends another message → engine rebuilds prompt → this time uses the new value
+   → AI receives "Special rule: Magic is forbidden" → AI starts obeying the new rule
 ```
 
-In short: **changing the variable is instant, but the AI sees the change on the next message**.
+**One-line summary: changing the variable is instant, but the AI sees the change on the next message.**
 
 ### Step by step
 
 #### Step 1: Create a string variable
 
-Editor → **Variables** → **Add Variable**
+This variable holds what the player types.
 
-| Field | Value |
-|-------|-------|
-| Name | Custom Rule |
-| ID | `custom_rule` |
-| Type | String |
-| Default Value | *(leave empty, or set a default like `All magic is allowed`)* |
-| Behavior Rules | `Do not modify this variable. It is set by the player.` |
+Editor → **Variables** tab → "Add Variable"
 
-#### Step 2: Use `{{custom_rule}}` as a placeholder in an entry
+| Field | What to fill in | Why |
+|-------|-----------------|-----|
+| Display Name | Custom Rule | For your own reference |
+| ID | `custom_rule` | The `{{custom_rule}}` macro in entries looks up this ID |
+| Type | String | Because the content is arbitrary text the player types |
+| Default Value | *(leave empty, or set a default like `All magic is allowed`)* | Empty = new session has no rule; non-empty = a starting rule |
+| Behavior Rules | `Do not modify this variable. It is set by the player via UI.` | Tells the AI not to modify this variable itself |
 
-Editor → **Entries** → edit or create a lore entry:
+---
 
-| Field | Value |
-|-------|-------|
-| Name | World Rules |
-| Tag | Lore |
-| Section | System Presets |
-| Always Send | Yes |
+#### Step 2: Use the macro in an entry
+
+Now create an entry that uses `{{custom_rule}}` as a placeholder. The engine will replace it automatically when building the prompt.
+
+Editor → **Entries** tab → create a new entry
+
+| Field | What to fill in | Why |
+|-------|-----------------|-----|
+| Name | World Rules | For your own reference |
+| Section | System Presets | Entries in the presets section are sent to the AI every time |
 
 Content:
 
@@ -285,23 +360,29 @@ The following rule is in effect for this world and must be respected at all time
 {{custom_rule}}
 ```
 
-Every time the engine builds the prompt, it replaces `{{custom_rule}}` with the variable's current value. If the variable is empty, that line is blank. If the variable is "Magic is forbidden", the AI sees "The following rule is in effect... Magic is forbidden".
+> **What's happening?** Every time the engine builds the prompt, it scans all entry content for `{{...}}`. If what's inside the braces matches a variable ID, the current value of that variable replaces it. So `{{custom_rule}}` gets replaced with the value of variable `custom_rule`.
+>
+> If the variable is empty, the line becomes empty — the AI sees "The following rule is in effect..." with nothing after. If the value is "Magic is forbidden", the AI sees "The following rule is in effect... Magic is forbidden".
 
-#### Step 3: Add an input UI in the messageRenderer
+---
 
-Since `customComponent` panels only display in fullscreen mode, the input box needs to go inside the **messageRenderer**. To avoid repeating it on every message, only show it on the **last message**.
+#### Step 3: Add an input box in the Root Component
 
-Add this to your messageRenderer TSX (after the message text rendering):
+We want an input box in the chat interface where the player can type a new rule. This input is written inside the Root Component's `renderBubble` and only shown below the last message (to avoid one input appearing under every message).
+
+In your `index.tsx`, add the following. If you already have the Part 1 code, just add this inside the JSX `renderBubble` returns, below the message text:
 
 ```tsx
-// Inside your Renderer function, get what you need from useYumina()
-const api = useYumina();
+// Near the top of MyWorld() (outside <Chat>), add these
+const api = useYumina();                                    // If you already have it, don't duplicate
 const msgs = api.messages || [];
-const isLastMsg = messageIndex === msgs.length - 1;
 const [ruleInput, setRuleInput] = React.useState("");
 const currentRule = String(api.variables.custom_rule || "");
 
-// In the returned JSX, below the message text:
+// Inside renderBubble, add a check
+const isLastMsg = msg.messageIndex === msgs.length - 1;    // whether this is the last message
+
+// In the JSX renderBubble returns, below the message text
 {isLastMsg && (
   <div style={{
     marginTop: "12px",
@@ -320,14 +401,9 @@ const currentRule = String(api.variables.custom_rule || "");
         onChange={(e) => setRuleInput(e.target.value)}
         placeholder="Type a new rule..."
         style={{
-          flex: 1,
-          padding: "6px 10px",
-          background: "#1e293b",
-          border: "1px solid #475569",
-          borderRadius: "6px",
-          color: "#e2e8f0",
-          fontSize: "13px",
-          outline: "none",
+          flex: 1, padding: "6px 10px", background: "#1e293b",
+          border: "1px solid #475569", borderRadius: "6px",
+          color: "#e2e8f0", fontSize: "13px", outline: "none",
         }}
         onKeyDown={(e) => {
           if (e.key === "Enter" && ruleInput.trim()) {
@@ -341,50 +417,58 @@ const currentRule = String(api.variables.custom_rule || "");
           if (ruleInput.trim()) {
             api.setVariable("custom_rule", ruleInput.trim());
             setRuleInput("");
-            }
-          }}
-          style={{
-            padding: "6px 14px",
-            background: "#4338ca",
-            borderRadius: "6px",
-            color: "#e0e7ff",
-            fontSize: "13px",
-            fontWeight: "600",
-            cursor: "pointer",
-            border: "none",
-          }}
-        >
-          Apply
-        </button>
-      </div>
+          }
+        }}
+        style={{
+          padding: "6px 14px", background: "#4338ca", borderRadius: "6px",
+          color: "#e0e7ff", fontSize: "13px", fontWeight: "600",
+          cursor: "pointer", border: "none",
+        }}
+      >
+        Apply
+      </button>
     </div>
   </div>
 )}
 ```
 
-::: info Why messageRenderer, not customComponent?
-In Yumina, components with `surface: "app"` take over the entire screen and replace the chat interface. In normal chat mode they don't show. So if you want interactive elements (buttons, inputs) in the chat interface, put them in a component with `surface: "message"` (the message renderer).
+**Line-by-line explanation:**
+
+- `isLastMsg` — only show the input on the last message, otherwise every message would have one
+- `currentRule` — reads the variable's current value, shown above the input so the player can see the current rule
+- `ruleInput` — React state tracking what's being typed
+- `onKeyDown` — pressing Enter also submits, not just clicking the button
+- `api.setVariable("custom_rule", ...)` — writes the player's text into the variable. Next AI reply, `{{custom_rule}}` in the entry is replaced with this text
+- `setRuleInput("")` — clear the input after submit
+
+::: info Why put it inside renderBubble?
+Yumina's Root Component is a TSX file — by default returning `<Chat />` gives you the platform's built-in chat UI. To insert interactive elements (buttons, inputs) into the chat, there are two paths: 1) put them inside `<Chat renderBubble={...} />`, like here, so they render alongside message bubbles; 2) put `<Chat />` and your floating component in a shared flex layout (for sidebars). If you want a fully off-chat full-screen UI (e.g., a pure visual novel), skip `<Chat />` entirely — write your own layout, use `<MessageList />` + `<MessageInput />` directly if needed.
 :::
 
-#### Step 4: Test it
+---
 
-1. Start a session — if no default value was set, the rule shows "(not set)"
-2. Type "Magic is forbidden" in the input box and click Apply (or press Enter)
-3. The variable updates instantly — the "World Rule" label shows your input
-4. **Send a message** — now the engine rebuilds the prompt, replacing `{{custom_rule}}` with "Magic is forbidden"
-5. The AI's response follows the new rule
-6. Change it again → send another message → the AI adapts
+#### Step 4: Save and test
+
+1. Save the world, start a new session
+2. Below the last message, you'll see "World Rule: (not set)" and an input box
+3. Type "Magic is forbidden" and click "Apply" (or press Enter)
+4. The text above the input changes to "World Rule: Magic is forbidden" — the variable has updated
+5. **Now send a message** (e.g., "I try to cast a fireball") — this is when the engine builds the prompt, replacing `{{custom_rule}}` with "Magic is forbidden"
+6. The AI's response should reflect this rule (e.g., "You raise your hand to cast, but your mana feels locked away by some unseen force")
+7. Change the rule again (e.g., to "Only fire magic is allowed") and send another message — the AI adapts
 
 ---
 
 ## Combining both patterns
 
-You can combine greeting switching with entry modification. For example:
+You can combine greeting switching and entry modification. A concrete example:
 
-- **Main greeting** shows a character creation form (name, class, backstory input boxes)
-- Player fills it in → variables get set → entries with `{{player_name}}`, `{{player_class}}`, `{{player_backstory}}` macros pick up the values
-- Player clicks "Start Adventure" → `switchGreeting(1)` jumps to the actual story opening
-- The AI now knows the player's custom character details
+**Character creation + story opening:**
+
+- **Main greeting (index 0)** isn't the story — it's a character creation form with inputs for name, class, and backstory
+- Player fills it in → `setVariable` writes their input to variables → entries with `{{player_name}}`, `{{player_class}}`, `{{player_backstory}}` macros pick up the values
+- Player clicks "Start Adventure" → `switchGreeting(1)` jumps to the real story opening
+- From the first AI reply onward, the AI already knows the player character's name, class, and backstory
 
 ---
 
@@ -392,39 +476,40 @@ You can combine greeting switching with entry modification. For example:
 
 | What you want | How to do it |
 |---------------|-------------|
-| Jump to a pre-written opening | `switchGreeting(index)` — index matches greeting position order (0-based) |
-| Let player modify entry content | Variable + `{{variableId}}` macro in entry content + `setVariable()` from UI |
-| Show buttons only on first message | `{messageIndex === 0 && <buttons/>}` |
-| Hide buttons after choice | Track choice in a variable, check it in TSX |
-| Combine with lore switching | Add behaviors with `toggle-entry` actions alongside greeting switching |
-| Add sound/notification on switch | Add behaviors triggered by variable change with `play-audio` / `notify-player` |
+| Jump to a pre-written opening | `switchGreeting(index)` — index matches the greeting order in the First Message tab (0-based) |
+| Let player input change AI behavior | String variable + `{{variableId}}` in entry + call `setVariable()` from UI |
+| Show buttons only on the first message | Inside `<Chat renderBubble>`, check `msg.messageIndex === 0` |
+| Hide buttons after choosing | Track the choice in a variable, check `hasChosen` in TSX |
+| Switch lore after route choice | Create a behavior with "Enable Entry" / "Disable Entry" actions |
+| Play a sound on switch | Add "Play Music" or "Play Sound Effect" actions in the behavior |
+| Show a notification on switch | Add "Show Notification" action in the behavior |
 
 ---
 
 ## Try it yourself — importable demo world
 
-Download this JSON and import it as a new world to see everything in action:
+Download this JSON file and import it to try the full experience:
 
 <a href="/recipe-1-demo.json" download>recipe-1-demo.json</a>
 
 **How to import:**
-1. Go to Yumina → **My Worlds** → **Create New World**
-2. In the editor, click **Import** (or the upload icon)
+1. Go to Yumina → My Worlds → Create New World
+2. In the editor, click "More Actions" → "Import Package"
 3. Select the downloaded `.json` file
-4. A new world is created with all entries, variables, behaviors, renderer, and component pre-configured
+4. The world is created with all greetings, variables, behaviors, and Root Component pre-configured
 5. Start a new session and try it out
 
 **What's included:**
-- 3 greeting entries (main opening + dark cave + meadow)
-- 2 variables (`current_route` for route tracking, `custom_rule` for player-editable rules)
-- 2 action behaviors (toggle lore entries when route is chosen)
-- A messageRenderer with route selection buttons + rule editor
-- A lore entry using `{{custom_rule}}` macro
+- 3 greetings (main opening + dark cave + sunlit meadow)
+- 2 variables (`current_route` for route tracking, `custom_rule` for player-editable rule)
+- 2 action behaviors (toggle lore entries when a route is chosen)
+- A Root Component (`<Chat renderBubble>` with the route-selection buttons + rule editor)
+- A lore entry using the `{{custom_rule}}` macro
 
 ---
 
 ::: tip This is Recipe #1
-More recipes coming soon — combat systems, shop interfaces, quest tracking, and more. Each recipe combines variables, entries, behaviors, and UI to build something greater than the sum of its parts.
+More recipes coming — combat systems, shop interfaces, quest tracking, and more. Each recipe combines variables, entries, behaviors, and UI to build something greater than the sum of its parts.
 :::
 
 </div>

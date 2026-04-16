@@ -12,7 +12,7 @@
 
 - **名字和描述** — 名字最多200字，描述最多10000字。好名字是门面，好描述是引路牌。
 - **封面图片（Cover Image）** — 就是玩家在社区列表里第一眼看到的那张图。没封面的世界就像没贴海报的电影院，路过的人不知道里面放什么。
-- **标签（Tags）** — 最多 7 个。标签帮助玩家发现你的世界，比如"奇幻""恋爱""大逃杀""多人"之类的。
+- **标签（Tags）** — 最多 10 个。标签帮助玩家发现你的世界，比如"奇幻""恋爱""大逃杀""多人"之类的。
 - **年龄分级** — 全年龄（all）、R18、R18G，三选一。选了R18或R18G会自动打上NSFW标记。
 - **可见性** — 公开（所有人可见）或仅关注者可见。
 
@@ -84,7 +84,7 @@ followers  — 仅关注者可见，适合小范围测试或给熟人圈子
 
 **标签（tags）**
 
-最多 7 个标签。标签在 **发现（Discover）** 页面的搜索和筛选里非常有用——平台会统计所有已发布世界的标签使用频率，玩家可以按标签浏览和搜索。输入标签时还有自动补全，会基于已有的热门标签给你建议。
+最多 10 个标签。标签在 **发现（Discover）** 页面的搜索和筛选里非常有用——平台会统计所有已发布世界的标签使用频率，玩家可以按标签浏览和搜索。输入标签时还有自动补全，会基于已有的热门标签给你建议。
 
 **封面图片（thumbnailUrl）**
 
@@ -112,21 +112,40 @@ Bundle就是一个"零件包"，包含你世界中选定的部分内容。
 
 ```typescript
 interface YuminaBundle {
-  bundleVersion: "1.0.0";     // 版本号，目前固定1.0.0
-  name: string;                // Bundle名称，比如"回合制战斗系统"
-  description: string;         // 描述这个Bundle是干什么的
-  tags: string[];              // 标签
-  createdAt: string;           // 创建时间（ISO格式）
-  entries: WorldEntry[];       // 条目（角色设定、剧情、风格指令等）
-  variables: Variable[];       // 变量（血量、金币、好感度等）
-  components: GameComponent[]; // 游戏组件（血条、物品栏等）
-  rules: Rule[];               // 规则（当血量归零时触发死亡等）
-  customComponents: CustomComponent[];  // 自定义TSX组件
-  audioTracks: AudioTrack[];   // 音频（BGM、音效、环境音）
-  customTags?: string[];       // 自定义标签定义（可选）
+  bundleVersion: "2.0.0";       // 当前版本（旧的 1.0.0 仍然能导入，自动迁移）
+  name: string;                  // Bundle名称，比如"回合制战斗系统"
+  description: string;           // 描述这个Bundle是干什么的
+  tags: string[];                // 标签
+  createdAt: string;             // 创建时间（ISO格式）
+
+  // ── 内容 ──
+  entries: WorldEntry[];         // 条目（角色设定、剧情、风格指令等）
+  variables: Variable[];         // 变量（血量、金币、好感度等）
+  rules: Rule[];                 // 规则（当血量归零时触发死亡等）
+  audioTracks: AudioTrack[];     // 音频（BGM、音效、环境音）
+
+  // ── 应用模板 ──
+  rootComponent?: RootComponent; // 根组件——多文件 TSX 虚拟文件系统，
+                                 // 定义整个世界的 UI 入口（index.tsx）
+                                 // 带上就是"完整模板"，不带就是"零件包"
+
+  // ── 旧版兼容（可选）──
+  customUI?: CustomUIComponent[]; // 旧版 customUI 数组。v18 之前导出的 Bundle
+                                  // 还会带这个字段，导入时会自动迁移到 rootComponent。
+                                  // 新建 Bundle 不需要填。
+
+  // ── 整理 ──
+  customTags?: string[];         // 自定义标签定义（可选）
   entryFolders?: EntryFolder[];  // 条目的文件夹结构（可选）
 }
 ```
+
+::: tip Bundle 的两种用法
+- **零件包（partial bundle）** — 只带 entries / variables / rules / audioTracks 的 Bundle，**合并**进已有世界。比如分享一套战斗系统、一个角色卡。
+- **完整模板（full template）** — 同时带 `rootComponent` 的 Bundle，可以**派生**为一个全新世界。比如"视觉小说骨架"、"卡牌对战壳"——别人导入后等于在你的模板基础上从零开始做。
+
+七大官方资源模板（Resource Templates）就是这样实现的。
+:::
 
 你可以把它理解成一个"模块"——拿来就用，插到别人的世界里就能跑。
 
@@ -136,12 +155,12 @@ interface YuminaBundle {
 
 1. **Entries** — 条目（角色设定、剧情、风格指令等）
 2. **Variables** — 变量（血量、金币、好感度等）
-3. **Components** — 游戏组件（状态栏、选项列表等）
-4. **Rules** — 行为（触发条件 + 动作）
+3. **Rules** — 行为（触发条件 + 动作）
+4. **Root Component** — 根组件 `index.tsx` 及其兄弟文件（UI 整体）
 
-有个贴心的设计：当你勾选了某条规则或组件，系统会自动高亮提示它依赖的变量，标个"suggested"让你不会漏选。
+有个贴心的设计：当你勾选了某条规则，系统会自动高亮提示它依赖的变量，标个"suggested"让你不会漏选。
 
-此外还能带上自定义组件（customComponents）和音频轨道（audioTracks），让Bundle更完整。
+此外还能带上根组件（rootComponent）和音频轨道（audioTracks），让 Bundle 升级为一个"完整模板"——别人导入后可以直接派生成一个新世界，而不仅仅是往已有世界里并内容。
 
 **导入时的冲突处理**
 
@@ -167,8 +186,7 @@ Bundle 保存后默认是私有的。发布后可以在 **发现（Discover）**
 - 所有条目（entries）和条目文件夹结构（entryFolders）
 - 所有变量（variables）
 - 所有行为（rules）和事件反应（reactions）
-- 所有游戏组件（components）和自定义TSX组件（customComponents）
-- 消息渲染器（messageRenderer）
+- 根组件（rootComponent）——整个世界的 UI 入口，包含 `index.tsx` 及其所有兄弟文件
 - 音频轨道（audioTracks）和BGM播放列表（bgmPlaylist）、条件BGM（conditionalBGM）
 - UI蓝图（uiBlueprint）
 - 世界设置（settings）——温度、token上限、布局模式、扫描深度等等
@@ -183,20 +201,40 @@ Bundle 保存后默认是私有的。发布后可以在 **发现（Discover）**
 
 导入时系统能自动识别Yumina世界JSON、SillyTavern角色卡（包括PNG嵌入的V2卡）和Bundle JSON，分别走不同的处理流程。你不需要手动选格式，拖进去就行。
 
-### 多语言支持
+### 多语言支持：两种系统
 
-如果你的世界有不同语言的版本（比如中文原版 + 英文翻译版），可以把它们链接在一起。链接后，玩家在开始游戏时会看到语言切换标签页。
+Yumina 提供两套多语言机制，**目标完全不同，根据需要选用**：
 
-### 设置方法
+| 机制 | 翻译什么 | 适用场景 |
+|------|---------|---------|
+| **商店翻译（Hub Translations）** | 只翻译世界在 Discover / 个人主页里的"展示信息"——标题、描述、封面图、图库、标签 | 你的游戏内容是单语言的，但希望全球玩家在浏览时能看到本地化的标题描述 |
+| **变体（Variants）** | 完整复制一份世界，翻译**全部游戏内容**（条目、规则、组件文案……） | 你想让玩家用任意一种语言玩你的世界，AI 也用对应语言回复 |
 
-1. 在编辑器 **概览（Overview）** 里，给世界设置 **语言（Language）**
-2. 设置后会出现 **语言变体（Language Variants）** 区域
-3. 点 **添加语言版本（Add Language Version）**
-4. 上传翻译版的 `.json` 世界文件
-5. 选择翻译版的语言
-6. 导入完成后两个世界自动链接
+#### 商店翻译（Hub Translations）
 
-### 支持的语言
+入口在编辑器左侧导航栏的 **商店翻译（Hub Translations）** 区域。
+
+操作流程：
+
+1. 进入 **商店翻译** 区域
+2. 点 **添加语言（Add Language）**
+3. 从下拉菜单选目标语言（支持 10 种）
+4. 当前世界的名称、描述、封面、图库、标签会被复制一份作为起始内容
+5. 在 UI 里直接改每个字段——把它们翻译成目标语言
+6. 需要的话可以为该语言上传不同的封面图
+7. 保存就行——翻译内容作为世界的一部分存储，不会生成额外的世界
+
+玩家在 Discover 页面浏览时，Yumina 根据玩家的界面语言自动展示最匹配的翻译版本。**玩家进游戏后看到的内容仍然是世界的原语言**——商店翻译不影响游戏内容。
+
+#### 变体（Variants）
+
+如果你想让游戏内容也跟着翻译，需要用 **变体（Variant）** 系统——在编辑器顶部的变体标签栏里新建一个变体并选目标语言。详细操作流程见 [新手指南 → 多语言版本（Variants）](./01-beginner-guide.md#多语言版本-variants)。
+
+变体之间会被引擎自动识别为"同一个世界的不同语言版本"，玩家在世界详情页可以一键切换。社区列表里这一组变体只算一个世界，浏览数据合并统计。
+
+#### 支持的语言
+
+两套机制都支持以下 10 种语言：
 
 | 代码 | 语言 |
 |------|------|
@@ -211,13 +249,11 @@ Bundle 保存后默认是私有的。发布后可以在 **发现（Discover）**
 | `ru` | Русский |
 | `ar` | العربية |
 
-### 玩家体验
-
-链接后，玩家打开任何一个语言版本，在会话选择界面顶部会看到语言标签页（比如 `EN English` | `中 中文` | `日 日本語`）。切换标签页就能选择不同语言版本来玩，各语言的存档独立管理。
-
-### 取消链接
-
-在 **语言变体（Language Variants）** 列表里，点某个变体旁边的取消链接按钮即可。如果一个语言组只剩一个世界，链接会自动解除。
+::: tip 用哪个？
+- 只想给海外玩家一个**像样的封面和介绍**就用 → 商店翻译
+- 想做**完全本地化的游戏体验**就用 → 变体
+- 两个**可以同时用**：变体 A（中文版）下设中文 + 英文商店翻译，变体 B（英文版）下设英文 + 日文商店翻译——总共覆盖三国玩家
+:::
 
 ---
 
@@ -267,7 +303,7 @@ multiplayerSettings: {
 [ ] 名字 — 有吸引力吗？能让人一眼知道这是什么类型的世界？
 [ ] 描述 — 写了吗？别留空。至少写两句话告诉玩家能在这里体验什么。
 [ ] 封面图片（Cover Image）— 上传了吗？在发现（Discover）页面缩小后还能看清吗？
-[ ] 标签（Tags）— 加了 3-7 个相关标签？想想玩家会搜什么词。
+[ ] 标签（Tags）— 加了 3-10 个相关标签？想想玩家会搜什么词。
 [ ] 年龄分级 — 有成人内容就选r18，有极端内容就选r18g，没有就选all。别搞错。
 [ ] 可见性 — 想让所有人看到就选public。想先让小范围测试就选followers。
 [ ] allowEdit — 想让别人能fork改造就开着。想保护原创就关了。
@@ -302,7 +338,7 @@ multiplayerSettings: {
 
 ```json
 {
-  "bundleVersion": "1.0.0",
+  "bundleVersion": "2.0.0",
   "name": "回合制战斗系统 v1.0",
   "description": "一套开箱即用的回合制战斗系统，包含HP/MP管理、死亡判定和战斗UI",
   "tags": ["combat", "rpg", "turn-based"],
@@ -328,9 +364,7 @@ multiplayerSettings: {
     { "id": "mp", "name": "MP", "type": "number", "defaultValue": 50,
       "min": 0, "max": 50, "category": "resource" }
   ],
-  "components": [],
   "rules": [],
-  "customComponents": [],
   "audioTracks": [
     { "id": "bgm-battle", "name": "战斗BGM", "type": "bgm",
       "url": "https://example.com/battle.mp3", "loop": true, "volume": 0.6 }

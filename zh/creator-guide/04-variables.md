@@ -75,6 +75,7 @@
 | `max` | number | 否 | **最大值**（仅 Number 类型） |
 | `category` | enum（见下方） | 否 | **分类** 下拉菜单 |
 | `behaviorRules` | string | 否 | **行为规则** |
+| `updateHints` | string | 否 | **更新提示**——给 AI 的额外说明，提示怎么更新这个变量（仅 JSON，编辑器 UI 暂未暴露） |
 
 :::
 

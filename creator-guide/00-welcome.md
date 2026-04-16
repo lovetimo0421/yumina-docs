@@ -8,7 +8,7 @@ This guide will walk you through Yumina's editor, taking you from a blank canvas
 
 The docs are split into three sections. Pick your starting point:
 
-**First-time creator?** Start with [Core Concepts](./01-core-concepts.md) — a 5-minute read that gives you the big picture of how Yumina works (7 concepts, that's it). Then take the [Editor Tour](./01-beginner-guide.md) to see where everything lives, and follow along with the [step-by-step tutorial](./02-tutorial-basic.md) to build a complete world from scratch. Finish that and you're ready to fly solo ∠( ᐛ 」∠)＿
+**First-time creator?** Start with [Core Concepts](./01-core-concepts.md) — a 5-minute read that gives you the big picture of how Yumina works (6 concepts, that's it). Then take the [Editor Tour](./01-beginner-guide.md) to see where everything lives, and follow along with the [step-by-step tutorial](./02-tutorial-basic.md) to build a complete world from scratch. Finish that and you're ready to fly solo ∠( ᐛ 」∠)＿
 
 **Already familiar, just looking something up?** Jump straight to the [Feature Reference](#feature-reference) section. Each chapter has two layers — a quick summary for a fast refresh, and a detailed version that covers every edge case.
 
@@ -24,8 +24,7 @@ The docs are split into three sections. Pick your starting point:
 | [Variables](./04-variables.md) | Track things that change — health, gold, affection meters |
 | [AI Directives & Macros](./05-directives-and-macros.md) | How the AI changes game state |
 | [Rules Engine](./06-rules-engine.md) | Automation logic — an event system without code |
-| [Custom UI Guide](./07-components.md) | AI-generated game interfaces (health bars, inventories, visual novels, etc.) |
-| [Message Renderer Deep Dive](./08-message-renderer.md) | Architecture, TSX syntax, styling techniques, and debugging |
+| [Custom UI Guide](./07-components.md) | The root component (TSX), `<Chat />`, and how to build any interface — health bars, inventories, visual novels, etc. |
 | [Audio](./09-audio.md) | BGM, sound effects, ambient audio |
 | [AI Model & Settings](./10-ai-settings.md) | Tune the AI's behavior |
 | [Publish, Export & Bundle](./11-publish-and-share.md) | How to ship your finished world |

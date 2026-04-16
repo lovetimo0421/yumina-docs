@@ -40,14 +40,14 @@ Player clicks "Comedy Mode" button
 
 ### Step 1: Create a variable
 
-We need one variable to track which mode is currently active. The message renderer reads it to decide which button to highlight.
+We need one variable to track which mode is currently active. The Root Component reads it to decide which button to highlight.
 
 Editor → sidebar → **Variables** tab → click "Add Variable"
 
 | Field | Value | Why |
 |-------|-------|-----|
 | Display Name | Current Mode | For your own reference |
-| ID | `current_mode` | Behaviors and the message renderer read/write using this ID |
+| ID | `current_mode` | Behaviors and the Root Component read/write using this ID |
 | Type | String | Because the values are text (`"normal"`, `"comedy"`, `"horror"`) |
 | Default Value | `normal` | New sessions start in normal mode |
 | Category | Custom | Dedicated category for the personality system |
@@ -68,7 +68,7 @@ Editor → **Behaviors** tab → add behaviors one by one
 | Field | Value | Why |
 |-------|-------|-----|
 | Trigger Type | Action | Fires when code calls `executeAction("mode-comedy")` |
-| Action ID | `mode-comedy` | The button in the message renderer calls this ID |
+| Action ID | `mode-comedy` | The button in the Root Component calls this ID |
 
 **DO (actions):**
 
@@ -78,7 +78,7 @@ Add the following actions in order:
 |---|-------------|----------|---------|
 | 1 | Stop Telling AI | Directive ID: `personality-override` | Remove the previous personality directive (if any). If none exists, nothing happens — no error |
 | 2 | Tell AI | Directive ID: `personality-override`, content below, position: After Character | Inject the comedy-style directive |
-| 3 | Modify Variable | `current_mode` set to `comedy` | Update the variable so the renderer knows the current mode |
+| 3 | Modify Variable | `current_mode` set to `comedy` | Update the variable so the Root Component knows the current mode |
 | 4 | Show Notification | Message: `Switched to Comedy Mode`, style: info | Give the player visual feedback |
 
 **"Tell AI" directive content:**
@@ -181,14 +181,14 @@ Position controls where the injected directive appears in the system prompt.
 
 ---
 
-### Step 4: Build the mode-switching message renderer
+### Step 4: Add mode-switching buttons to the Root Component
 
 Show three mode buttons below the last message in the chat. The currently active mode button is highlighted.
 
-Editor → **Message Renderer** tab → select **Custom TSX** → paste:
+Editor → **Custom UI** section → open `index.tsx` → paste the following (replace the default `return <Chat />`):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
 
   // ---- Read current mode ----
@@ -228,16 +228,18 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
     },
   ];
 
-  // ---- Check if this is the last message ----
+  // ---- Message list, used to find the last one ----
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
-      {/* Render message text normally */}
+      {/* Render message text normally (platform already produced HTML — just use contentHtml) */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* Mode-switching buttons — only on the last message */}
@@ -278,6 +280,8 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
@@ -313,7 +317,7 @@ Editor top bar → click "Enter Studio" → AI Assistant panel → describe what
 
 | Symptom | Likely Cause | Fix |
 |---------|-------------|-----|
-| Can't see the mode buttons | Message renderer code wasn't saved or has a syntax error | Check the compile status at the bottom of the message renderer — it should show green "OK" |
+| Can't see the mode buttons | Root Component code wasn't saved or has a syntax error | Check the compile status at the bottom of the Custom UI panel — it should show green "OK" |
 | Clicking a button does nothing | Behavior action ID doesn't match the code | Confirm the behavior action IDs are `mode-comedy`, `mode-horror`, `mode-normal`, matching the `executeAction()` parameters in the code |
 | Button state doesn't change | Variable isn't being updated by the behavior | Check that each behavior's "Modify Variable" action correctly sets `current_mode` |
 | AI style doesn't change after switching | Directive content is empty or position is wrong | Check that the "Tell AI" action has directive content filled in, and position is set to "After Character" |
@@ -329,7 +333,7 @@ Want to add a "Poetic Mode"? Just:
 
 1. Add an entry to the `modes` array (ID, label, colors)
 2. Create a new behavior with action ID `mode-poetic`, same action pattern as comedy/horror (remove old directive → inject new directive → update variable → notify)
-3. Done. The button appears automatically in the renderer
+3. Done. The button appears automatically in the Root Component
 
 ### Temporary "personality bursts" with turn-limited directives
 
@@ -355,7 +359,7 @@ The same pattern works for switching the AI's reply language. Change the directi
 | Put an urgent rule override at the top | Set position to "Top" (`top`) |
 | Put a last-minute reminder at the end | Set position to "Bottom" (`bottom`) |
 | Remove old directive before switching | Use the same directive ID — "Stop Telling AI" first, then "Tell AI" |
-| Highlight the active button | Read the variable in the message renderer, use conditional styles (`isActive`) to control highlighting |
+| Highlight the active button | Read the variable inside the Root Component and use conditional styles (`isActive`) to control highlighting |
 
 ---
 
@@ -369,13 +373,13 @@ Download this JSON and import it as a new world to see everything in action:
 1. Go to Yumina → **My Worlds** → **Create New World**
 2. In the editor, click **More Actions** → **Import Package**
 3. Select the downloaded `.json` file
-4. A new world is created with all variables, behaviors, and renderer pre-configured
+4. A new world is created with all variables, behaviors, and the Root Component pre-configured
 5. Start a new session and try it out
 
 **What's included:**
 - 1 variable (`current_mode` tracking the active personality mode)
 - 3 behaviors (switch to Comedy / switch to Horror / restore Normal)
-- A message renderer (three mode-switching buttons with highlight indicators)
+- A Root Component (three mode-switching buttons with highlight indicators)
 
 ---
 

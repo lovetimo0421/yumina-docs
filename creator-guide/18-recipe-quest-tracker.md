@@ -2,7 +2,7 @@
 
 # Quest Tracker
 
-> Build a quest tracker panel — show completion status for each quest (checkmark or X), display gold rewards in real time. When a player completes a quest, automatically pop an achievement notification and hand out the reward. This recipe teaches you how to wire it up with variables, behaviors, and the message renderer.
+> Build a quest tracker panel — show completion status for each quest (checkmark or X), display gold rewards in real time. When a player completes a quest, automatically pop an achievement notification and hand out the reward. This recipe teaches you how to wire it up with variables, behaviors, and the Root Component.
 
 ---
 
@@ -33,7 +33,7 @@ This quest system uses three core mechanics:
 
 1. **Boolean variables + keyword triggers** — each quest is tracked by a boolean variable. When the player's message contains a specific keyword, a behavior rule automatically sets the variable to `true`
 2. **Condition checks** — behaviors check whether the quest is already complete before firing. Completed quests won't trigger again (no double rewards)
-3. **Message renderer reads variables** — the panel reads quest status and gold from variables in real time, dynamically rendering checkmarks or X marks
+3. **Root Component reads variables** — the panel reads quest status and gold from variables in real time, dynamically rendering checkmarks or X marks
 
 ---
 
@@ -41,7 +41,7 @@ This quest system uses three core mechanics:
 
 ### Step 1: Create variables
 
-We need 5 variables — two for quest completion status, one for gold, and two more for quest names (so the message renderer can display them dynamically).
+We need 5 variables — two for quest completion status, one for gold, and two more for quest names (so the Root Component can display them dynamically).
 
 Editor → sidebar → **Variables** tab → click "Add Variable" for each one
 
@@ -50,7 +50,7 @@ Editor → sidebar → **Variables** tab → click "Add Variable" for each one
 | Field | Value | Why |
 |-------|-------|-----|
 | Name | Quest 1 Complete | A label for your own reference in the variable list |
-| ID | `quest_1_complete` | Behaviors and the message renderer use this ID to read/write the value |
+| ID | `quest_1_complete` | Behaviors and the Root Component use this ID to read/write the value |
 | Type | Boolean | Only two states: "done" and "not done" |
 | Default Value | `false` | Quest hasn't been completed when a new session starts |
 | Category | Flag | This is a status flag, not a numeric stat |
@@ -61,7 +61,7 @@ Editor → sidebar → **Variables** tab → click "Add Variable" for each one
 | Field | Value | Why |
 |-------|-------|-----|
 | Name | Quest 2 Complete | Easy to identify |
-| ID | `quest_2_complete` | Used by behaviors and the message renderer |
+| ID | `quest_2_complete` | Used by behaviors and the Root Component |
 | Type | Boolean | Same two-state setup |
 | Default Value | `false` | Not completed at session start |
 | Category | Flag | Status flag |
@@ -84,7 +84,7 @@ Editor → sidebar → **Variables** tab → click "Add Variable" for each one
 | Field | Value | Why |
 |-------|-------|-----|
 | Name | Quest 1 Name | Easy to identify |
-| ID | `quest_1_name` | The message renderer uses this ID to display the quest name |
+| ID | `quest_1_name` | The Root Component uses this ID to display the quest name |
 | Type | String | Quest names are text |
 | Default Value | `Find Herbs` | The name of the first quest |
 | Category | Custom | Just descriptive data |
@@ -95,7 +95,7 @@ Editor → sidebar → **Variables** tab → click "Add Variable" for each one
 | Field | Value | Why |
 |-------|-------|-----|
 | Name | Quest 2 Name | Easy to identify |
-| ID | `quest_2_name` | Used by the message renderer |
+| ID | `quest_2_name` | Used by the Root Component |
 | Type | String | Quest names are text |
 | Default Value | `Defeat the Forest Wolf` | The name of the second quest |
 | Category | Custom | Descriptive data |
@@ -177,17 +177,16 @@ Actions within a single behavior execute **in sequence**. So: mark complete → 
 
 ---
 
-### Step 3: Build the quest tracker panel (message renderer)
+### Step 3: Add the quest tracker panel in the Root Component
 
 This is the key step that makes the quest panel appear in the chat interface.
 
-Editor → **Message Renderer** section → select **Custom TSX** → paste the following code:
+Editor → **Custom UI** section → open `index.tsx` → paste the following code (replacing the default `return <Chat />`):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   // Read variables
   const quest1Done = api.variables.quest_1_complete === true;
@@ -205,11 +204,14 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   const completedCount = quests.filter(q => q.done).length;
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
-      {/* Render message text normally */}
+      {/* Render message text normally (platform already rendered HTML, use contentHtml directly) */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* Quest tracker panel — only shown on the last message */}
@@ -358,6 +360,8 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
@@ -373,11 +377,17 @@ Don't be intimidated by the length — what it does is very straightforward. Let
 ```tsx
 const api = useYumina();
 const msgs = api.messages || [];
-const isLastMsg = messageIndex === msgs.length - 1;
+// ...
+<Chat renderBubble={(msg) => {
+  const isLastMsg = msg.messageIndex === msgs.length - 1;
+  // ...
+}} />
 ```
 
+- The Root Component `MyWorld()` is the entry for the world's UI. `<Chat renderBubble={...} />` keeps the platform in charge of the message list, input box, and scrolling — you only take over how each bubble looks
 - `useYumina()` — gets the Yumina API so you can read variables
-- `isLastMsg` — checks whether this is the last message. The quest panel only shows below the last message, so you don't get a duplicate panel on every message
+- `msg.messageIndex` — the current bubble's index in the message list. The quest panel only shows below the last message, so you don't get a duplicate panel on every message
+- `msg.contentHtml` — the HTML the platform already rendered from Markdown, can be used directly with `dangerouslySetInnerHTML`
 
 #### Reading variables
 
@@ -465,7 +475,7 @@ Editor top bar → click "Enter Studio" → AI Assistant panel → describe what
 
 | Symptom | Likely cause | Fix |
 |---------|-------------|-----|
-| Quest panel doesn't appear | Message renderer code wasn't saved or has a syntax error | Check the compile status at the bottom of the message renderer — it should show a green "OK" |
+| Quest panel doesn't appear | Root Component code wasn't saved or has a syntax error | Check the compile status at the bottom of the Custom UI section — it should show a green "OK" |
 | Sent a message with "herb" but quest didn't complete | The behavior keyword doesn't match your actual wording | Make sure your message actually contains "herb". Note: the trigger is a player keyword trigger — it only checks the player's message, not the AI's reply |
 | Quest completed but gold didn't change | Missing the "modify variable gold add" action in the behavior | Go back to the behavior editor and confirm there's a "modify variable gold add 30" action after the "modify variable quest_1_complete" action |
 | Same quest keeps giving repeat rewards | No condition configured | Make sure the behavior's ONLY IF condition includes `quest_1_complete eq false` — only triggers when not yet completed |
@@ -481,7 +491,7 @@ Once you've got the basics down, you can build on top of this foundation.
 
 ### Adding more quests
 
-Add a new boolean variable (`quest_3_complete`) and string variable (`quest_3_name`) in the Variables tab, then create a matching keyword-triggered behavior in the Behaviors tab. Finally, add a line to the `quests` array in the message renderer:
+Add a new boolean variable (`quest_3_complete`) and string variable (`quest_3_name`) in the Variables tab, then create a matching keyword-triggered behavior in the Behaviors tab. Finally, add a line to the `quests` array in the Root Component:
 
 ```tsx
 const quests = [
@@ -527,8 +537,8 @@ Both conditions must be satisfied to trigger — ensures the prerequisite quest 
 | Pop an achievement toast on completion | Behavior action: show notification, style `achievement` |
 | Award gold on completion | Behavior action: modify variable, `gold` add amount |
 | Let the AI know a quest was completed | Behavior action: tell AI, write a sentence explaining what happened |
-| Display the quest panel | Read variables in the message renderer, render checkmarks/X marks and gold |
-| Only show panel on the last message | Check `isLastMsg` in the message renderer |
+| Display the quest panel | Read variables in the Root Component, render checkmarks/X marks and gold |
+| Only show panel on the last message | Inside `<Chat renderBubble>`, check `msg.messageIndex === msgs.length - 1` |
 | Strike through completed quests | Use the `textDecoration: "line-through"` style |
 | Show completion progress | Use `quests.filter(q => q.done).length` to count |
 | Special banner when all quests are done | Check `completedCount === quests.length` |
@@ -545,13 +555,13 @@ Download this JSON and import it to experience the full quest tracking system:
 1. Go to Yumina → **My Worlds** → **Create New World**
 2. In the editor, click **More Actions** → **Import Package**
 3. Select the downloaded `.json` file
-4. A new world is created with all variables, behaviors, and renderer pre-configured
+4. A new world is created with all variables, behaviors, and Root Component pre-configured
 5. Start a new session and try it out
 
 **What's included:**
 - 5 variables (`quest_1_complete` and `quest_2_complete` for quest status, `gold` for currency, `quest_1_name` and `quest_2_name` for quest names)
 - 2 behaviors (Find Herbs completion + Defeat the Forest Wolf completion, each with condition checks, variable modifications, notifications, and tell-AI actions)
-- A message renderer (quest tracker panel: quest list + status badges + gold counter + completion progress)
+- A Root Component (quest tracker panel: quest list + status badges + gold counter + completion progress)
 
 ---
 

@@ -14,7 +14,7 @@ Absolutely. Yumina's editor is visual — no programming required. The simplest 
 
 ### Q: What's the minimum I need to create a world?
 
-Three steps: 1) click **Create** to make a new world; 2) in **Lorebook**, create a `character` entry with the character's profile and turn on **Always Send**; 3) in **First Message**, write an opening line. Click **Save** and you're ready to chat. Variables, behaviors, and renderers are all optional advanced features — you can add them later.
+Three steps: 1) click **Create** to make a new world; 2) in **Lorebook**, create a `character` entry with the character's profile and turn on **Always Send**; 3) in **First Message**, write an opening line. Click **Save** and you're ready to chat. Variables, behaviors, and custom UI are all optional advanced features — you can add them later.
 
 ### Q: Which AI models does Yumina support?
 
@@ -88,17 +88,21 @@ Yes — this is one of the most powerful features of the rules engine. The "enab
 
 ## Components & Rendering
 
-### Q: I can't code TSX. Can I still use a custom renderer?
+### Q: I can't code TSX. Can I still build custom UI?
 
-You can try. A few starting points: 1) use **Enter Studio** in the editor, and have the AI Assistant generate code for you; 2) describe your desired effect to an external AI (like Claude) and have it generate the TSX code, then paste it into the editor; 3) copy-paste from the template examples in the docs and adjust colors and text. The editor compiles in real time and shows errors at the bottom (**Compile Status**), so you can adjust as you go. See [Custom UI Guide](./07-components.md) and [Message Renderer Deep Dive](./08-message-renderer.md).
+You can try. A few starting points: 1) use **Enter Studio** in the editor, and have the AI Assistant generate code for you; 2) describe your desired effect to an external AI (like Claude) and have it generate the TSX code, then paste it into the editor; 3) copy-paste from the template examples in the docs and adjust colors and text. The editor compiles in real time and shows errors at the bottom (**Compile Status**), so you can adjust as you go. See [Custom UI Guide](./07-components.md).
 
-### Q: Where do components display? Can I customize their position?
+### Q: What's the Root Component? Do I need one?
 
-Built-in components (stat-bar, text-display, etc.) display in a header bar above the chat window. Currently `placement` only supports `"header"`. If you need a more flexible layout — like a sidebar or full-screen panel — add a custom component with `surface: "app"` to take over the entire screen with your own TSX code. Component order is controlled by the `order` field — lower numbers appear first. See [Custom UI Guide](./07-components.md).
+The Root Component is the entry point for your world's UI — a file called `index.tsx` under the **Custom UI** section in the editor. It's optional: if you don't define one, the engine uses the default (`return <Chat />`), which gives you the standard chat experience. You define a Root Component when you want to customize anything visual — custom message bubbles (pass `renderBubble` to `<Chat />`), side panels (compose `<Chat />` with your own divs), or a fully custom layout (use `<MessageList />` and `<MessageInput />` directly). See [Custom UI Guide](./07-components.md).
 
-### Q: What's the difference between messageRenderer and customComponents?
+### Q: Where do built-in components (stat-bar, inventory, etc.) display?
 
-A component with `surface: "message"` (message renderer) replaces how each chat message is displayed — turning plain text into speech bubbles, visual novel dialogue boxes, battle logs, etc. A component with `surface: "app"` (app component) takes over the entire screen to build a completely custom game interface — visual novels, game UIs, custom experiences. Both are stored in the same `customUI` array and share the `useYumina()` API. The `surface` field determines which mode a component operates in. See [Custom UI Guide](./07-components.md) and [Renderer vs Components](./07b-renderer-vs-components.md).
+Built-in components (stat-bar, text-display, image-panel, inventory-grid, etc.) display in a header bar above the chat window. Component order is controlled by the `order` field — lower numbers appear first. If you need something more flexible — a sidebar, full-screen layout, or a different header entirely — build it in the **Root Component** instead, where you have full control via TSX. See [Custom UI Guide](./07-components.md).
+
+### Q: My old world has a "Message Renderer." Do I need to change it?
+
+No — legacy worlds keep working. On import, the engine auto-migrates the old `messageRenderer` field into your Root Component and the editor shows a **Legacy** badge. The old `customUI[]` array with `surface: "message" | "app"` components also still works. When you're ready to modernize, move the renderer code into `index.tsx` under **Custom UI** and pass it as `<Chat renderBubble={...} />`. See [Custom UI Guide](./07-components.md).
 
 ---
 

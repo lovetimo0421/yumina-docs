@@ -2,7 +2,7 @@
 
 # Map & Scene Navigation
 
-> Build a clickable map interface — player clicks a location → scene switches, lore entries swap, BGM crossfades, and the AI describes the new area's atmosphere. This recipe shows you how to wire it all up with variables, behaviors, lore entries, and a message renderer.
+> Build a clickable map interface — player clicks a location → scene switches, lore entries swap, BGM crossfades, and the AI describes the new area's atmosphere. This recipe shows you how to wire it all up with variables, behaviors, lore entries, and the Root Component.
 
 ---
 
@@ -29,7 +29,7 @@ Player clicks the "Forest" button on the map
     3. Crossfade to forest BGM
     4. Request AI reply with context: "The player travels from the village to the forest"
   → AI receives the new lore entry + context → describes the forest scene
-  → Message renderer detects current_location changed → "Forest" button becomes highlighted on the map
+  → Root Component detects current_location changed → "Forest" button becomes highlighted on the map
 ```
 
 **What is crossfade?** Crossfade is an audio transition technique — the old track gradually fades out while the new track gradually fades in, with both playing simultaneously for a brief overlap. The effect is like a movie scene transition: the music never cuts out and restarts abruptly, but instead flows smoothly from one piece to the next. In Yumina, the "Play Music" behavior action supports a `crossfade` operation — you just specify the new track ID and the fade duration.
@@ -47,7 +47,7 @@ Editor → sidebar → **Variables** tab → click "Add Variable"
 | Field | Value | Why |
 |-------|-------|-----|
 | Display Name | Current Location | For your own reference |
-| ID | `current_location` | Behaviors and the message renderer read/write using this ID |
+| ID | `current_location` | Behaviors and the Root Component read/write using this ID |
 | Type | String | Because the values are text (`"village"`, `"forest"`, `"cave"`, `"market"`) |
 | Default Value | `village` | New sessions start in the Village |
 | Category | Custom | Dedicated category for the map system |
@@ -188,7 +188,7 @@ Editor → **Behaviors** tab → add behaviors one by one
 
 | Field | Value | Why |
 |-------|-------|-----|
-| Trigger Type | Action | Fires when the message renderer code calls `executeAction("go-village")` |
+| Trigger Type | Action | Fires when the Root Component code calls `executeAction("go-village")` |
 | Action ID | `go-village` | Corresponds to the map button's click event |
 
 **DO (actions):**
@@ -276,14 +276,14 @@ Editor → **Behaviors** tab → add behaviors one by one
 
 ---
 
-### Step 5: Build the map message renderer
+### Step 5: Add the map panel to the Root Component
 
 This is the step that makes the map UI appear in the chat interface. We use styled div buttons with emoji icons to create a simple "map" — no image assets needed.
 
-Editor → **Message Renderer** tab → select **Custom TSX** → paste:
+Editor → **Custom UI** section → open `index.tsx` → paste the following (replace the default `return <Chat />`):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
 
   // ---- Read variable ----
@@ -305,16 +305,18 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
       activeBg: "#f97316", activeColor: "#ffffff" },
   ];
 
-  // ---- Check if this is the last message ----
+  // ---- Message list, used to find the last one ----
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
-      {/* Render message text normally */}
+      {/* Render message text normally (platform already produced HTML — just use contentHtml) */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* Map panel — only on the last message */}
@@ -390,6 +392,8 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
@@ -425,7 +429,7 @@ Change `gridTemplateColumns` to `"1fr 1fr 1fr"` for three columns, or `"1fr"` fo
 
 | Symptom | Likely Cause | Fix |
 |---------|-------------|-----|
-| Can't see the map panel | Message renderer code wasn't saved or has a syntax error | Check the compile status at the bottom of the message renderer — it should show green "OK" |
+| Can't see the map panel | Root Component code wasn't saved or has a syntax error | Check the compile status at the bottom of the Custom UI panel — it should show green "OK" |
 | Clicking a button does nothing | Behavior action ID doesn't match | Confirm the behavior action IDs (`go-village`, etc.) exactly match the `action` field in the `locations` array in the code |
 | AI doesn't reply with a new scene | Behavior is missing the "Request AI Reply" action | Check that the last action in each behavior is "Request AI Reply" |
 | Map highlight doesn't change | Variable isn't being updated | Check that the first action in each behavior is "Modify Variable" targeting `current_location` |
@@ -444,7 +448,7 @@ Want to add a fifth location (say, "Harbor")? Four things to do:
 1. **Lore** tab → create a "Harbor Atmosphere" entry (disabled by default)
 2. **Audio** tab → create a `bgm_harbor` track (optional)
 3. **Behaviors** tab → create a "Go to Harbor" behavior with action ID `go-harbor`, same action pattern as the other four. Also go back to each of the existing four behaviors and add a "Disable Lore Entry: Harbor Atmosphere" action
-4. **Message Renderer** → add an entry to the `locations` array:
+4. **Root Component** → add an entry to the `locations` array:
 
 ```tsx
 { id: "harbor", label: "Harbor", icon: "⚓", action: "go-harbor",
@@ -456,7 +460,7 @@ The grid layout adapts automatically — 5 buttons will arrange as 2 in the firs
 
 ### Restricting travel routes
 
-If you don't want the player to jump freely between any two locations (e.g., "you must pass through the Forest to reach the Cave"), add route logic to the message renderer:
+If you don't want the player to jump freely between any two locations (e.g., "you must pass through the Forest to reach the Cave"), add route logic to the Root Component:
 
 ```tsx
 // Define reachable routes
@@ -493,13 +497,13 @@ Unreachable locations appear faded and unclickable — the player can tell at a 
 | What you want | How to do it |
 |---------------|-------------|
 | Track the player's current location | String variable `current_location` with location IDs as values |
-| Switch scenes on button click | Behavior trigger set to "Action", action ID matches `executeAction()` in the message renderer |
+| Switch scenes on button click | Behavior trigger set to "Action", action ID matches `executeAction()` in the Root Component |
 | Swap location atmosphere | Behavior actions: "Disable Lore Entry" to turn off the old location, "Enable Lore Entry" to turn on the new one |
 | Smooth BGM transition | Behavior action "Play Music" with operation set to `crossfade`, fade duration 2-3 seconds |
 | AI describes the new scene immediately on click | Behavior action "Request AI Reply" with arrival context |
-| Highlight the current location | Compare `current_location` to button ID in the message renderer; matching button gets highlighted style |
+| Highlight the current location | Compare `current_location` to button ID inside the Root Component; matching button gets highlighted style |
 | Prevent re-clicking the current location | `if (!isActive)` check before calling `executeAction` |
-| Show the map only on the last message | Check `isLastMsg` in the message renderer |
+| Show the map only on the last message | Check `msg.messageIndex === msgs.length - 1` inside `<Chat renderBubble>` |
 
 ---
 
@@ -513,20 +517,20 @@ Download this JSON and import it as a new world to see everything in action:
 1. Go to Yumina → **My Worlds** → **Create New World**
 2. In the editor, click **More Actions** → **Import Package**
 3. Select the downloaded `.json` file
-4. A new world is created with all variables, entries, behaviors, and renderer pre-configured
+4. A new world is created with all variables, entries, behaviors, and the Root Component pre-configured
 5. Start a new session and try it out
 
 **What's included:**
 - 1 variable (`current_location` tracking the current location)
 - 4 lore entries (Village / Forest / Cave / Market atmosphere — only Village enabled by default)
 - 4 behaviors (Go to Village / Go to Forest / Go to Cave / Go to Market — each swaps entries + crossfades music + requests AI description)
-- A message renderer (2x2 grid map panel with current-location highlighting)
+- A Root Component (2x2 grid map panel with current-location highlighting)
 - 4 BGM tracks (you'll need to upload your own audio files to replace the placeholder URLs)
 
 ---
 
 ::: tip This is Recipe #12
-This recipe showcases the classic behavior + message renderer combo — buttons trigger behaviors, and each behavior simultaneously updates a variable, swaps lore entries, crossfades BGM, and requests an AI reply. The same pattern works for floor navigation, room exploration, world portals, or anything else that involves "moving between multiple scenes."
+This recipe showcases the classic behaviors + Root Component combo — buttons trigger behaviors, and each behavior simultaneously updates a variable, swaps lore entries, crossfades BGM, and requests an AI reply. The same pattern works for floor navigation, room exploration, world portals, or anything else that involves "moving between multiple scenes."
 :::
 
 </div>

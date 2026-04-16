@@ -2,7 +2,7 @@
 
 # 成就系统
 
-> 做一套成就系统——当玩家达成特定里程碑（金币超过 100、战斗胜利超过 5 次、发现隐藏区域……），屏幕上弹出金色成就通知。用布尔变量追踪哪些成就已解锁，用消息渲染器显示一个成就面板。
+> 做一套成就系统——当玩家达成特定里程碑（金币超过 100、战斗胜利超过 5 次、发现隐藏区域……），屏幕上弹出金色成就通知。用布尔变量追踪哪些成就已解锁，在根组件（Root Component）里显示一个成就面板。
 
 ---
 
@@ -25,7 +25,7 @@
   → 触发「一掷千金」行为
   → 行为执行：achievement_rich 设为 true，弹出金色通知"成就解锁：一掷千金"
   → maxFireCount: 1 确保这条行为永远不再触发
-  → 消息渲染器读取 achievement_rich = true，面板上显示金色奖杯图标
+  → 根组件读取 achievement_rich = true，面板上显示金色奖杯图标
 ```
 
 这里有一个关键设计决策：**为什么用 `variable-crossed` 而不是 `state-change`？**
@@ -48,7 +48,7 @@
 | 字段 | 填什么 | 为什么这样填 |
 |------|--------|-------------|
 | 显示名称 | 金币 | 给你自己看的，方便在变量列表里识别 |
-| ID | `gold` | 行为规则和消息渲染器代码用这个 ID 来读写 |
+| ID | `gold` | 行为规则和根组件代码用这个 ID 来读写 |
 | 类型 | 数字 | 金币是数值，需要做加减运算 |
 | 默认值 | `0` | 新会话从 0 金币开始 |
 | 分类 | 属性 | 和角色属性相关的变量 |
@@ -99,7 +99,7 @@
 | 行为规则 | `不要直接修改这个变量——成就由行为规则根据条件自动解锁，并弹出通知。手动修改会绕过通知系统。` | 成就必须通过行为规则触发才能正确弹出通知 |
 
 ::: info 为什么成就要用单独的布尔变量？
-因为消息渲染器需要读取每个成就的状态来显示面板。如果只靠 `maxFireCount` 来防止重复触发，渲染器无法知道"这个成就到底解没解锁"——它看不到行为的触发计数。布尔变量是给渲染器和其他行为读取用的公开状态。
+因为根组件需要读取每个成就的状态来显示面板。如果只靠 `maxFireCount` 来防止重复触发，根组件无法知道"这个成就到底解没解锁"——它看不到行为的触发计数。布尔变量是给根组件和其他行为读取用的公开状态。
 :::
 
 ---
@@ -214,17 +214,16 @@
 
 ---
 
-### 第 3 步：做成就面板的消息渲染器
+### 第 3 步：在根组件里加成就面板
 
 这是让成就面板出现在聊天界面的关键步骤。面板只显示在最后一条消息的下方。
 
-编辑器 → **消息渲染器** 标签页 → 选「自定义 TSX」→ 粘贴以下代码：
+编辑器 → **自定义 UI（Custom UI）** 区域 → 打开 `index.tsx` → 粘贴以下代码（替换默认的 `return <Chat />`）：
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   // 成就列表定义
   const achievements = [
@@ -254,11 +253,14 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   ).length;
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
-      {/* 正常渲染消息文字 */}
+      {/* 正常渲染消息文字（平台已经转好 HTML，直接用 contentHtml） */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* 成就面板——只在最后一条消息下方显示 */}
@@ -354,15 +356,19 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
 
 **代码逐行解释：**
 
+- 根组件 `MyWorld()` 是世界 UI 的入口。`<Chat renderBubble={...} />` 让平台继续管消息列表、输入框、滚动，我们只接管单条气泡的样子
 - `const api = useYumina()` — 获取 Yumina 的 API，读取变量状态
-- `isLastMsg` — 只在最后一条消息上显示面板，避免每条消息都重复
-- `achievements` 数组 — 在渲染器里定义所有成就的元数据（ID、名称、描述、图标）。要加新成就？往这个数组里加一项就行
+- `msg.messageIndex === msgs.length - 1` — 只在最后一条消息上显示面板，避免每条消息都重复
+- `msg.contentHtml` — 平台已经把 Markdown 渲染好的 HTML，直接 `dangerouslySetInnerHTML` 就行
+- `achievements` 数组 — 在根组件里定义所有成就的元数据（ID、名称、描述、图标）。要加新成就？往这个数组里加一项就行
 - `api.variables[a.id] === true` — 读取布尔变量的值，判断成就是否已解锁
 - `unlockedCount` — 统计已解锁数量，显示在标题栏右侧（如"2 / 3"）
 - 未解锁的成就显示灰色锁图标 🔒，已解锁的显示对应的金色图标和"✓ 已解锁"标记
@@ -386,11 +392,11 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 
 | 现象 | 可能的原因 | 解决方法 |
 |------|-----------|---------|
-| 看不到成就面板 | 消息渲染器代码没保存或有语法错误 | 检查消息渲染器底部的编译状态，应该显示绿色「OK」 |
+| 看不到成就面板 | 根组件代码没保存或有语法错误 | 检查自定义 UI 底部的编译状态，应该显示绿色「OK」 |
 | 金币超过 100 了但没弹通知 | 变量不是从 <= 100 "越过"到 > 100，而是直接被设成了 200 | 确认 gold 的变化是渐进式的（AI 通过指令加减），不是直接跳到一个大数 |
 | 成就弹了两次 | 行为的 `maxFireCount` 没设成 1 | 回到编辑器检查行为设置 |
 | 探索成就弹了两次 | 行为 3a 和 3b 都触发了，且缺少条件检查 | 确认两条行为都有条件 `achievement_explorer eq false` |
-| 面板上状态没更新 | 渲染器代码里变量 ID 拼错了 | 确认 `api.variables[a.id]` 的 `a.id` 和变量 ID 完全一致 |
+| 面板上状态没更新 | 根组件代码里变量 ID 拼错了 | 确认 `api.variables[a.id]` 的 `a.id` 和变量 ID 完全一致 |
 
 ---
 
@@ -460,7 +466,7 @@ hp: 100 → 90    ← 也触发（hp 变了）
 每加一个成就，只需要：
 1. 添加一个布尔变量（`achievement_xxx`，默认 `false`）
 2. 添加一条行为（触发器 + 动作 + `maxFireCount: 1`）
-3. 在消息渲染器的 `achievements` 数组里加一项
+3. 在根组件的 `achievements` 数组里加一项
 
 ---
 
@@ -472,7 +478,7 @@ hp: 100 → 90    ← 也触发（hp 变了）
 | 关键词触发成就 | 行为触发器选「玩家说了关键词」(`keyword`) 或「AI 说了关键词」(`ai-keyword`) |
 | 确保成就只触发一次 | 行为设 `maxFireCount: 1`，关键词类再加条件 `achievement_xxx eq false` |
 | 弹出金色成就通知 | 行为动作：显示通知，样式选 `achievement` |
-| 在聊天里显示成就面板 | 消息渲染器读取布尔变量，渲染已解锁/未解锁状态 |
+| 在聊天里显示成就面板 | 根组件读取布尔变量，渲染已解锁/未解锁状态 |
 | 添加新成就 | 加布尔变量 + 加行为 + 渲染器数组加一项 |
 
 ---
@@ -493,7 +499,7 @@ hp: 100 → 90    ← 也触发（hp 变了）
 **包含内容：**
 - 5 个变量（`gold`、`combat_wins`、`achievement_rich`、`achievement_warrior`、`achievement_explorer`）
 - 4 条行为（一掷千金、初露锋芒、探索先驱 x2）
-- 一个带成就面板的消息渲染器
+- 一个带成就面板的根组件
 
 ---
 

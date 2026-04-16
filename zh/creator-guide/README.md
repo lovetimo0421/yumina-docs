@@ -29,8 +29,8 @@
 | [变量系统](./04-variables.md) | 追踪会变的东西 |
 | [AI 指令与宏](./05-directives-and-macros.md) | AI 怎么改游戏状态 |
 | [行为规则引擎](./06-rules-engine.md) | 自动化事件系统 |
-| [自定义 UI 指南](./07-components.md) | 用 AI 生成游戏界面 |
-| [消息渲染器深入篇](./08-message-renderer.md) | 架构、语法、样式、调试 |
+| [自定义 UI 指南](./07-components.md) | 用根组件（TSX）做自己的游戏界面 |
+| [API 参考](./08-api-reference.md) | `useYumina()` SDK、沙箱全局、`<Chat>` 等组件的完整参考 |
 | [音频系统](./09-audio.md) | BGM 和音效 |
 | [AI 模型与设置](./10-ai-settings.md) | 调 AI 参数 |
 | [发布、导出与 Bundle](./11-publish-and-share.md) | 发布和分享 |

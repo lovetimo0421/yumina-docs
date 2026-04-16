@@ -2,7 +2,7 @@
 
 # 地图与场景导航
 
-> 做一个可点击的地图界面——玩家点击某个地点 → 场景切换、知识条目切换、BGM 渐变过渡，AI 描述新区域的氛围。这篇教你怎么用变量、行为、知识库和消息渲染器搭出来。
+> 做一个可点击的地图界面——玩家点击某个地点 → 场景切换、知识条目切换、BGM 渐变过渡，AI 描述新区域的氛围。这篇教你怎么用变量、行为、知识库和根组件（Root Component）搭出来。
 
 ---
 
@@ -29,7 +29,7 @@
     3. crossfade 切换到森林 BGM
     4. 请求 AI 回复，附带上下文「玩家从村庄前往森林」
   → AI 收到新的知识条目 + 上下文 → 描写森林的场景
-  → 消息渲染器检测到 current_location 变了 → 地图上「森林」按钮变成高亮
+  → 根组件检测到 current_location 变了 → 地图上「森林」按钮变成高亮
 ```
 
 **什么是 crossfade？** 交叉淡入淡出是一种音频过渡技术——旧曲目渐渐变小声的同时，新曲目渐渐变大声，两段音乐有一小段时间同时播放。效果就像电影里的场景切换，音乐不会突然断掉再重新开始，而是丝滑地从一首过渡到另一首。在 Yumina 里，行为的「播放音乐」动作支持 `crossfade` 操作，你只需要指定新曲目 ID 和渐变时长就行。
@@ -47,7 +47,7 @@
 | 字段 | 填什么 | 为什么这样填 |
 |------|--------|-------------|
 | 显示名称 | 当前地点 | 给你自己看的，方便识别 |
-| ID | `current_location` | 行为和消息渲染器用这个 ID 来读写 |
+| ID | `current_location` | 行为和根组件用这个 ID 来读写 |
 | 类型 | 字符串 | 因为值是文字（`"village"`、`"forest"`、`"cave"`、`"market"`） |
 | 默认值 | `village` | 新会话从村庄开始 |
 | 分类 | 自定义 | 地图系统专用分类 |
@@ -190,7 +190,7 @@
 
 | 字段 | 填什么 | 为什么这样填 |
 |------|--------|-------------|
-| 触发器类型 | 动作 | 当消息渲染器代码调用 `executeAction("go-village")` 时触发 |
+| 触发器类型 | 动作 | 当根组件代码调用 `executeAction("go-village")` 时触发 |
 | 动作 ID | `go-village` | 对应地图按钮的点击事件 |
 
 **DO（做什么）：**
@@ -278,14 +278,14 @@
 
 ---
 
-### 第 5 步：做地图消息渲染器
+### 第 5 步：在根组件里加地图面板
 
 这是让地图 UI 出现在聊天界面的关键步骤。我们用样式化的 div 按钮 + emoji 图标来做一个简易"地图"——不需要实际的图片资源。
 
-编辑器 → **消息渲染器** 标签页 → 选「自定义 TSX」→ 粘贴以下代码：
+编辑器 → **自定义 UI（Custom UI）** 区域 → 打开 `index.tsx` → 粘贴以下代码（替换默认的 `return <Chat />`）：
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
 
   // ---- 读取变量 ----
@@ -307,16 +307,18 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
       activeBg: "#f97316", activeColor: "#ffffff" },
   ];
 
-  // ---- 判断是否是最后一条消息 ----
+  // ---- 消息列表，用来判断最后一条 ----
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
-      {/* 正常渲染消息文字 */}
+      {/* 正常渲染消息文字（平台已经转好 HTML，直接用 contentHtml） */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* 地图面板——只在最后一条消息上显示 */}
@@ -392,6 +394,8 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
@@ -427,7 +431,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 
 | 现象 | 可能的原因 | 解决方法 |
 |------|-----------|---------|
-| 看不到地图面板 | 消息渲染器代码没保存或有语法错误 | 检查消息渲染器底部的编译状态，应该显示绿色「OK」 |
+| 看不到地图面板 | 根组件代码没保存或有语法错误 | 检查自定义 UI 底部的编译状态，应该显示绿色「OK」 |
 | 点了按钮没反应 | 行为的动作 ID 不匹配 | 确认行为的动作 ID（`go-village` 等）和代码里 `locations` 数组的 `action` 字段完全一致 |
 | AI 没有回复新场景 | 行为里没加「请求 AI 回复」动作 | 检查每条行为的最后一个动作是否是「请求 AI 回复」 |
 | 地图上高亮没变 | 变量没被修改 | 检查行为的第一个动作是否是「修改变量」，且目标变量是 `current_location` |
@@ -446,7 +450,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 1. **知识库** 标签页 → 新建「港口氛围」条目（默认禁用）
 2. **音频** 标签页 → 新建 `bgm_port` 音轨（可选）
 3. **行为** 标签页 → 新建「前往港口」行为，动作 ID `go-port`，动作模式和前四个一样。同时回到前四个行为里，各自加一行「禁用知识条目：港口氛围」
-4. **消息渲染器** → 在 `locations` 数组里加一项：
+4. **根组件** → 在 `locations` 数组里加一项：
 
 ```tsx
 { id: "port", label: "港口", icon: "⚓", action: "go-port",
@@ -458,7 +462,7 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
 
 ### 限制可通行路线
 
-如果你不希望玩家能从任意地点直接跳到任意地点（比如"必须穿过森林才能到洞穴"），可以在消息渲染器里加判断逻辑：
+如果你不希望玩家能从任意地点直接跳到任意地点（比如"必须穿过森林才能到洞穴"），可以在根组件里加判断逻辑：
 
 ```tsx
 // 定义可达路线
@@ -495,13 +499,13 @@ style={{
 | 你想做的事 | 怎么做 |
 |-----------|--------|
 | 追踪玩家当前地点 | 字符串变量 `current_location`，值是地点 ID |
-| 点按钮切换场景 | 行为触发器选「动作」，动作 ID 和消息渲染器里的 `executeAction()` 一致 |
+| 点按钮切换场景 | 行为触发器选「动作」，动作 ID 和根组件里的 `executeAction()` 一致 |
 | 切换地点氛围 | 行为动作：先「禁用知识条目」关掉旧地点，再「启用知识条目」打开新地点 |
 | BGM 平滑过渡 | 行为动作「播放音乐」，操作选 `crossfade`，渐变时长 2-3 秒 |
 | 点击后 AI 立刻描写新场景 | 行为动作用「请求 AI 回复」，附上到达上下文 |
-| 当前地点高亮 | 消息渲染器里比较 `current_location` 和按钮 ID，匹配的用高亮样式 |
+| 当前地点高亮 | 根组件里比较 `current_location` 和按钮 ID，匹配的用高亮样式 |
 | 防止重复点击当前地点 | `if (!isActive)` 判断后才调用 `executeAction` |
-| 地图只在最后一条消息显示 | 消息渲染器里判断 `isLastMsg` |
+| 地图只在最后一条消息显示 | 在 `<Chat renderBubble>` 里判断 `msg.messageIndex === msgs.length - 1` |
 
 ---
 
@@ -522,13 +526,13 @@ style={{
 - 1 个变量（`current_location` 追踪当前地点）
 - 4 个知识条目（村庄 / 森林 / 洞穴 / 集市氛围，默认只启用村庄）
 - 4 条行为（前往村庄 / 前往森林 / 前往洞穴 / 前往集市，各自切换条目 + 渐变切歌 + 请求 AI 描写）
-- 一个消息渲染器（2x2 网格地图面板，当前地点高亮）
+- 一个根组件（2x2 网格地图面板，当前地点高亮）
 - 4 条 BGM 音轨（需要你自己上传音频文件替换 URL）
 
 ---
 
 ::: tip 这是实战配方 #12
-这个配方展示了行为系统 + 消息渲染器的经典组合——用按钮触发行为，行为里同时做变量更新、条目切换、BGM crossfade、AI 回复请求。同样的模式可以用来做楼层导航、房间探索、世界传送门等任何"在多个场景之间移动"的东西。
+这个配方展示了行为系统 + 根组件的经典组合——用按钮触发行为，行为里同时做变量更新、条目切换、BGM crossfade、AI 回复请求。同样的模式可以用来做楼层导航、房间探索、世界传送门等任何"在多个场景之间移动"的东西。
 :::
 
 </div>

@@ -143,6 +143,10 @@ variableId  +  operator  +  value
 | `lte` | 小于等于 | 数字 | `hp lte 0` |
 | `contains` | 包含子串 | 字符串 | `inventory contains "sword"` |
 
+::: warning `contains` 只支持字符串
+`contains` 运算符检查的是字符串变量中是否包含**子串**，**不能**用来搜索 JSON 数组中的元素。如果你需要检查 JSON 数组里是否包含某个物品，请在根组件（Root Component）中用 JavaScript 处理（例如 `inventory.find(i => i.name === "药水")`）。
+:::
+
 #### 条件组合逻辑
 
 - `conditionLogic: "all"`（默认）—— 所有条件都满足才算通过，相当于 AND

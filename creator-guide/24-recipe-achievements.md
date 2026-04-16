@@ -2,7 +2,7 @@
 
 # Achievement System
 
-> Build a full achievement system — when players hit specific milestones (gold over 100, 5+ combat wins, discovering a hidden area...), a golden achievement notification pops up on screen. Use boolean variables to track which achievements are unlocked, and a message renderer to display an achievement panel.
+> Build a full achievement system — when players hit specific milestones (gold over 100, 5+ combat wins, discovering a hidden area...), a golden achievement notification pops up on screen. Use boolean variables to track which achievements are unlocked, and the Root Component to display an achievement panel.
 
 ---
 
@@ -25,7 +25,7 @@ Player accumulates 101 gold during the adventure
   → "Big Spender" behavior fires
   → Actions execute: achievement_rich set to true, golden notification "Achievement Unlocked: Big Spender"
   → maxFireCount: 1 ensures this behavior never fires again
-  → Message renderer reads achievement_rich = true, panel shows golden trophy icon
+  → Root Component reads achievement_rich = true, panel shows golden trophy icon
 ```
 
 There's an important design decision here: **why use `variable-crossed` instead of `state-change`?**
@@ -48,7 +48,7 @@ Editor → left sidebar → **Variables** tab → click "Add Variable" for each 
 | Field | Value | Why |
 |-------|-------|-----|
 | Display Name | Gold | For your own reference in the variable list |
-| ID | `gold` | Behaviors and renderer code use this ID to read/write |
+| ID | `gold` | Behaviors and the Root Component use this ID to read/write |
 | Type | Number | Gold is numeric and needs arithmetic |
 | Default Value | `0` | New sessions start at 0 gold |
 | Category | Stats | Groups it with character attributes |
@@ -99,7 +99,7 @@ Editor → left sidebar → **Variables** tab → click "Add Variable" for each 
 | Behavior Rules | `Do not modify this variable directly — achievements are unlocked automatically by behavior rules when conditions are met, which also triggers a notification. Modifying it manually bypasses the notification system.` | Same reason |
 
 ::: info Why use separate boolean variables for achievements?
-Because the message renderer needs to read each achievement's state to display the panel. If you only relied on `maxFireCount` to prevent re-firing, the renderer would have no way to know "is this achievement unlocked or not?" — it can't see a behavior's fire count. Boolean variables are the public-facing state that the renderer and other behaviors can read.
+Because the Root Component needs to read each achievement's state to display the panel. If you only relied on `maxFireCount` to prevent re-firing, the component would have no way to know "is this achievement unlocked or not?" — it can't see a behavior's fire count. Boolean variables are the public-facing state that the Root Component and other behaviors can read.
 :::
 
 ---
@@ -132,7 +132,7 @@ Editor → left sidebar → **Behaviors** tab → click "Add Behavior" for each 
 
 | Action Type | Setting | Purpose |
 |-------------|---------|---------|
-| Set Variable | `achievement_rich` set to `true` | Mark the achievement as unlocked, for the renderer to read |
+| Set Variable | `achievement_rich` set to `true` | Mark the achievement as unlocked, for the Root Component to read |
 | Show Notification | Message `Achievement Unlocked: Big Spender`, style `achievement` | Pop up the golden achievement toast |
 
 > **About `maxFireCount: 1`.** This field is set on the behavior itself (not the trigger). It means "this behavior may execute at most 1 time ever." Once it's fired, no matter how gold changes afterward, this behavior will never run again. This is the core safeguard of the achievement system — nobody wants to see the same achievement pop twice.
@@ -214,17 +214,16 @@ Conditions and actions are identical to Behavior 3a.
 
 ---
 
-### Step 3: Build the achievement panel in the message renderer
+### Step 3: Add the achievement panel to the Root Component
 
 This is the key step to get the achievement panel showing up in the chat. The panel only appears below the last message.
 
-Editor → **Message Renderer** tab → select "Custom TSX" → paste the following:
+Editor → **Custom UI** section → open `index.tsx` → paste the following (replace the default `return <Chat />`):
 
 ```tsx
-export default function Renderer({ content, renderMarkdown, messageIndex }) {
+export default function MyWorld() {
   const api = useYumina();
   const msgs = api.messages || [];
-  const isLastMsg = messageIndex === msgs.length - 1;
 
   // Achievement list definition
   const achievements = [
@@ -254,11 +253,14 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
   ).length;
 
   return (
+    <Chat renderBubble={(msg) => {
+      const isLastMsg = msg.messageIndex === msgs.length - 1;
+      return (
     <div>
-      {/* Render message text normally */}
+      {/* Render message text normally (platform already produced HTML — just use contentHtml) */}
       <div
         style={{ color: "#e2e8f0", lineHeight: 1.7 }}
-        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }}
+        dangerouslySetInnerHTML={{ __html: msg.contentHtml }}
       />
 
       {/* Achievement panel — only below the last message */}
@@ -354,15 +356,19 @@ export default function Renderer({ content, renderMarkdown, messageIndex }) {
         </div>
       )}
     </div>
+      );
+    }} />
   );
 }
 ```
 
 **Line-by-line breakdown:**
 
+- `MyWorld()` is the Root Component — the world's UI entry point. `<Chat renderBubble={...} />` keeps the platform in charge of the message list, input box, and scrolling; we only customize the per-bubble layout
 - `const api = useYumina()` — get the Yumina API to read variable state
-- `isLastMsg` — only show the panel on the last message, so it doesn't repeat on every message
-- `achievements` array — defines all achievement metadata (ID, name, description, icon) right in the renderer. Want to add a new achievement? Just add another entry to this array
+- `msg.messageIndex === msgs.length - 1` — only show the panel on the last message, so it doesn't repeat on every message
+- `msg.contentHtml` — the platform already rendered the Markdown to HTML; drop it straight into `dangerouslySetInnerHTML`
+- `achievements` array — defines all achievement metadata (ID, name, description, icon) right in the Root Component. Want to add a new achievement? Just add another entry to this array
 - `api.variables[a.id] === true` — reads the boolean variable's value to check if the achievement is unlocked
 - `unlockedCount` — tallies how many are unlocked, displayed in the header (e.g. "2 / 3")
 - Locked achievements show a grey lock icon, unlocked ones show their golden icon plus a "Unlocked" badge
@@ -386,11 +392,11 @@ Editor top bar → click "Enter Studio" → AI Assistant panel → describe what
 
 | Symptom | Likely Cause | Fix |
 |---------|-------------|-----|
-| Can't see the achievement panel | Message renderer code wasn't saved or has a syntax error | Check the compile status at the bottom of the message renderer — it should show a green "OK" |
+| Can't see the achievement panel | Root Component code wasn't saved or has a syntax error | Check the compile status at the bottom of the Custom UI panel — it should show a green "OK" |
 | Gold passed 100 but no notification | The variable didn't "cross" from <= 100 to > 100 — it was set directly to 200 | Make sure gold changes incrementally (AI adds/subtracts via directives), not in a single jump to a large number |
 | Achievement popped twice | The behavior's `maxFireCount` isn't set to 1 | Go back to the editor and check the behavior settings |
 | Exploration achievement popped twice | Both behaviors 3a and 3b fired, and the condition check is missing | Confirm both behaviors have the condition `achievement_explorer eq false` |
-| Panel status didn't update | Variable ID is misspelled in the renderer code | Confirm `api.variables[a.id]`'s `a.id` matches the variable ID exactly |
+| Panel status didn't update | Variable ID is misspelled in the Root Component code | Confirm `api.variables[a.id]`'s `a.id` matches the variable ID exactly |
 
 ---
 
@@ -460,7 +466,7 @@ Once you've built the basic 3 achievements, you can extend with more using the s
 For each new achievement, you only need to:
 1. Add a boolean variable (`achievement_xxx`, default `false`)
 2. Add a behavior (trigger + actions + `maxFireCount: 1`)
-3. Add an entry to the `achievements` array in the message renderer
+3. Add an entry to the `achievements` array in the Root Component
 
 ---
 
@@ -472,8 +478,8 @@ For each new achievement, you only need to:
 | Trigger achievement on a keyword | Behavior trigger: "Player Said Keyword" (`keyword`) or "AI Said Keyword" (`ai-keyword`) |
 | Ensure achievement fires only once | Set `maxFireCount: 1` on the behavior; for keyword triggers, also add condition `achievement_xxx eq false` |
 | Pop up a golden achievement notification | Behavior action: Show Notification, style `achievement` |
-| Show an achievement panel in the chat | Message renderer reads boolean variables and renders unlocked/locked states |
-| Add a new achievement | Add boolean variable + add behavior + add entry to renderer array |
+| Show an achievement panel in the chat | Root Component reads boolean variables and renders unlocked/locked states |
+| Add a new achievement | Add boolean variable + add behavior + add entry to the Root Component's `achievements` array |
 
 ---
 
@@ -487,13 +493,13 @@ Download this JSON and import it to see everything in action:
 1. Go to Yumina → **My Worlds** → **Create New World**
 2. In the editor, click **More Actions** → **Import Package**
 3. Select the downloaded `.json` file
-4. A new world is created with all variables, behaviors, and renderer pre-configured
+4. A new world is created with all variables, behaviors, and the Root Component pre-configured
 5. Start a new session and try it out
 
 **What's included:**
 - 5 variables (`gold`, `combat_wins`, `achievement_rich`, `achievement_warrior`, `achievement_explorer`)
 - 4 behaviors (Big Spender, First Blood, Trailblazer x2)
-- A message renderer with the achievement panel
+- A Root Component with the achievement panel
 
 ---
 

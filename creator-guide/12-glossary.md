@@ -18,7 +18,7 @@ A quick-reference guide to Yumina creator terminology, sorted alphabetically.
 
 **Cooldown** — the number of turns a behavior must wait after firing before it can fire again. Prevents the same behavior from triggering too frequently.
 
-**Custom Component** — a TSX-coded independent UI panel that adds alongside the chat interface (rather than replacing message rendering). Good for character creation screens, game sidebars, and similar.
+**Custom Component** (legacy concept) — the pre-v18 model stored independent UI panels in `customUI[]`; `surface: "app"` took over the full screen, `surface: "message"` replaced message bubbles. New worlds use the **Root Component** instead — sidebars, full-screen UIs, and custom bubbles all live in `index.tsx` and its sibling files.
 
 **Depth Injection** — a technique for inserting entry content at a specific position within chat history. The `depth` value indicates how many messages from the end to insert at, making the AI more naturally "aware" of context information.
 
@@ -26,7 +26,7 @@ A quick-reference guide to Yumina creator terminology, sorted alphabetically.
 
 **Entry** — a content fragment in a world. Character profiles, scene descriptions, writing style instructions, example dialogue, world lore — all are entries. Each has a `role` tag telling the engine what kind of content it is. Entries are the individual items managed inside the **Lorebook** section of the editor.
 
-**Full-Screen Component** — a component with `surface: "app"` that takes over the entire screen, hiding the default chat interface completely. Good for visual novel UIs, complete game interfaces, or fully custom experiences. See also **App Component** in the [Renderer vs Components](./07b-renderer-vs-components.md) guide.
+**Full-Screen Component** (legacy concept) — in the pre-v18 model, a `surface: "app"` component that took over the entire screen. In the new model, you write a full-screen layout directly in the Root Component (`index.tsx`): skip `<Chat />` and drop in `<MessageInput />` wherever you want the text box to sit.
 
 **Fuzzy Match** — typo-tolerant matching based on Levenshtein edit distance. Allows a small number of spelling errors in keywords to still trigger a match. Only effective for Latin alphabet characters — not supported for CJK.
 
@@ -40,7 +40,7 @@ A quick-reference guide to Yumina creator terminology, sorted alphabetically.
 
 **Macro** — a `{{name}}` placeholder in entry text, automatically replaced with real content (like a variable value or system info) before being sent to the AI. E.g. `{{char}}`, `{{user}}`, `{{turnCount}}`.
 
-**Message Renderer** (called **Message Template** in the editor) — a custom component written in TSX that replaces the default Markdown chat bubbles to give AI messages a personalized look: speech bubbles, visual novel dialogue boxes, battle logs, and more. Technically a `surface: "message"` component.
+**Message Renderer** (legacy concept) — pre-v18 worlds used a `customUI[] + surface: "message"` component to replace the default bubble. New worlds do the same thing inside the Root Component via `<Chat renderBubble={...} />`. When you import an old bundle, the engine auto-migrates the `messageRenderer` field into the root component; the editor shows a **Legacy** badge.
 
 **Playlist** — a BGM playlist configuration that chains multiple background music tracks and controls whether to loop, shuffle, or play sequentially, plus autoplay behavior and gap between tracks.
 
@@ -50,7 +50,11 @@ A quick-reference guide to Yumina creator terminology, sorted alphabetically.
 
 **Recursive Triggering** — after entry A is triggered, its content is scanned again as "new text" to check if it can trigger entry B — a chain activation. Depth controlled by `lorebookRecursionDepth` (0–10).
 
-**Renderer** — the mechanism of using TSX code to fully take over how messages or interfaces are displayed. The key step from "chatbot" to "interactive experience."
+**Renderer** — the mechanism of using TSX code to fully take over how messages or interfaces are displayed. The key step from "chatbot" to "interactive experience." In the current model this lives in the **Root Component**; see also **`<Chat />`**.
+
+**Root Component** — the entry point for a world's UI. A virtual filesystem of TSX files whose default export is `MyWorld()`. The default root is just `return <Chat />` (standard chat behavior); you customize it by passing `renderBubble` to `<Chat />`, composing `<Chat />` with sidebars and overlays, or building a fully custom layout from `<MessageList />` and `<MessageInput />`. Lives under **Custom UI** in the editor, entry file is `index.tsx`.
+
+**`<Chat />`** — the platform-provided chat building block you drop into your Root Component. Handles the message list, input box, streaming, scrolling, editing, swipes, and checkpoints. Accepts `renderBubble` (customize a single bubble), `className`, and `children` (overlays on top of the chat). `<ChatCanvas />` is the legacy alias — still works, but new code should use `<Chat />`.
 
 **Rule** — the term used in code and the underlying schema for what the editor calls a **Behavior**. The two terms are synonymous. See Behavior.
 

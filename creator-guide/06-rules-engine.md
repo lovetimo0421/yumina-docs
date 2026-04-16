@@ -143,6 +143,10 @@ variableId  +  operator  +  value
 | `lte` | Less than or equal | number | `hp lte 0` |
 | `contains` | Contains substring | string | `inventory contains "sword"` |
 
+::: warning `contains` is string-only
+The `contains` operator checks for a **substring** within a string variable. It does **not** search inside JSON arrays. If you need to check whether a JSON array contains an item, handle that logic in your Root Component using JavaScript (e.g., `inventory.find(i => i.name === "Potion")`).
+:::
+
 #### Condition combining logic
 
 - `conditionLogic: "all"` (default) — all conditions must pass, equivalent to AND

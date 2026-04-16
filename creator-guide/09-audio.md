@@ -53,7 +53,7 @@ If you have several BGM tracks and don't want to just loop one forever, use a pl
 | Field | Type | Default | Description |
 |-------|------|---------|-------------|
 | `tracks` | string[] | `[]` | Array of track IDs referencing `audioTracks`. Plays in array order |
-| `playMode` | `"loop"` / `"shuffle"` / `"sequential"` | `"loop"` | **loop**: restart from beginning when list ends; **shuffle**: play in random order; **sequential**: play once and stop |
+| `playMode` | `"loop"` / `"shuffle"` / `"sequential"` | `"loop"` | **loop**: restart from beginning when list ends; **shuffle**: play in random order; **sequential**: play all tracks in order, then repeat from the beginning |
 | `autoPlay` | boolean | `true` | Whether to start playing automatically when entering the world |
 | `waitForFirstMessage` | boolean | `false` | When `true`, doesn't start playing immediately — waits until the player sends their first message. Good for worlds with an opening cutscene or character creation flow |
 | `gapSeconds` | number (0-30) | `0` | Silence between tracks in seconds. A value of `2` creates a brief pause between songs, giving a "changing records" feel |
@@ -107,12 +107,14 @@ The directive format is `[audio: trackId action]`, consistent with variable dire
 | Directive | Description |
 |-----------|-------------|
 | `[audio: trackId play]` | Play the specified track |
-| `[audio: trackId play 2.0]` | Play with a 2-second fade-in |
 | `[audio: trackId stop]` | Stop playback |
-| `[audio: trackId stop 1.5]` | Stop with a 1.5-second fade-out |
 | `[audio: trackId crossfade 0.8]` | Crossfade to this track over 0.8 seconds |
 | `[audio: trackId volume 0.5]` | Set volume to 0.5 without stopping |
 | `[audio: trackId play chain:nextTrackId]` | Play this track, then automatically play the next. E.g. play a battle intro SFX and automatically transition to battle BGM |
+
+::: tip Fade-in and fade-out for play/stop
+AI directives don't support fade-in/fade-out parameters for `play` and `stop`. To get fade effects, configure `fadeIn` and `fadeOut` directly on the AudioTrack definition, or use `crossfade` to transition between tracks.
+:::
 
 These can be mixed with state change directives. The AI might write:
 

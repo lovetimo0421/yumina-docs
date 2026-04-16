@@ -88,17 +88,17 @@ JSON 变量可以存复杂数据结构——对象、数组、嵌套结构都行
 
 ## 组件与渲染
 
-### Q: 不会写TSX，能用自定义渲染器吗？
+### Q: 不会写TSX，能用自定义 UI 吗？
 
-可以试试。几个入手方式：1）用编辑器里的 **进入工作室**，让 AI Assistant 帮你生成代码；2）把你想要的效果用文字描述给外部 AI（比如 Claude），让它帮你生成 TSX 代码，粘贴到编辑器里；3）从文档里的模板例子复制粘贴，改改颜色和文字。编辑器会实时编译并提示错误（底部显示 **Compile Status**），可以边改边调。详见 [自定义 UI 指南](./07-components.md) 和 [消息渲染器深入篇](./08-message-renderer.md)。
+可以试试。几个入手方式：1）用编辑器里的 **进入工作室**，让 AI Assistant 帮你生成代码；2）把你想要的效果用文字描述给外部 AI（比如 Claude），让它帮你生成 TSX 代码，粘贴到编辑器里；3）从文档里的模板例子复制粘贴，改改颜色和文字。编辑器会实时编译并提示错误（底部显示 **Compile Status**），可以边改边调。详见 [自定义 UI 指南](./07-components.md)。
 
-### Q: 组件显示在哪里？能自定义位置吗？
+### Q: 根组件（Root Component）是什么？怎么决定界面长什么样？
 
-组件的显示位置由 `surface` 字段决定。`surface: "message"` 的组件替换每条聊天消息的显示方式，在聊天界面内可见。`surface: "app"` 的组件接管整个屏幕，用于构建完全自定义的游戏界面。组件之间的排列顺序由 `order` 字段控制，数字越小越靠前。详见 [自定义 UI 指南](./07-components.md)。
+每个新世界都自带一个**根组件**——一棵 TSX 文件树，默认入口是 `index.tsx`。这个文件 export 的 React 组件就是玩家打开世界后看到的全部 UI。最简版本只有一行 `return <Chat />;`，直接复用平台的默认聊天界面。想自定义有三个层次：1）只换气泡样式——`<Chat renderBubble={(msg) => <MyBubble {...msg} />} />`；2）聊天 + 浮动侧边栏——把 `<Chat />` 和你的组件放进同一个 flex 布局；3）完全自定义全屏 UI（视觉小说、地图导航）——直接写你的布局，用 `<MessageList />` 和 `<MessageInput />` 自己拼。详见 [自定义 UI 指南](./07-components.md)。
 
-### Q: messageRenderer和customComponents有什么区别？
+### Q: 我的老世界还有"消息渲染器 / 应用组件"，需要改吗？
 
-具有 `surface: 'message'` 的组件（消息渲染器）替换每条聊天消息的显示方式。具有 `surface: 'app'` 的组件（应用组件）接管整个屏幕来构建完全自定义的游戏界面。两者都存储在同一个 `customUI` 数组中，`surface` 字段决定组件的运行模式。详见 [自定义 UI 指南](./07-components.md)。
+不用手动改。v18 之前的世界用 `customUI[]` + `surface: "message" / "app"` 的老模型，编辑器现在会给它打上**旧版（Legacy）** 标签兼容显示，老世界照常跑。新建世界或导入旧 Bundle 时，引擎会自动把老的 `messageRenderer` 字段迁移到根组件里。如果你想把老世界升级到新模型，把旧组件代码搬进 `index.tsx`、用 `<Chat renderBubble>` 替换消息渲染器即可。
 
 ---
 

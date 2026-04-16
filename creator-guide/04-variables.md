@@ -75,7 +75,7 @@ Maps editor fields to their underlying JSON field names in the variable schema. 
 | `max` | number | No | **Max** (Number type only) |
 | `category` | enum (see below) | No | **Category** dropdown |
 | `behaviorRules` | string | No | **Behavior Rules** |
-| `updateHints` | string | No | **Update Hints** — extra guidance for the AI about how to update this variable (JSON-only, no editor UI yet) |
+| `updateHints` | string | No | **Deprecated** — use `behaviorRules` instead. Retained for import compatibility only |
 
 :::
 
@@ -94,7 +94,9 @@ The category doesn't affect how the variable actually behaves, but it helps you 
 
 ### All operations (EffectOperation) in detail
 
-The AI uses bracket syntax in replies to modify variables. The engine parses these directives and executes the corresponding operation. There are 9 in total:
+The AI uses bracket syntax in replies to modify variables. The engine parses these directives and executes the corresponding operation. There are 9 in total.
+
+> **Reference by name OR ID.** Directives can target a variable by its `id` (e.g. `player_hp`) or its display `name` (e.g. `Player HP`) — the engine maintains a name→id map and resolves both. Names are matched case-sensitively.
 
 #### set — direct assignment
 
@@ -103,8 +105,10 @@ Sets the variable to a new value, regardless of what it was before.
 ```
 [location: set "forest"]        -- set location to "forest"
 [health: set 50]                -- set health directly to 50
-[health: 50]                    -- omitting "set" works too, treated as implicit assignment
+[health: 50]                    -- omitting the operator for a positive number defaults to "set"
 ```
+
+> **Heads up:** `[health: -10]` is **not** "set to -10." The leading `-` is the shorthand for `subtract`, so this directive subtracts 10 from the current health. To assign a negative value, write `[health: set -10]` explicitly.
 
 #### add — addition
 
@@ -161,21 +165,25 @@ Note: merge only works on object-type `json` variables, not arrays.
 
 #### push — array append
 
-Adds an element to the end of a `json` array variable. Use this to put things in the inventory.
+Adds an element to the end of a `json` array variable. The value **must be valid JSON** — an object `{...}` or an array `[...]`. Bare scalars (strings, numbers) are not accepted by the directive parser.
 
 ```
-[inventory: push "sword"]      -- a sword is added to the inventory
-[inventory: push {"name": "potion", "qty": 3}]  -- can also push objects
+[inventory: push {"id": "sword", "name": "Rusty Sword", "qty": 1}]   -- push an object
+[waypoints: push [12, 34]]                                            -- push an array
 ```
 
-#### delete — delete a key or element
+> **Tip:** If your inventory needs to hold raw strings like `"torch"`, either wrap each entry as an object (`{"id": "torch"}`) — which is the recommended pattern — or use a rule action's `modify-variable` operation where the value type is free.
 
-For objects: deletes a specified key. For arrays: removes an element at the specified index.
+#### delete — remove a key or element
 
-```
-[inventory: delete 0]           -- remove first item in inventory (index 0)
-[playerFlags: delete "visited"] -- remove the "visited" key from the object
-```
+Deletes a key from an object or an element at an array index. **Not usable via the `[var: ...]` directive syntax**: the parser's JSON pattern only matches object/array JSON values, so the bare string/number that `delete` needs cannot reach the handler.
+
+Two working paths:
+
+1. **JSON Patch block** — preferred for AI output. Emit `<UpdateVariable target="inventory"><JSONPatch>[{"op":"remove","path":"/0"}]</JSONPatch></UpdateVariable>` to remove the first inventory item, or `{"op":"remove","path":"/visited"}` to drop an object key.
+2. **Rule action** — inside a rule's `modify-variable` action, set `operation: "delete"` and `value: "visited"` (string for object keys) or `value: 0` (number for array indices).
+
+See the [Directives & Macros](./05-directives-and-macros.md) guide for the full `<UpdateVariable>` syntax.
 
 ### min/max auto-clamping
 
@@ -214,7 +222,9 @@ The engine navigates automatically to `gameState` → `factions` → `emberCourt
 
 If an intermediate path doesn't exist, the engine automatically creates empty objects to fill it in — no errors.
 
-Supported operations on nested paths include `set`, `add`, `subtract`, `delete`, `merge`, and `push` — most common ones work.
+Supported operations on nested paths: `set`, `add`, `subtract`, `merge`, and `push`.
+
+> **⚠️ Dot-paths only work on `json` variables.** If the root variable's type is `number`, `string`, or `boolean`, a dot-path directive like `[player.hp: +5]` is silently ignored by the engine. Always declare compound state as a `json` variable. `multiply` and `toggle` are also not wired up on nested paths in the current implementation — they silently degrade to `set`. For `delete` on a nested key, use JSON Patch (see the `delete` section above).
 
 ### behaviorRules — guidance for the AI
 
@@ -275,31 +285,36 @@ You drink a healing potion. Warm light flows through you. [health: +30]
 
 Because max is 100, even if current HP is 90 and you add 30, the result is 100, not 120.
 
-### 2. Inventory variable (json array + push/delete)
+### 2. Inventory variable (json array of objects)
 
-Use a json array to manage item lists with push and delete operations.
+Store items as objects so `push` can accept them directly. Use `<UpdateVariable>` JSON Patch when you need to remove an item by index.
 
 ```json
 {
   "id": "inventory",
   "name": "inventory",
   "type": "json",
-  "defaultValue": ["torch", "bread"],
+  "defaultValue": [
+    {"id": "torch", "name": "Torch", "qty": 1},
+    {"id": "bread", "name": "Bread", "qty": 2}
+  ],
   "category": "inventory",
-  "description": "Player's inventory item list",
-  "behaviorRules": "Use push to add items, use delete with an index to remove used or discarded items. Inventory limit: 10 items."
+  "description": "Player's inventory (array of item objects)",
+  "behaviorRules": "Use push with a full item object to add items. To remove a consumed or discarded item, emit an <UpdateVariable target=\"inventory\"><JSONPatch>[{\"op\":\"remove\",\"path\":\"/<index>\"}]</JSONPatch></UpdateVariable> block. Inventory limit: 10 items."
 }
 ```
 
 Example AI output:
 
 ```
-You find a rusty iron sword in the chest. [inventory: push "iron_sword"]
+You find a rusty iron sword in the chest.
+[inventory: push {"id": "iron_sword", "name": "Iron Sword", "qty": 1}]
 
-You light the torch to illuminate the cave depths. It slowly dies out in the damp air. [inventory: delete 0]
+You light the torch to illuminate the cave depths. It slowly dies out in the damp air.
+<UpdateVariable target="inventory"><JSONPatch>[{"op":"remove","path":"/0"}]</JSONPatch></UpdateVariable>
 ```
 
-`delete 0` removes the first element (index 0), which is "torch."
+The JSON Patch block removes index 0 ("torch") from the array. See [Directives & Macros](./05-directives-and-macros.md) for more patch examples.
 
 ### 3. Character relationship variable (json object + nested paths)
 

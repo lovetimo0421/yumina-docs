@@ -427,7 +427,7 @@ This tutorial only used the most fundamental features. There's a lot more Yumina
 - **[Audio](./09-audio.md)** — add BGM and sound effects, auto-switch to creepy music when entering the basement
 - **[Conditional Entries](./03-entries-and-lorebook.md)** — activate entries based on variable values, like late-game plot reveals
 
-**The advanced tutorial** (using "Poison in the Cup · Battle Royale" as the example) is coming soon — it dives deep into the rules engine, custom renderer, and complex state management.
+For deeper dives into individual systems, the [Rules Engine](./06-rules-engine.md), [Custom UI](./07-components.md) and [Variables](./04-variables.md) reference pages have worked examples covering complex state management.
 
 ---
 

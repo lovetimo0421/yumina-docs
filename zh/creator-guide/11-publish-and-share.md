@@ -122,6 +122,7 @@ interface YuminaBundle {
   entries: WorldEntry[];         // 条目（角色设定、剧情、风格指令等）
   variables: Variable[];         // 变量（血量、金币、好感度等）
   rules: Rule[];                 // 规则（当血量归零时触发死亡等）
+  customUI: CustomUIComponent[]; // 自定义 UI TSX 组件（必填，始终是数组）
   audioTracks: AudioTrack[];     // 音频（BGM、音效、环境音）
 
   // ── 应用模板 ──
@@ -129,14 +130,14 @@ interface YuminaBundle {
                                  // 定义整个世界的 UI 入口（index.tsx）
                                  // 带上就是"完整模板"，不带就是"零件包"
 
-  // ── 旧版兼容（可选）──
-  customUI?: CustomUIComponent[]; // 旧版 customUI 数组。v18 之前导出的 Bundle
-                                  // 还会带这个字段，导入时会自动迁移到 rootComponent。
-                                  // 新建 Bundle 不需要填。
-
   // ── 整理 ──
   customTags?: string[];         // 自定义标签定义（可选）
   entryFolders?: EntryFolder[];  // 条目的文件夹结构（可选）
+
+  // ── 已废弃字段（仅为导入兼容保留，新导出不应写入） ──
+  components?: unknown;          // @deprecated —— 旧版声明式 GameComponent 数组
+  customComponents?: unknown;    // @deprecated —— 更早期的自定义组件结构
+  messageRenderer?: unknown;     // @deprecated —— 已被 rootComponent 的 index.tsx 取代
 }
 ```
 
@@ -151,16 +152,19 @@ interface YuminaBundle {
 
 **创建Bundle**
 
-在编辑器顶部菜单点 **导出 Bundle（Export Bundle）**，勾选你想导出的内容。四大类可选：
+在编辑器顶部菜单点 **导出 Bundle（Export Bundle）**，会看到四个可勾选的板块：
 
 1. **Entries** — 条目（角色设定、剧情、风格指令等）
 2. **Variables** — 变量（血量、金币、好感度等）
 3. **Rules** — 行为（触发条件 + 动作）
-4. **Root Component** — 根组件 `index.tsx` 及其兄弟文件（UI 整体）
+4. **Custom UI** — 自定义 UI TSX 组件数组
 
 有个贴心的设计：当你勾选了某条规则，系统会自动高亮提示它依赖的变量，标个"suggested"让你不会漏选。
 
-此外还能带上根组件（rootComponent）和音频轨道（audioTracks），让 Bundle 升级为一个"完整模板"——别人导入后可以直接派生成一个新世界，而不仅仅是往已有世界里并内容。
+有两样东西会**自动包含**（没有勾选框）：
+
+- **音频轨道**（`audioTracks`）——整套音频总是自动打包。
+- **根组件**（`rootComponent`）——如果你的世界有根组件，就会自动附加上去。带上根组件后，Bundle 会升级为一个"完整模板"——别人导入后可以直接派生成一个新世界，而不只是往已有世界里合并内容。
 
 **导入时的冲突处理**
 
@@ -185,12 +189,17 @@ Bundle 保存后默认是私有的。发布后可以在 **发现（Discover）**
 
 - 所有条目（entries）和条目文件夹结构（entryFolders）
 - 所有变量（variables）
-- 所有行为（rules）和事件反应（reactions）
+- 所有行为（rules）和编译后的事件反应（reactions）
 - 根组件（rootComponent）——整个世界的 UI 入口，包含 `index.tsx` 及其所有兄弟文件
+- 自定义 UI TSX 组件（customUI）
 - 音频轨道（audioTracks）和BGM播放列表（bgmPlaylist）、条件BGM（conditionalBGM）
+- 空间系统（systems）与场景（scenes）
+- 编辑器模式（editorMode: "simple" | "advanced"）
 - UI蓝图（uiBlueprint）
 - 世界设置（settings）——温度、token上限、布局模式、扫描深度等等
 - 多人模式设置（multiplayerSettings）
+
+注：作品变体分组键（`languageGroupId`）存在世界记录本身（用于 Hub 匹配），不在 `WorldDefinition` 里，所以不会出现在导出 JSON 中。
 
 完整导出的用途：
 

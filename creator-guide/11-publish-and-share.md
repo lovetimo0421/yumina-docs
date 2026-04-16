@@ -122,6 +122,7 @@ interface YuminaBundle {
   entries: WorldEntry[];          // Entries (character profiles, plot, style directives, etc.)
   variables: Variable[];          // Variables (HP, gold, affection, etc.)
   rules: Rule[];                  // Rules (trigger death when HP hits zero, etc.)
+  customUI: CustomUIComponent[];  // Custom UI TSX components (required, always an array)
   audioTracks: AudioTrack[];      // Audio (BGM, SFX, ambient)
 
   // ── App template ──
@@ -130,14 +131,14 @@ interface YuminaBundle {
                                   // (index.tsx). Including it makes the Bundle a
                                   // "full template"; leave it out for a "partial bundle."
 
-  // ── Legacy compatibility (optional) ──
-  customUI?: CustomUIComponent[]; // Legacy customUI array. Bundles exported before v18
-                                  // still carry this field and are auto-migrated into
-                                  // rootComponent on import. New bundles don't need it.
-
   // ── Organization ──
   customTags?: string[];          // Custom tag definitions (optional)
   entryFolders?: EntryFolder[];   // Entry folder structure (optional)
+
+  // ── Deprecated (import compatibility only — do not emit for new bundles) ──
+  components?: unknown;           // @deprecated — old declarative GameComponent array
+  customComponents?: unknown;     // @deprecated — older custom component shape
+  messageRenderer?: unknown;      // @deprecated — superseded by rootComponent's index.tsx
 }
 ```
 
@@ -152,16 +153,19 @@ Think of it as a "module" — plug it into another world and it works.
 
 **Creating a Bundle**
 
-Click **Export Bundle** in the editor's top menu, then check what content to include. Four main categories:
+Click **Export Bundle** in the editor's top menu. You get four checkable sections:
 
 1. **Entries** — entries (character profiles, plot, style directives, etc.)
 2. **Variables** — variables (HP, gold, affection, etc.)
 3. **Rules** — rules (trigger conditions + actions)
-4. **Root Component** — the `index.tsx` entry file and all its siblings (the whole UI tree)
+4. **Custom UI** — the TSX components array
 
 A thoughtful feature: when you check a rule, the system automatically highlights the variables it depends on and marks them as "suggested" so you don't accidentally leave them out.
 
-You can also include the Root Component (`rootComponent`) and audio tracks (`audioTracks`) to upgrade a Bundle into a "full template" — instead of merging into an existing world, importers can fork it into a brand-new world built on your template.
+Two things are **auto-included** (no checkbox):
+
+- **Audio tracks** (`audioTracks`) — the full list is always bundled.
+- **Root Component** (`rootComponent`) — if your world has one, it's attached automatically. Including a Root Component upgrades the Bundle into a "full template" — instead of merging into an existing world, importers can fork it into a brand-new world built on your template.
 
 **Conflict handling on import**
 
@@ -186,12 +190,17 @@ Beyond the "partial export" of Bundles, you can also export a complete world JSO
 
 - All entries (`entries`) and entry folder structure (`entryFolders`)
 - All variables (`variables`)
-- All rules (`rules`) and reactions
+- All rules (`rules`) and compiled reactions (`reactions`)
 - Root Component (`rootComponent`) — the entire world UI entry, including `index.tsx` and all its sibling files
+- Custom UI TSX components (`customUI`)
 - Audio tracks (`audioTracks`), BGM playlist (`bgmPlaylist`), conditional BGM (`conditionalBGM`)
+- Spatial systems (`systems`) and scenes (`scenes`)
+- Editor mode (`editorMode: "simple" | "advanced"`)
 - UI blueprint (`uiBlueprint`)
 - World settings (`settings`) — temperature, token limits, layout mode, scan depth, etc.
 - Multiplayer settings (`multiplayerSettings`)
+
+Note: the sharing variant grouping key (`languageGroupId`) is stored on the world record itself (for Hub matching), not inside `WorldDefinition`, so it doesn't appear in the exported JSON.
 
 Uses for full export:
 - **Backup** — export periodically as a local copy. Your data is safe in the cloud, but local backups give peace of mind.
@@ -364,7 +373,6 @@ The exported Bundle JSON (simplified):
     { "id": "mp", "name": "MP", "type": "number", "defaultValue": 50,
       "min": 0, "max": 50, "category": "resource" }
   ],
-  "components": [],
   "rules": [],
   "customUI": [],
   "audioTracks": [

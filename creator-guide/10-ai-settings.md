@@ -78,11 +78,32 @@ These settings are configured by each player in their own profile, not by the wo
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `reasoningEffort` | string | `"low"` | Controls thinking depth for reasoning-capable models (e.g. Claude). Options: `"none"`, `"low"`, `"medium"`, `"high"`. Higher values make the AI think more carefully but cost more tokens. Players can change this in **Settings → AI Config** |
+| `reasoningEffort` | string | `"low"` | Controls thinking depth for reasoning-capable models (e.g. Claude, GPT-5). Options exposed in the UI: `"minimal"`, `"low"`, `"medium"`, `"high"`. Higher values make the AI think more carefully but cost more tokens. `"minimal"` is the lowest tier that still enables reasoning. Players can change this in **Profile → AI Config** |
+| `streaming` | boolean | `true` | Whether AI replies stream token-by-token (SSE) or arrive as one chunk. Keep on unless your network is flaky. Toggle in **Profile → AI Config** |
 
 ::: warning Advanced setting
 `structuredOutput` is not currently exposed in the editor UI. To enable JSON mode, you need to export the world JSON, manually add `"structuredOutput": true` to the `settings` object, and re-import. This is an advanced creator feature — most worlds don't need it.
 :::
+
+### Bring Your Own Key (BYOK)
+
+Players can store their own API keys and route all model calls through their own account. Keys are **AES-256-GCM encrypted at rest** using a key derived from the server's `BETTER_AUTH_SECRET`; the raw key is never returned from the server after storage — only metadata (provider, label, masked suffix).
+
+**Supported providers** (see `packages/server/src/lib/llm/provider-factory.ts`):
+
+| Provider ID | Notes |
+|-------------|-------|
+| `openrouter` | Default. One key unlocks hundreds of models (Anthropic, OpenAI, Google, Mistral, Qwen…) |
+| `anthropic` | Direct Anthropic API for Claude models |
+| `openai` | Direct OpenAI API for GPT models |
+| `google` | Direct Google AI Studio API for Gemini models |
+| `ollama` | Local Ollama server (specify your own base URL) |
+
+**Where to set it:** **Profile → AI Provider → Private Key**. Toggle "Use private key," then add keys per provider. Flipping the master switch also flips `preferences.preferredProvider` between `"yumina"` (use the platform-provided provider) and `"private"` (use your own keys). On the server side the HTTP surface is `POST /api/keys` (store), `GET /api/keys` (list metadata), `DELETE /api/keys/:id` (remove), and `POST /api/keys/:id/verify` (test that the key works).
+
+### Curated & pinned models
+
+When picking a model for a world (or in the player's profile), Yumina surfaces a **curated list** (`packages/app/src/lib/curated-models.ts`) across four cost tiers — budget / standard / premium / ultra. The platform default is `x-ai/grok-4.1-fast`. You can **pin up to 8 models** for quick access; 4 are pinned by default. Pins are per-user and persist across worlds.
 
 ---
 

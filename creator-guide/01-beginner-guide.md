@@ -4,12 +4,11 @@
 
 ## Getting into the editor
 
-In the left navigation of Yumina, click the **Create** button. You'll see the template selection page: **Create New**. There are a few starting points to choose from:
+In the left navigation of Yumina, click the **Create** button. You'll see the template selection page: **Create New**. There are five starting points:
 
 - **Blank Project** — start completely from scratch
 - **Character Chat** — set up a 1-on-1 character conversation
 - **World Simulation** — build a full world with factions and events
-- **Progressive Adventure** — an RPG with attributes, inventory, and quests
 - **Multiplayer Campaign** — a 2–4 player DnD-style tabletop campaign
 - **Import World** — import from a JSON file or a character card
 
@@ -27,10 +26,10 @@ Right after picking a template (or importing a world), if this is your first tim
 
 | Mode | What you see | Who it's for |
 |------|--------------|--------------|
-| **Simple** | Three guided fields (AI Role, Setting, Tone) + character list + Overview. Only the bare essentials are shown | First-timers who want to turn an idea into something playable, fast |
-| **Advanced** | Full eight sections: First Message, Lorebook, Variables, Behaviors, Custom UI, Audio, Assets, Overview | Creators with a clear gameplay design who want to use variables, rules, custom UI, etc. |
+| **Simple** | Three top-level tabs: First Message, Lorebook (which exposes guided AI Role / Setting / Tone fields plus characters), and Overview. Only the bare essentials are shown | First-timers who want to turn an idea into something playable, fast |
+| **Advanced** | Full nine sections: First Message, Lorebook, Variables, Behaviors, Custom UI, Audio, Assets, Overview, Hub Translations | Creators with a clear gameplay design who want to use variables, rules, custom UI, etc. |
 
-**The data is shared between the two modes** — anything you fill in Simple mode isn't lost, it's just a different view. Entries and overview fields you see in Advanced mode are the same data; Simple mode just hides the "variables, behaviors, custom UI, audio" sections.
+**The data is shared between the two modes** — anything you fill in Simple mode isn't lost, it's just a different view. Entries and overview fields you see in Advanced mode are the same data; Simple mode just hides the "variables, behaviors, custom UI, audio, assets, hub translations" sections.
 
 ::: tip Switch any time
 At the top right of the editor there's a **Simple / Advanced** toggle — one click swaps the view. The choice is remembered, so the next world you create opens in the same mode.
@@ -42,7 +41,7 @@ If you start in Simple mode, fill out a few things, then realize you need more, 
 Think of Simple mode as **"the creator onboarding form"** — under the hood it still uses entries (the same as Advanced). The UI just pulls a few key fields (entries tagged `simple:prompt`, `simple:setting`, `simple:tone`) into a focused form so you can fill them in without distraction. Once you understand this, the seamless data sharing makes sense.
 :::
 
-The rest of this guide covers **Advanced mode**'s full eight sections. If you're in Simple mode you only see First Message, Lorebook, and Overview — reading the sections below will show you what Simple is hiding and when to switch.
+The rest of this guide covers **Advanced mode**'s full nine sections. If you're in Simple mode you only see First Message, Lorebook, and Overview — reading the sections below will show you what Simple is hiding and when to switch.
 
 ---
 
@@ -52,7 +51,7 @@ When you first open it, you'll see something like this:
 
 ![Editor main interface](./images/editor-overview.png)
 
-The left side is the navigation panel with 8 sections. Don't let the number scare you — we'll go through them one by one (•̀ᴗ•́)و
+The left side is the navigation panel with 9 sections. Don't let the number scare you — we'll go through them one by one (•̀ᴗ•́)و
 
 ---
 

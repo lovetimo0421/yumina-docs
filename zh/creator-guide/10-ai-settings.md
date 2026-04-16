@@ -82,7 +82,28 @@
 
 | 参数 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
-| `reasoningEffort` | 字符串 | `"low"` | 控制支持推理的模型（如 Claude）的思考深度。选项：`"none"`、`"low"`、`"medium"`、`"high"`。值越高 AI 思考越仔细，但消耗更多 token。玩家可在 **设置 → AI 配置** 中更改 |
+| `reasoningEffort` | 字符串 | `"low"` | 控制支持推理的模型（如 Claude、GPT-5）的思考深度。UI 暴露的选项：`"minimal"`、`"low"`、`"medium"`、`"high"`。值越高 AI 思考越仔细，但消耗更多 token。`"minimal"` 是仍启用推理的最低档。玩家可在 **个人资料 → AI 配置** 中更改 |
+| `streaming` | 布尔 | `true` | 控制 AI 回复是逐 token 流式（SSE）还是整块返回。网络不稳定时可以关掉，其他情况保持默认。可在 **个人资料 → AI 配置** 中切换 |
+
+### 自备密钥（BYOK）
+
+玩家可以存放自己的 API Key，让所有模型调用都走自己的账号。密钥在服务端**使用 AES-256-GCM 加密静态存储**，加密密钥由服务器的 `BETTER_AUTH_SECRET` 派生；存储之后原始密钥不会再从服务端返回——只返回元数据（provider、label、末尾几位）。
+
+**支持的 provider**（见 `packages/server/src/lib/llm/provider-factory.ts`）：
+
+| Provider ID | 说明 |
+|-------------|------|
+| `openrouter` | 默认。一把钥匙解锁数百个模型（Anthropic、OpenAI、Google、Mistral、Qwen……） |
+| `anthropic` | 直连 Anthropic API，使用 Claude |
+| `openai` | 直连 OpenAI API，使用 GPT |
+| `google` | 直连 Google AI Studio API，使用 Gemini |
+| `ollama` | 本地 Ollama 服务（自行指定 base URL） |
+
+**在哪里设置：** **个人资料 → AI Provider → 私有密钥**。打开"使用私有密钥"开关后按 provider 添加 key。主开关同时会把 `preferences.preferredProvider` 在 `"yumina"`（使用平台提供的 provider）和 `"private"`（使用你自己的 key）之间切换。服务端 HTTP 接口为：`POST /api/keys`（存储）、`GET /api/keys`（列出元数据）、`DELETE /api/keys/:id`（删除）、`POST /api/keys/:id/verify`（验证可用）。
+
+### 精选模型与置顶
+
+在为世界挑选模型（或在玩家个人资料里挑）时，Yumina 会展示一份**精选列表**（`packages/app/src/lib/curated-models.ts`），分为四档——budget / standard / premium / ultra。平台默认模型是 `x-ai/grok-4.1-fast`。你可以**置顶最多 8 个模型**便于快速访问，默认预置 4 个。置顶配置是按用户保存的，跨世界保留。
 
 ---
 

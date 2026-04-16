@@ -187,7 +187,7 @@ Do the manual tutorial once first to understand the engine's core concepts. Then
 You now know two ways to build a world. From here:
 
 - Want to go deep on a specific feature? Check the [Feature Reference](./00-welcome.md#feature-reference) section
-- Want to see how more complex worlds are built? **The advanced tutorial** (based on "Poison in the Cup · Battle Royale") is coming soon
+- Want to see how recipes combine features? Browse the [recipe pages](./14-recipe-scene-jumping.md) for worked examples
 - Want to make your world look better? See the [Custom UI Guide](./07-components.md)
 
 Now go build something of your own ᕕ( ᐛ )ᕗ

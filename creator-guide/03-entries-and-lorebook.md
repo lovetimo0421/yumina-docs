@@ -40,6 +40,15 @@ Add keywords to an entry, and the engine scans the player's recent messages. If 
 
 For example, an entry with keywords `["forest", "the woods", "shadow"]` — when the player says "I walk into the woods," this entry triggers.
 
+::: warning Keyword format: editor input vs JSON file
+The format you type into the editor is different from how keywords are stored in the JSON file. Don't confuse the two:
+
+- **Typing into the editor**: separate with **standard commas `,`**, no quotes — e.g. `forest, the woods, shadow`
+- **In the JSON file**: a standard JSON string array — `["forest", "the woods", "shadow"]` (the double quotes are JSON syntax; they themselves play no role in keyword matching)
+
+⚠️ **Only the standard comma `,` is recognized as a separator.** The Chinese enumeration comma `、` and fullwidth comma `，` won't work — they get treated as part of the keyword text. For example, typing `forest、woods` would be stored as **one** keyword `"forest、woods"` rather than two, and the match will fail.
+:::
+
 ### alwaysSend: always in effect
 
 If you want an entry to be sent to the AI regardless of what the player says — like a character's core profile or the world's fundamental rules — set `alwaysSend` to `true`. These entries bypass keyword requirements and are included in every prompt.

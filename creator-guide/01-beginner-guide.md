@@ -115,6 +115,8 @@ Entries aren't sent to the AI every single time (the AI can only read so much at
 
 For example: if you have an entry about a "black market" in CHAT HISTORY with the keyword `black market`, that content only gets sent to the AI when the player mentions "black market." This way you don't waste the AI's reading budget, but you also make sure the AI has the right info when it needs it. Pretty smart (≧▽≦)
 
+To add multiple keywords, separate them with **standard commas `,`** — e.g. `black market, smuggling, back alley`. ⚠️ It has to be the standard comma — the Chinese enumeration comma `、` and fullwidth comma `，` are not recognized and will break the match.
+
 How far back does it look? The engine scans the last N messages for keywords — that's the **Scan Depth** setting under **Entry Settings** (defaults to 2, bump it to 4 if triggering feels unresponsive).
 
 ### Position (ordering)

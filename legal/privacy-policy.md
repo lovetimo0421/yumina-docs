@@ -1,24 +1,20 @@
 # Privacy Policy
 
-**Last Modified: [EFFECTIVE DATE]**
-
----
+__Last Modified: April 25, 2026__
 
 ## 1. Introduction
 
-Yumina LLC ("Yumina," "we," "us," or "our") is an AI interactive fiction and roleplay platform that enables users to create game worlds with characters, variables, rules, and interactive components; chat with AI-driven characters; and join multiplayer rooms. We are committed to protecting your privacy and handling your Personal Information responsibly.
+Yumina, Inc. ("Yumina," "we," "us," or "our") is an AI interactive fiction and roleplay platform that enables users to create game worlds with characters, variables, rules, and interactive components; chat with AI-driven characters; and join multiplayer rooms. We are committed to protecting your privacy and handling your Personal Information responsibly.
 
 This Privacy Policy ("Policy") explains what Personal Information we collect, how we collect and use it, with whom we share it, and the rights and choices available to you. "Personal Information" means any information that identifies, relates to, describes, is reasonably capable of being associated with, or could reasonably be linked, directly or indirectly, to an identifiable individual.
 
 By accessing or using the Yumina platform, website, and related services (collectively, the "Service"), you acknowledge that you have read and understood this Policy. If you do not agree with our practices, please do not use the Service.
 
----
-
 ## 2. Scope
 
-This Policy applies to the Yumina web platform and all related services operated by Yumina LLC, including:
+This Policy applies to the Yumina web platform and all related services operated by Yumina, Inc., including:
 
-- The Yumina website at [WEBSITE URL];
+- The Yumina website at yumina.io;
 - User account registration and management;
 - World creation, publishing, and discovery;
 - AI-powered chat and interactive fiction sessions;
@@ -28,31 +24,24 @@ This Policy applies to the Yumina web platform and all related services operated
 
 This Policy does not apply to third-party websites, applications, or services that may be linked from or integrated with the Service. Please review the privacy policies of those third parties separately (see Section 20).
 
----
-
 ## 3. Age Policy
 
-The Service is intended for users who are at least **13 years of age**. We do not knowingly collect Personal Information from children under the age of 13. If we discover that we have collected Personal Information from a child under 13, we will promptly delete that information. Please see Section 19 (Children's Privacy) for additional detail.
+The Service is intended for users who are at least __13 years of age__. We do not knowingly collect Personal Information from children under the age of 13. If we discover that we have collected Personal Information from a child under 13, we will promptly delete that information. Please see Section 19 (Children's Privacy) for additional detail.
 
-Certain content on the Service is rated R-18 or R-18G and is restricted to users who are at least **18 years of age**. Access to age-restricted content requires self-declaration of your birth year and selection of the appropriate content level in your account settings. By enabling access to R-18 or R-18G content, you represent and warrant that you are at least 18 years old.
+Certain content on the Service is rated R-18 and is restricted to users who are at least __18 years of age__. Access to age-restricted content requires self-declaration of your birth year and selection of the appropriate content level in your account settings. By enabling access to R-18, you represent and warrant that you are at least 18 years old.
 
 Content on the Service uses a tiered rating system, controlled by a single content level preference in your account settings:
 
-- **All Ages** -- Suitable for users aged 13 and older. (Default content level)
-- **R-18** -- Restricted to users aged 18 and older.
-- **R-18G** -- Restricted to users aged 18 and older; may contain graphic content. Setting your content level to R-18G also grants access to R-18 content.
-
----
+- __All Ages__ -- Suitable for users aged 13 and older. (Default content level)
+- __R-18__ -- Restricted to users aged 18 and older.
 
 ## 4. Contact Information
 
 If you have any questions, concerns, or requests regarding this Privacy Policy or our data practices, please contact us at:
 
-**Yumina LLC**
-[COMPANY ADDRESS]
-Email: [CONTACT EMAIL]
+__Yumina, Inc__ 
 
----
+Email: support@yumina.io
 
 ## 5. Personal Information We Collect
 
@@ -126,11 +115,11 @@ If you participate in the Creator Rewards Program, additional information is col
 - Date of birth (for identity verification)
 - Government-issued identification documents (if required by Stripe for identity verification)
 
-**This information is collected, stored, and managed by Stripe Connect, not by Yumina directly.** Yumina may receive limited summary information from Stripe (e.g., payout status, tax form filing status, verification status) but does not store your full tax identification numbers or bank account details on Yumina's own systems. Please refer to [Stripe's Privacy Policy](https://stripe.com/privacy) for details on how Stripe handles this data.
+__This information is collected, stored, and managed by Stripe Connect, not by Yumina directly.__ Yumina may receive limited summary information from Stripe (e.g., payout status, tax form filing status, verification status) but does not store your full tax identification numbers or bank account details on Yumina's own systems. Please refer to [Stripe's Privacy Policy](https://stripe.com/privacy) for details on how Stripe handles this data.
 
 ### 5.7 Financial Data
 
-Payment-related information required to process transactions. Yumina uses Stripe as its payment processor for both user purchases (subscriptions, credits) and Creator payouts (via Stripe Connect). **Yumina does not directly store credit card numbers, debit card numbers, or full bank account details.** Payment information is collected and processed by Stripe in accordance with [Stripe's Privacy Policy](https://stripe.com/privacy). We may receive and store limited information from Stripe, such as the last four digits of your card, card brand, expiration date, and billing address.
+Payment-related information required to process transactions. Yumina uses Stripe as its payment processor for both user purchases (subscriptions, credits) and Creator payouts (via Stripe Connect). __Yumina does not directly store credit card numbers, debit card numbers, or full bank account details.__ Payment information is collected and processed by Stripe in accordance with [Stripe's Privacy Policy](https://stripe.com/privacy). We may receive and store limited information from Stripe, such as the last four digits of your card, card brand, expiration date, and billing address.
 
 ### 5.8 Audio and Visual Data
 
@@ -145,7 +134,7 @@ Media you upload to the Service, including:
 Information used to verify your age and control access to age-restricted content, including:
 
 - Self-declared birth year
-- Content level preference (All Ages, R-18, or R-18G)
+- Content level preference (All Ages, R-18)
 
 ### 5.10 Third-Party Login Data
 
@@ -158,21 +147,19 @@ If you register or sign in using a third-party authentication provider (Google, 
 
 We do not receive or store your passwords from third-party login providers.
 
----
-
 ## 6. How We Collect Personal Information
 
 ### 6.1 Data You Provide Directly
 
 We collect Personal Information that you voluntarily provide when you:
 
-- **Register for an account** -- including your username, email address, password, display name, and birth year declaration.
-- **Create and publish content** -- including Worlds, characters, variables, rules, components, images, and other creative assets.
-- **Use AI chat features** -- including the chat messages you send during interactive fiction sessions.
-- **Participate in multiplayer rooms** -- including room settings and in-room interactions.
-- **Manage your account settings** -- including content rating preferences, profile information, and notification preferences.
-- **Contact us** -- including any information you provide in support requests, feedback, or other communications.
-- **Participate in the Creator Rewards Program** -- including identity verification, tax information (W-9 for U.S. Creators, W-8BEN/W-8BEN-E for non-U.S. Creators), and payout details, all collected through Stripe Connect.
+- __Register for an account__ -- including your username, email address, password, display name, and birth year declaration.
+- __Create and publish content__ -- including Worlds, characters, variables, rules, components, images, and other creative assets.
+- __Use AI chat features__ -- including the chat messages you send during interactive fiction sessions.
+- __Participate in multiplayer rooms__ -- including room settings and in-room interactions.
+- __Manage your account settings__ -- including content rating preferences, profile information, and notification preferences.
+- __Contact us__ -- including any information you provide in support requests, feedback, or other communications.
+- __Participate in the Creator Rewards Program__ -- including identity verification, tax information (W-9 for U.S. Creators, W-8BEN/W-8BEN-E for non-U.S. Creators), and payout details, all collected through Stripe Connect.
 
 ### 6.2 Data Collected Automatically
 
@@ -192,8 +179,6 @@ Please see Section 10 (Cookies and Similar Technologies) for more information.
 
 If you choose to register or sign in using Google, Discord, or X (formerly Twitter), we receive the information described in Section 5.10 through the OAuth authentication process. The information we receive depends on your privacy settings with the third-party provider and the permissions you grant during the authentication flow.
 
----
-
 ## 7. How We Use Personal Information
 
 We use the Personal Information we collect for the following purposes:
@@ -209,7 +194,7 @@ We use the Personal Information we collect for the following purposes:
 ### 7.2 Age Verification and Content Gating
 
 - Verifying that you meet the minimum age requirement (13+) to use the Service based on your declared birth year
-- Restricting access to R-18 and R-18G content to users who are at least 18 years old based on their declared birth year and content level preference
+- Restricting access to R-18 content to users who are at least 18 years old based on their declared birth year and content level preference
 - Enforcing content rating classifications
 
 ### 7.3 Content Moderation and Safety
@@ -246,9 +231,7 @@ We use aggregate analytics -- not individual-level tracking -- to improve the Se
 
 ### 7.8 Statement Regarding AI Model Training
 
-**Yumina does not use your User Content to train AI models.** See Section 8.2 for additional detail.
-
----
+__Yumina does not use your User Content to train AI models.__ See Section 8.2 for additional detail.
 
 ## 8. AI Chat Data Processing
 
@@ -256,7 +239,7 @@ This section explains how your data is handled when you use the AI chat features
 
 ### 8.1 How AI Chat Works
 
-When you engage in an AI interactive fiction or chat session, your chat messages -- along with relevant context from your World (such as character descriptions, system prompts, variables, and rules) -- are sent to **third-party AI service providers** to generate responses. This transmission is necessary for the Service to function.
+When you engage in an AI interactive fiction or chat session, your chat messages -- along with relevant context from your World (such as character descriptions, system prompts, variables, and rules) -- are sent to __third-party AI service providers__ to generate responses. This transmission is necessary for the Service to function.
 
 ### 8.2 Yumina Does Not Train on Your Content
 
@@ -264,28 +247,25 @@ Yumina does not use your chat messages, World content, or any other User Content
 
 ### 8.3 Third-Party AI Provider Policies
 
-The third-party AI service providers currently used by the Service include OpenRouter, Anthropic, and OpenAI. A current list of providers is maintained at [AI PROVIDERS URL]. Each provider has its own privacy policies and data handling practices. Yumina selects providers that offer API terms under which user inputs submitted via the API are not used for model training, where such terms are available. However, Yumina cannot guarantee the data practices of third-party providers, and their policies may change.
+The third-party AI service providers currently used by the Service include OpenRouter, Anthropic, and OpenAI. Each provider has its own privacy policies and data handling practices. Yumina selects providers that offer API terms under which user inputs submitted via the API are not used for model training, where such terms are available. However, Yumina cannot guarantee the data practices of third-party providers, and their policies may change.
 
 The Service also supports Ollama for local inference. When Ollama is configured, AI processing occurs entirely on your own device and your data is not transmitted to any third-party AI provider.
 
 ### 8.4 Sensitive Information in Chat
 
-You should **avoid entering real, sensitive personal information** (such as real names, addresses, phone numbers, financial account numbers, Social Security numbers, or health information) in AI chat sessions. While Yumina takes steps to protect your data, chat messages are transmitted to third-party AI service providers for processing, and the interactive fiction environment is not designed for the handling of real-world sensitive personal data.
-
----
+You should __avoid entering real, sensitive personal information__ (such as real names, addresses, phone numbers, financial account numbers, Social Security numbers, or health information) in AI chat sessions. While Yumina takes steps to protect your data, chat messages are transmitted to third-party AI service providers for processing, and the interactive fiction environment is not designed for the handling of real-world sensitive personal data.
 
 ## 9. Data Sharing
 
-We share Personal Information only as described below. **We do not sell your Personal Information.**
+We share Personal Information only as described below. __We do not sell your Personal Information.__
 
 ### 9.1 Service Providers
 
 We share Personal Information with trusted third-party service providers who assist us in operating the Service, including:
 
-- **Hosting and infrastructure providers** that store and serve the Service, including cloud storage providers (such as S3-compatible object storage) used to store user-uploaded assets (images, audio, and other media files)
-- **Payment processors** — Stripe processes user purchases (subscriptions, credits) and, through Stripe Connect, processes Creator Rewards payouts, identity verification, and tax reporting (including 1099-NEC issuance for U.S. Creators and W-8 form collection for non-U.S. Creators)
-- **Third-party AI service providers** that generate AI chat responses (currently OpenRouter, Anthropic, and OpenAI; see Section 8)
-- **[ANALYTICS PROVIDERS]** [TBD -- analytics tools not yet decided]
+- __Hosting and infrastructure providers__ that store and serve the Service, including cloud storage providers (such as S3-compatible object storage) used to store user-uploaded assets (images, audio, and other media files)
+- __Payment processors__ — Stripe processes user purchases (subscriptions, credits) and, through Stripe Connect, processes Creator Rewards payouts, identity verification, and tax reporting (including 1099-NEC issuance for U.S. Creators and W-8 form collection for non-U.S. Creators)
+- __Third-party AI service providers__ that generate AI chat responses (currently OpenRouter, Anthropic, and OpenAI; see Section 8)
 
 These service providers are contractually obligated to use your Personal Information only to provide services to us and in accordance with this Policy. For payment and tax processing, Stripe acts as a data processor and, in some cases, an independent data controller — please review [Stripe's Privacy Policy](https://stripe.com/privacy) for details on their data practices.
 
@@ -308,9 +288,7 @@ In the event of a merger, acquisition, reorganization, bankruptcy, asset sale, o
 
 ### 9.5 No Sale of Personal Data
 
-**Yumina does not sell, rent, or lease your Personal Information to third parties.** We do not share your Personal Information with third parties for their own direct marketing purposes.
-
----
+__Yumina does not sell, rent, or lease your Personal Information to third parties.__ We do not share your Personal Information with third parties for their own direct marketing purposes.
 
 ## 10. Cookies and Similar Technologies
 
@@ -320,9 +298,9 @@ Cookies are small text files placed on your device by a website. They are widely
 
 ### 10.2 Cookies We Use
 
-- **Essential Cookies** -- Required for the Service to function. These cookies enable core features such as user authentication, session management, and security. You cannot opt out of essential cookies without losing the ability to use the Service.
-- **Functional Cookies** -- Used to remember your preferences and settings, including content level preference (All Ages, R-18, or R-18G), display preferences, and other personalization choices.
-- **Analytics Cookies** -- Used to collect aggregate information about how users interact with the Service, helping us understand usage patterns and improve the Service. These cookies do not identify individual users. [ANALYTICS PROVIDERS]
+- __Essential Cookies__ -- Required for the Service to function. These cookies enable core features such as user authentication, session management, and security. You cannot opt out of essential cookies without losing the ability to use the Service.
+- __Functional Cookies__ -- Used to remember your preferences and settings, including content level preference (All Ages or R-18), display preferences, and other personalization choices.
+- __Analytics Cookies__ -- Used to collect aggregate information about how users interact with the Service, helping us understand usage patterns and improve the Service. These cookies do not identify individual users. Yumina currently uses Google Analytics and PostHog as its analytics providers.
 
 ### 10.3 Managing Cookies
 
@@ -335,29 +313,25 @@ Most web browsers allow you to control cookies through their settings. You can t
 
 Please note that blocking or deleting essential cookies may prevent you from using the Service or cause it to function improperly. For more information about managing cookies, visit your browser's help documentation.
 
----
-
 ## 11. Data Storage and Security
 
 ### 11.1 Data Location
 
-Your Personal Information is stored and processed in the **United States**. By using the Service, you consent to the transfer and storage of your data in the United States. Please see Section 17 (International Users) for additional information.
+Your Personal Information is stored and processed in the __United States__. By using the Service, you consent to the transfer and storage of your data in the United States. Please see Section 17 (International Users) for additional information.
 
 ### 11.2 Security Measures
 
 We implement industry-standard technical and organizational measures to protect your Personal Information, including:
 
-- **Encryption in transit** -- All data transmitted between your device and the Service is encrypted using HTTPS/TLS.
-- **Encryption at rest** -- Sensitive data, such as API keys, is encrypted using AES-256-GCM.
-- **Password hashing** -- User passwords are stored as cryptographic hashes; plaintext passwords are never stored.
-- **Access controls** -- Access to Personal Information is restricted to authorized personnel on a need-to-know basis.
-- **Regular security reviews** -- We periodically review and update our security practices.
+- __Encryption in transit__ -- All data transmitted between your device and the Service is encrypted using HTTPS/TLS.
+- __Encryption at rest__ -- Sensitive data, such as API keys, is encrypted using AES-256-GCM.
+- __Password hashing__ -- User passwords are stored as cryptographic hashes; plaintext passwords are never stored.
+- __Access controls__ -- Access to Personal Information is restricted to authorized personnel on a need-to-know basis.
+- __Regular security reviews__ -- We periodically review and update our security practices.
 
 ### 11.3 No Absolute Guarantee
 
 While we take reasonable steps to protect your Personal Information, no method of transmission over the Internet and no method of electronic storage is completely secure. We cannot guarantee the absolute security of your data. You use the Service at your own risk with respect to security.
-
----
 
 ## 12. Data Retention
 
@@ -365,18 +339,37 @@ While we take reasonable steps to protect your Personal Information, no method o
 
 We retain your Personal Information for as long as your account remains active and as needed to provide the Service to you. The following retention periods apply to specific data categories for active accounts:
 
-| Data Category | Retention Period |
-|---|---|
-| Chat messages and session data | Duration of account |
-| World Memories (AI-extracted summaries) | Duration of account (max 100 per World) |
-| Server access logs (IP, user agent) | 90 days |
-| Security event logs | 1 year |
-| Payment and transaction records | 7 years (tax and regulatory compliance) |
-| Aggregate analytics data (de-identified) | Indefinite |
+__Data Category__
+
+__Retention Period__
+
+Chat messages and session data
+
+Duration of account
+
+World Memories (AI-extracted summaries)
+
+Duration of account (max 100 per World)
+
+Server access logs (IP, user agent)
+
+90 days
+
+Security event logs
+
+1 year
+
+Payment and transaction records
+
+7 years (tax and regulatory compliance)
+
+Aggregate analytics data (de-identified)
+
+Indefinite
 
 ### 12.2 Deleted Accounts
 
-When you close or delete your account, we will delete your Personal Information within **7 days** of account closure. This includes your Identity Data, User Content, and other Personal Information associated with your account.
+When you close or delete your account, we will delete your Personal Information within __7 days__ of account closure. This includes your Identity Data, User Content, and other Personal Information associated with your account.
 
 ### 12.3 Legal Exceptions
 
@@ -391,17 +384,13 @@ Notwithstanding the above, we may retain certain Personal Information for longer
 
 We periodically review our data retention practices to ensure that Personal Information is not retained longer than necessary for the purposes described in this Policy.
 
----
-
 ## 13. Data Breach Notification
 
 In the event of a data breach that affects your Personal Information:
 
-- We will notify affected users **within 72 hours** of confirming the breach, providing information about what happened, what data was affected, and what steps we are taking in response.
-- We will notify relevant **regulatory authorities** as required by applicable law, including within 72 hours for GDPR supervisory authorities where applicable.
+- We will notify affected users __within 72 hours__ of confirming the breach, providing information about what happened, what data was affected, and what steps we are taking in response.
+- We will notify relevant __regulatory authorities__ as required by applicable law, including within 72 hours for GDPR supervisory authorities where applicable.
 - We will take prompt action to contain the breach and mitigate any harm.
-
----
 
 ## 14. Your Rights and Choices
 
@@ -433,7 +422,7 @@ You can opt out of receiving marketing and promotional communications from us by
 
 - Clicking the "unsubscribe" link in any marketing email we send
 - Adjusting your notification preferences in your account settings
-- Contacting us at [CONTACT EMAIL]
+- Contacting us at support@yumina.io
 
 Opting out of marketing communications does not affect service-related communications (such as security alerts and account notifications).
 
@@ -443,9 +432,7 @@ You can manage cookies through your browser settings as described in Section 10.
 
 ### 14.8 How to Exercise Your Rights
 
-To exercise any of the rights described above, please contact us at [CONTACT EMAIL]. We may need to verify your identity before processing your request. We will respond to your request within a reasonable timeframe and in accordance with applicable law.
-
----
+To exercise any of the rights described above, please contact us at support@yumina.io. We may need to verify your identity before processing your request. We will respond to your request within a reasonable timeframe and in accordance with applicable law.
 
 ## 15. California Privacy Rights (CCPA/CPRA)
 
@@ -467,7 +454,7 @@ You have the right to request that we delete Personal Information we have collec
 
 ### 15.3 Right to Opt-Out of Sale
 
-**We do not sell your Personal Information.** However, you have the right to direct a business that sells your Personal Information to stop doing so. Because we do not engage in the sale of Personal Information, no opt-out mechanism is necessary, but we honor this right as a matter of principle.
+__We do not sell your Personal Information.__ However, you have the right to direct a business that sells your Personal Information to stop doing so. Because we do not engage in the sale of Personal Information, no opt-out mechanism is necessary, but we honor this right as a matter of principle.
 
 ### 15.4 Right to Non-Discrimination
 
@@ -484,9 +471,7 @@ Residents of Virginia (VCDPA), Colorado (CPA), Connecticut (CTDPA), Utah (UCPA),
 
 ### 15.6 Submitting Requests
 
-To submit a request under the CCPA/CPRA or other applicable U.S. state privacy laws, please contact us at [CONTACT EMAIL]. We will verify your identity before processing your request and will respond within the timeframe required by applicable law (45 days for CCPA/CPRA). You may also designate an authorized agent to make a request on your behalf, subject to verification.
-
----
+To submit a request under the CCPA/CPRA or other applicable U.S. state privacy laws, please contact us at support@yumina.io. We will verify your identity before processing your request and will respond within the timeframe required by applicable law (45 days for CCPA/CPRA). You may also designate an authorized agent to make a request on your behalf, subject to verification.
 
 ## 16. European Economic Area, United Kingdom, and Swiss Users
 
@@ -496,30 +481,30 @@ If you are located in the European Economic Area ("EEA"), the United Kingdom ("U
 
 We process your Personal Information on the following legal bases:
 
-- **Contract Performance (Article 6(1)(b) GDPR):** Processing necessary to provide the Service to you, including account creation, chat processing, session management, and payment processing.
-- **Legitimate Interests (Article 6(1)(f) GDPR):** Processing necessary for our legitimate interests, including platform security, fraud prevention, aggregate analytics, and service improvement, where those interests are not overridden by your data protection rights.
-- **Consent (Article 6(1)(a) GDPR):** Processing based on your consent, including access to R-18/R-18G content, marketing communications, and optional cookies. You may withdraw consent at any time (see Section 14.5).
-- **Legal Obligation (Article 6(1)(c) GDPR):** Processing necessary to comply with legal obligations, including tax reporting, law enforcement requests, and regulatory requirements.
+- __Contract Performance (Article 6(1)(b) GDPR):__ Processing necessary to provide the Service to you, including account creation, chat processing, session management, and payment processing.
+- __Legitimate Interests (Article 6(1)(f) GDPR):__ Processing necessary for our legitimate interests, including platform security, fraud prevention, aggregate analytics, and service improvement, where those interests are not overridden by your data protection rights.
+- __Consent (Article 6(1)(a) GDPR):__ Processing based on your consent, including access to R-18 content, marketing communications, and optional cookies. You may withdraw consent at any time (see Section 14.5).
+- __Legal Obligation (Article 6(1)(c) GDPR):__ Processing necessary to comply with legal obligations, including tax reporting, law enforcement requests, and regulatory requirements.
 
 ### 16.2 Data Protection Officer
 
-[DPO DESIGNATION OR STATEMENT — e.g., "Yumina has not designated a Data Protection Officer as it does not meet the threshold requirements under Article 37 GDPR. For data protection inquiries, please contact us at [CONTACT EMAIL]."]
+[DPO DESIGNATION OR STATEMENT — e.g., "Yumina has not designated a Data Protection Officer as it does not meet the threshold requirements under Article 37 GDPR. For data protection inquiries, please contact us at support@yumina.io."]
 
 ### 16.3 Cross-Border Data Transfers
 
 Your Personal Information is transferred to and processed in the United States. We rely on the following transfer mechanisms to ensure adequate protection of your data:
 
-- **Standard Contractual Clauses (SCCs)** as adopted by the European Commission (Commission Implementing Decision (EU) 2021/914), executed with our service providers.
+- __Standard Contractual Clauses (SCCs)__ as adopted by the European Commission (Commission Implementing Decision (EU) 2021/914), executed with our service providers.
 - Where applicable, supplementary measures including encryption in transit and at rest.
 
 ### 16.4 Additional Rights
 
 In addition to the rights described in Section 14, EEA, UK, and Swiss users have the following rights:
 
-- **Right to Data Portability:** You have the right to receive your Personal Information in a structured, commonly used, and machine-readable format, and to transmit that data to another controller.
-- **Right to Restriction of Processing:** You have the right to request restriction of processing of your Personal Information in certain circumstances (e.g., while we verify accuracy after a correction request).
-- **Right to Object:** You have the right to object to processing of your Personal Information based on legitimate interests. We will cease processing unless we demonstrate compelling legitimate grounds.
-- **Right to Lodge a Complaint:** You have the right to lodge a complaint with your local supervisory authority if you believe our processing of your Personal Information violates applicable data protection law. A list of EEA supervisory authorities is available at [https://edpb.europa.eu/about-edpb/about-edpb/members_en](https://edpb.europa.eu/about-edpb/about-edpb/members_en).
+- __Right to Data Portability:__ You have the right to receive your Personal Information in a structured, commonly used, and machine-readable format, and to transmit that data to another controller.
+- __Right to Restriction of Processing:__ You have the right to request restriction of processing of your Personal Information in certain circumstances (e.g., while we verify accuracy after a correction request).
+- __Right to Object:__ You have the right to object to processing of your Personal Information based on legitimate interests. We will cease processing unless we demonstrate compelling legitimate grounds.
+- __Right to Lodge a Complaint:__ You have the right to lodge a complaint with your local supervisory authority if you believe our processing of your Personal Information violates applicable data protection law. A list of EEA supervisory authorities is available at [https://edpb.europa.eu/about-edpb/about-edpb/members\_en](https://edpb.europa.eu/about-edpb/about-edpb/members_en).
 
 ### 16.5 Data Breach Notification
 
@@ -529,31 +514,23 @@ In the event of a personal data breach likely to result in a risk to your rights
 
 Yumina does not engage in automated decision-making or profiling that produces legal effects or similarly significantly affects you, as described in Article 22 GDPR. Content recommendations on the Service are based on aggregate engagement data and do not constitute profiling with legal or similarly significant effects.
 
----
-
 ## 17. International Users (All Other Jurisdictions)
 
-The Service is operated from and data is stored in the **United States**. If you are accessing the Service from outside the United States, please be aware that your Personal Information will be transferred to, stored in, and processed in the United States.
+The Service is operated from and data is stored in the __United States__. If you are accessing the Service from outside the United States, please be aware that your Personal Information will be transferred to, stored in, and processed in the United States.
 
 By using the Service, you consent to the transfer of your Personal Information to the United States. The data protection and privacy laws of the United States may differ from, and may not provide the same level of protection as, the laws in your country of residence. You acknowledge and accept these risks by using the Service. For users in the EEA, UK, and Switzerland, please refer to Section 16 for applicable transfer mechanisms and additional rights.
-
----
 
 ## 18. "Do Not Track" Signals
 
 The Service does not currently respond to "Do Not Track" (DNT) browser signals or similar mechanisms.
 
----
-
 ## 19. Children's Privacy (COPPA)
 
 The Service is not directed to children under the age of 13. We do not knowingly collect, use, or disclose Personal Information from children under 13 years of age, in compliance with the Children's Online Privacy Protection Act (COPPA).
 
-If you are under 13 years of age, **do not use the Service** and do not provide any Personal Information to us. Do not create an account, submit any content, or enter any information on the Service.
+If you are under 13 years of age, __do not use the Service__ and do not provide any Personal Information to us. Do not create an account, submit any content, or enter any information on the Service.
 
-If we learn that we have collected Personal Information from a child under 13, we will take prompt steps to delete that information and terminate the associated account. If you are a parent or guardian and believe that your child under 13 has provided Personal Information to us, please contact us immediately at [CONTACT EMAIL] so that we can take appropriate action.
-
----
+If we learn that we have collected Personal Information from a child under 13, we will take prompt steps to delete that information and terminate the associated account. If you are a parent or guardian and believe that your child under 13 has provided Personal Information to us, please contact us immediately at support@yumina.io so that we can take appropriate action.
 
 ## 20. Third-Party Links
 
@@ -561,52 +538,28 @@ The Service may contain links to third-party websites, applications, or services
 
 This Policy does not apply to any third-party websites, applications, or services. We are not responsible for the privacy practices, content, or security of any third party. We encourage you to review the privacy policies of any third-party services you access through or in connection with the Service.
 
----
-
 ## 21. Changes to This Policy
 
 We may update this Privacy Policy from time to time to reflect changes in our practices, the Service, or applicable law. When we make changes:
 
 - We will update the "Last Modified" date at the top of this Policy.
-- For **material changes**, we will notify you by email (sent to the email address associated with your account) and/or by prominent notice within the Service (such as an in-app notification or banner).
+- For __material changes__, we will notify you by email (sent to the email address associated with your account) and/or by prominent notice within the Service (such as an in-app notification or banner).
 - We encourage you to review this Policy periodically.
 
 Your continued use of the Service after the effective date of any updated Policy constitutes your acceptance of the changes. If you do not agree with the updated Policy, you should stop using the Service and delete your account.
-
----
 
 ## 22. Contact Us
 
 If you have any questions, concerns, or requests regarding this Privacy Policy or our privacy practices, please contact us:
 
-**Yumina LLC**
-[COMPANY ADDRESS]
+__Yumina, Inc__
 
-**Email:** [CONTACT EMAIL]
+__Email:__ [support@yumina.io](mailto:support@yumina.io)
 
-**Security vulnerabilities:** [SECURITY EMAIL]
+__Security vulnerabilities:__ [security@yumina.io](mailto:security@yumina.io)
 
-**Website:** [WEBSITE URL]
+__Website:__ yumina.io
 
-This Privacy Policy should be read in conjunction with our [Terms of Use]([TERMS OF USE URL]) and [Community Guidelines]([COMMUNITY GUIDELINES URL]).
+This Privacy Policy should be read in conjunction with our [Terms of Use](/legal/terms-of-use) and [Community Guidelines](/legal/community-guidelines).
 
 We will make every effort to respond to your inquiry in a timely manner.
-
----
-
-## Placeholders to Complete
-
-The following placeholders must be replaced with actual information before this Privacy Policy is published:
-
-| Placeholder | Description |
-|---|---|
-| `[EFFECTIVE DATE]` | The date this Privacy Policy takes effect |
-| `[COMPANY ADDRESS]` | Registered business address of Yumina LLC |
-| `[CONTACT EMAIL]` | Email address for privacy inquiries (e.g., privacy@yumina.com) |
-| `[WEBSITE URL]` | Primary URL of the Yumina platform |
-| `[ANALYTICS PROVIDERS]` | Names of analytics tools/providers once selected |
-| `[SECURITY EMAIL]` | Security vulnerability reporting email |
-| `[TERMS OF USE URL]` | URL to the Yumina Terms of Use |
-| `[COMMUNITY GUIDELINES URL]` | URL to the Yumina Community Guidelines |
-| `[AI PROVIDERS URL]` | URL to the current list of third-party AI providers |
-| `[DPO DESIGNATION OR STATEMENT]` | Data Protection Officer designation or explanation |

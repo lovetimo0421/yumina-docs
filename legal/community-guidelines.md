@@ -1,6 +1,6 @@
 # Yumina Community Guidelines
 
-**Last Modified: [EFFECTIVE DATE]**
+__Last Modified: April 25, 2026__
 
 ## Part 1: Introduction
 
@@ -8,7 +8,7 @@
 
 Welcome to Yumina. These Community Guidelines ("Guidelines") exist to maintain a positive, safe, and creative environment for everyone on our platform. Yumina is an AI interactive fiction and roleplay platform where users create Worlds, chat with AI characters, and collaborate in multiplayer Rooms. That creative freedom comes with shared responsibility.
 
-These Guidelines apply in addition to the [Yumina Terms of Use]([TERMS OF USE URL]) and [Privacy Policy]([PRIVACY POLICY URL]). Where these documents conflict, the Terms of Use take precedence.
+These Guidelines apply in addition to the [Yumina Terms of Use](/legal/terms-of-use) and [Privacy Policy](/legal/privacy-policy). Where these documents conflict, the Terms of Use take precedence.
 
 Yumina is intended for users aged 13 and older. Users under 13 are not permitted to create accounts or use the Service.
 
@@ -28,17 +28,15 @@ These Guidelines apply to all user activity on the Service, including but not li
 
 Yumina may modify these Guidelines at any time. When we make material changes, we will update the "Last Modified" date at the top of this document and, where practical, notify users through the Service. We encourage you to review these Guidelines periodically. Your continued use of the Service after changes are posted constitutes acceptance of the updated Guidelines.
 
----
-
 ## Part 2: Content Rating System
 
 All User Content published on Yumina must be assigned a content rating by its Creator. Yumina uses a three-tier content rating system. Creators are responsible for selecting the correct rating. Yumina reserves the right to re-rate any content at its sole discretion.
 
 ### 4. All Ages Content
 
-**Definition:** Content suitable for all users aged 13 and older.
+__Definition:__ Content suitable for all users aged 13 and older.
 
-**What is allowed:**
+__What is allowed:__
 
 - Adventure, mystery, comedy, drama, horror (non-graphic), and other general-audience genres
 - Romance, including dating scenarios, emotional intimacy, confessions, hand-holding, kissing, and non-sexual physical affection
@@ -46,18 +44,18 @@ All User Content published on Yumina must be assigned a content rating by its Cr
 - Mild language and humor appropriate for a teen audience
 - Fantasy violence (sword fights, magical battles) without graphic injury detail
 
-**What is NOT allowed in All Ages content:**
+__What is NOT allowed in All Ages content:__
 
 - Sexually explicit or sexually suggestive content, including innuendo intended to arouse
 - Graphic depictions of violence, gore, dismemberment, or body horror
 - Detailed descriptions of drug use or substance abuse
-- Content that would require an R-18 or R-18G rating under these Guidelines
+- Content that would require an R-18 rating under these Guidelines
 
 ### 5. R-18 Content
 
-**Definition:** Content that is sexually explicit, sexually suggestive, or contains mature adult themes unsuitable for users under 18.
+__Definition:__ Content that is sexually explicit, sexually suggestive, or contains mature adult themes unsuitable for users under 18.
 
-**What qualifies as R-18:**
+__What qualifies as R-18:__
 
 - Sexually explicit scenes, descriptions, or dialogue
 - Nudity depicted in a sexual context
@@ -65,43 +63,14 @@ All User Content published on Yumina must be assigned a content rating by its Cr
 - Mature themes such as graphic drug use, intense psychological horror, or extreme profanity used pervasively
 - Content that, while not depicting gore, is clearly intended for an adult audience
 
-**Access requirements:**
+__Access requirements:__
 
 - Users must be 18 years of age or older
 - Users must have declared their birth year in their account settings, confirming they are 18+
-- Users must have set their content level to R-18 or R-18G in their account settings
+- Users must have set their content level to R-18 in their account settings
 - R-18 content is hidden from all users who have not met all three requirements
 
-### 6. R-18G Content
-
-**Definition:** Content depicting grotesque imagery, gore, or scenes designed to cause physical discomfort or disgust.
-
-**What qualifies as R-18G:**
-
-- Graphic depictions of dismemberment, mutilation, or amputation
-- Viscera, exposed organs, or detailed internal body imagery
-- Body horror (unnatural bodily transformation, parasitic infestation, flesh corruption)
-- Cannibalism depicted in graphic detail
-- Graphic depictions of bodily fluids in disturbing or revolting contexts
-- Torture depicted with graphic physical detail
-- Content combining extreme gore with sexual elements
-
-**What does NOT qualify as R-18G:**
-
-- Heroic sacrifice or dramatic death scenes without gratuitous anatomical detail
-- Narrative or dramatic death (a character dying in a story-appropriate way)
-- Bittersweet or tragic endings
-- Blood mentioned in passing without graphic elaboration
-- Fantasy combat injuries described briefly
-
-**Access requirements:**
-
-- Users must be 18 years of age or older
-- Users must have declared their birth year in their account settings, confirming they are 18+
-- Users must have set their content level to R-18G in their account settings
-- R-18G content is hidden from all users who have not met all three requirements
-
-### 7. Content Rating Obligations
+### 6. Content Rating Obligations
 
 - Creators MUST select the appropriate content rating for every World, character, or piece of content they publish
 - When in doubt, rate conservatively (choose the higher rating)
@@ -109,26 +78,24 @@ All User Content published on Yumina must be assigned a content rating by its Cr
 - Yumina reserves the right to review and re-rate any content at any time
 - If Yumina re-rates your content, you will be notified of the change and the reason
 
-### 8. Misrating Penalties
+### 7. Misrating Penalties
 
-Deliberately marking R-18 or R-18G content with a lower rating (for example, labeling sexually explicit content as "All Ages") is a serious violation. This undermines the safety of younger users and the trust of the community.
+Deliberately marking R-18 content with a lower rating (for example, labeling sexually explicit content as "All Ages") is a serious violation. This undermines the safety of younger users and the trust of the community.
 
-**Penalty escalation for deliberate misrating:**
+__Penalty escalation for deliberate misrating:__
 
-1. **First offense:** Warning issued, content re-rated by Yumina
-2. **Second offense:** Publishing privileges restricted (temporary or indefinite)
-3. **Third offense:** Temporary account ban
-4. **Continued or egregious violations:** Permanent account ban
+1. __First offense:__ Warning issued, content re-rated by Yumina
+2. __Second offense:__ Publishing privileges restricted (temporary or indefinite)
+3. __Third offense:__ Temporary account ban
+4. __Continued or egregious violations:__ Permanent account ban
 
 Yumina distinguishes between honest mistakes and deliberate misrating. If you accidentally select the wrong rating and correct it promptly (or cooperate when notified), this will be treated differently from intentional abuse.
-
----
 
 ## Part 3: Absolute Prohibitions (Zero Tolerance)
 
 The following categories of content and conduct result in an immediate permanent ban from Yumina, with no prior warnings. Yumina may also refer violations to law enforcement where applicable.
 
-### 9. Minor Safety & Real Child Images
+### 8. Minor Safety & Real Child Images
 
 Yumina has an absolute zero-tolerance policy regarding the sexualization of minors and the use of real child images.
 
@@ -140,13 +107,13 @@ The following are strictly prohibited:
 - Child Sexual Abuse Material (CSAM) of any kind, including AI-generated CSAM
 - Real photographs or realistic depictions of actual children used in any context on Yumina, including character avatars, World assets, backgrounds, profile pictures, or any content where the image represents a character in a roleplay or interactive fiction context. This prohibition applies regardless of whether the content is sexual in nature — the use of real child images on a roleplay platform creates inherent risk and is not permitted.
 
-**Enforcement:**
+__Enforcement:__
 
 - Violations result in immediate and permanent account termination
 - CSAM and suspected child exploitation will be reported to the National Center for Missing & Exploited Children (NCMEC) and/or relevant law enforcement agencies immediately
 - Yumina will cooperate fully with law enforcement investigations related to child safety
 
-### 10. Human Trafficking & Sexual Exploitation
+### 9. Human Trafficking & Sexual Exploitation
 
 Content that promotes, facilitates, glorifies, or provides instructions for human trafficking or the sexual exploitation of any person is strictly prohibited. This includes:
 
@@ -157,37 +124,33 @@ Content that promotes, facilitates, glorifies, or provides instructions for huma
 
 Violations result in immediate permanent ban and may be referred to law enforcement.
 
----
-
 ## Part 4: Real People & Public Figures
 
-### 11. Real Person Characters
+### 10. Real Person Characters
 
 Creating characters based on real, identifiable people is subject to the following rules:
 
-- **Authorization required:** Using a real person's name, likeness, voice, or other identifying characteristics for a character requires that you hold the appropriate copyright, trademark, or personal authorization to do so
-- **Fictional labeling:** All characters based on real people must be clearly labeled as fictional (e.g., in the World description or character bio)
-- **R-18 and R-18G content featuring real people is strictly prohibited**, even if the Creator claims to have authorization from the person depicted. No exceptions.
+- __Authorization required:__ Using a real person's name, likeness, voice, or other identifying characteristics for a character requires that you hold the appropriate copyright, trademark, or personal authorization to do so
+- __Fictional labeling:__ All characters based on real people must be clearly labeled as fictional (e.g., in the World description or character bio)
+- __R-18 content featuring real people is strictly prohibited__, even if the Creator claims to have authorization from the person depicted. No exceptions.
 - Yumina is not responsible for verifying authorization claims and may remove content at its discretion if a valid complaint is received
 
-### 12. Deepfake & AI-Generated Real Person Content
+### 11. Deepfake & AI-Generated Real Person Content
 
 - AI-generated NSFW (sexually explicit or suggestive) images depicting real, identifiable people are strictly prohibited. This constitutes deepfake content and is banned regardless of context.
-- AI-generated images that could reasonably be mistaken for real photographs of identifiable individuals are prohibited in any NSFW or R-18/R-18G context.
+- AI-generated images that could reasonably be mistaken for real photographs of identifiable individuals are prohibited in any NSFW or R-18 context.
 - This rule applies to all AI image generation tools, whether integrated into Yumina or used externally and uploaded to the Service.
 
-### 13. Political Figures
+### 12. Political Figures
 
-- Characters based on real political figures (current or historical) are allowed for the purposes of **education, historical commentary, parody, and satire**, in **All Ages content only**
-- R-18 or R-18G content featuring real political figures is strictly prohibited
+- Characters based on real political figures (current or historical) are allowed for the purposes of __education, historical commentary, parody, and satire__, in __All Ages content only__
+- R-18 content featuring real political figures is strictly prohibited
 - Content must be clearly presented as fictional, satirical, or parodic
 - No content featuring political figures that constitutes political misinformation likely to cause real-world harm, incite violence, or interfere with political processes (such as elections)
 
----
-
 ## Part 5: Prohibited Conduct
 
-### 14. Illegal Activities
+### 13. Illegal Activities
 
 Do not use the Service to engage in, promote, facilitate, or provide instructions for illegal activities. This includes but is not limited to:
 
@@ -199,7 +162,7 @@ Do not use the Service to engage in, promote, facilitate, or provide instruction
 
 Content that depicts illegal activities in a fictional or educational context (e.g., a crime drama World) is generally permitted, provided it does not serve as a practical guide or instruction manual for committing real crimes.
 
-### 15. Hate Speech
+### 14. Hate Speech
 
 Content that promotes hatred, discrimination, or violence against individuals or groups based on the following protected characteristics is prohibited:
 
@@ -223,7 +186,7 @@ This includes:
 
 Fictional works that depict prejudice or discrimination as part of a narrative (e.g., a story exploring themes of overcoming bigotry) are permitted, provided the content does not itself advocate for or glorify such views.
 
-### 16. Misinformation
+### 15. Misinformation
 
 The following types of misinformation are prohibited:
 
@@ -233,7 +196,7 @@ The following types of misinformation are prohibited:
 
 Fictional content, satire, and speculative fiction are not misinformation, provided they are clearly presented as fictional.
 
-### 17. Harassment & Bullying
+### 16. Harassment & Bullying
 
 Yumina is committed to a community free from harassment. The following are prohibited:
 
@@ -246,9 +209,9 @@ Yumina is committed to a community free from harassment. The following are prohi
 - Derogatory, demeaning, or humiliating comments directed at specific users
 - Bullying, including sustained patterns of behavior intended to intimidate, belittle, or exclude
 
-If you are being harassed, report the behavior immediately using the reporting tools described in Section 39 of these Guidelines.
+If you are being harassed, report the behavior immediately using the reporting tools described in Section 38 of these Guidelines.
 
-### 18. Violence & Threats
+### 17. Violence & Threats
 
 - Threats of real-world violence against any person, group, or institution are strictly prohibited and may result in immediate permanent ban and referral to law enforcement
 - Content that promotes, encourages, or provides instructions for committing real-world violence is prohibited
@@ -256,7 +219,7 @@ If you are being harassed, report the behavior immediately using the reporting t
 
 Fictional violence in the context of interactive fiction and roleplay (combat scenes, conflict, dramatic tension) is permitted within the appropriate content rating tier.
 
-### 19. Self-Harm Content
+### 18. Self-Harm Content
 
 The following are prohibited:
 
@@ -269,12 +232,12 @@ Fictional works that address these topics in a thoughtful, narrative context (e.
 
 If you or someone you know is in crisis, please contact a crisis helpline in your area:
 
-- **United States:** Call or text 988 (Suicide & Crisis Lifeline)
-- **United Kingdom:** 116 123 (Samaritans)
-- **Japan:** 0570-064-556 (いのちの電話)
-- **International directory:** [findahelpline.com](https://findahelpline.com)
+- __United States:__ Call or text 988 (Suicide & Crisis Lifeline)
+- __United Kingdom:__ 116 123 (Samaritans)
+- __Japan:__ 0570-064-556 (いのちの電話)
+- __International directory:__ [findahelpline.com](https://findahelpline.com)
 
-### 20. Personal & Confidential Information
+### 19. Personal & Confidential Information
 
 Do not share another person's private or confidential information on the Service without their explicit consent. This includes:
 
@@ -288,14 +251,14 @@ Do not share another person's private or confidential information on the Service
 - Medical or health information
 - Any other information that could be used to identify or locate a person against their will
 
-### 21. Impersonation & Deception
+### 20. Impersonation & Deception
 
 - Do not impersonate other users, Yumina staff, moderators, or administrators
 - Do not create accounts designed to mislead others about your identity or affiliation
 - Do not falsely claim to represent Yumina or to have authority you do not possess
 - Do not use misleading display names, avatars, or profile information to deceive other users about who you are
 
-### 22. Spam & Manipulation
+### 21. Spam & Manipulation
 
 - Do not send spam, including mass unsolicited messages, advertisements, or promotional content
 - Do not use bots, scripts, or automated tools to artificially inflate engagement metrics (downloads, favorites, ratings)
@@ -303,39 +266,39 @@ Do not share another person's private or confidential information on the Service
 - Do not post unauthorized advertisements or commercial solicitations
 - Do not engage in review manipulation, vote brigading, or coordinated inauthentic behavior
 
-### 23. Malicious Software
+### 22. Malicious Software
 
 - Do not upload, distribute, or link to viruses, malware, ransomware, spyware, trojans, or any other destructive or malicious code
 - Do not attempt to exploit vulnerabilities in the Service
 - Do not attempt to compromise the security or integrity of the Service or its users' data
 
-If you discover a security vulnerability, please report it responsibly to [SECURITY EMAIL].
+If you discover a security vulnerability, please report it responsibly to security@yumina.io.
 
-### 24. Intellectual Property
+### 23. Intellectual Property
 
 - Respect the copyrights, trademarks, and other intellectual property rights of others
 - Do not upload or publish content that infringes on another party's intellectual property without appropriate rights or authorization
 - Honor the re-edit and export permission settings that Creators have configured for their Worlds. If a Creator has disabled re-editing or exporting, respect that decision.
 - Accounts that consist solely or primarily of content copied from other Creators without permission or attribution may be disabled
-- If you believe your intellectual property has been infringed, follow the process outlined in the [Terms of Use]([TERMS OF USE URL])
+- If you believe your intellectual property has been infringed, follow the process outlined in the [Terms of Use](/legal/terms-of-use)
 
-### 25. Bestiality
+### 24. Bestiality
 
 - Content that promotes, normalizes, or depicts sexual activity with real animals is prohibited
 - This includes realistic depictions of sexual acts involving real animal species
-- Fictional, fantastical, or mythological species (e.g., dragons, werewolves, elves, aliens, and other non-real creatures) are exempt from this rule, provided the content is appropriately rated under the content rating system. This exemption applies to species that **do not exist in the real world** and are clearly presented as fictional or fantastical. Characters that are realistic depictions of real animal species with only minor fictional modifications (e.g., a real dog breed that can speak) do not qualify for this exemption
+- Fictional, fantastical, or mythological species (e.g., dragons, werewolves, elves, aliens, and other non-real creatures) are exempt from this rule, provided the content is appropriately rated under the content rating system. This exemption applies to species that __do not exist in the real world__ and are clearly presented as fictional or fantastical. Characters that are realistic depictions of real animal species with only minor fictional modifications (e.g., a real dog breed that can speak) do not qualify for this exemption
 
-### 26. Non-Consensual Intimate Imagery (NCII)
+### 25. Non-Consensual Intimate Imagery (NCII)
 
 Sharing, uploading, or distributing intimate or sexually explicit images of any real person without their consent is strictly prohibited, whether the images are real photographs, AI-generated, or digitally manipulated. This includes:
 
 - Revenge pornography or intimate images shared without the depicted person's consent
-- AI-generated intimate imagery of real, identifiable persons (see also Section 12)
+- AI-generated intimate imagery of real, identifiable persons (see also Section 11)
 - Threats to distribute intimate imagery as a means of coercion or harassment
 
 Violations may result in immediate permanent ban and referral to law enforcement where applicable.
 
-### 27. Financial Scams & Unauthorized Solicitation
+### 26. Financial Scams & Unauthorized Solicitation
 
 Using the Service to promote, facilitate, or engage in financial fraud is prohibited. This includes:
 
@@ -344,7 +307,7 @@ Using the Service to promote, facilitate, or engage in financial fraud is prohib
 - Phishing attempts or impersonation for financial gain
 - Using World content, chat sessions, or multiplayer Rooms to solicit money from users outside of Yumina's official payment and tipping systems
 
-### 28. Account Abuse
+### 27. Account Abuse
 
 - Do not hijack, compromise, or gain unauthorized access to another user's account
 - Do not access another user's account without their explicit permission
@@ -352,13 +315,11 @@ Using the Service to promote, facilitate, or engage in financial fraud is prohib
 - Do not sell, purchase, trade, or transfer accounts
 - Do not share account credentials with others
 
----
-
 ## Part 6: AI-Generated Content Rules
 
 Yumina is an AI-powered platform. The following rules govern the relationship between users and AI-generated content.
 
-### 29. User Responsibility for Prompts
+### 28. User Responsibility for Prompts
 
 You are responsible for the prompts you write and the content you actively guide the AI to generate. If you craft prompts, character instructions, system directives, or World configurations that are designed to produce content that violates these Guidelines, you are responsible for the resulting output.
 
@@ -368,7 +329,7 @@ This includes:
 - Configuring characters or Worlds to systematically produce violating content
 - Using jailbreak techniques, prompt injection, or other methods to coerce the AI into generating prohibited content
 
-### 30. Unintentional AI Output
+### 29. Unintentional AI Output
 
 AI language models may occasionally generate content that violates these Guidelines without any intent or prompting from the user. If this occurs:
 
@@ -377,7 +338,7 @@ AI language models may occasionally generate content that violates these Guideli
 - Do not publish, share, or redistribute AI-generated content that you know violates these Guidelines, even if you did not prompt it
 - If you become aware that AI-generated content in your published World violates these Guidelines, you are expected to remove or report it promptly. Knowingly allowing violating content to remain in a published World may be treated as a violation
 
-### 31. Content Filter Circumvention
+### 30. Content Filter Circumvention
 
 Deliberately attempting to bypass, circumvent, or disable Yumina's content filters, safety systems, or moderation tools is a violation of these Guidelines. This includes:
 
@@ -386,7 +347,7 @@ Deliberately attempting to bypass, circumvent, or disable Yumina's content filte
 - Encoding, obfuscating, or otherwise disguising prohibited prompts to evade detection
 - Sharing methods or tools for circumventing content filters with other users
 
-### 32. AI Content Equals User Content
+### 31. AI Content Equals User Content
 
 All content generated by AI on the Service is subject to these Community Guidelines in the same way as content written directly by a user. There is no distinction in enforcement between:
 
@@ -395,107 +356,103 @@ All content generated by AI on the Service is subject to these Community Guideli
 - Images generated by AI tools
 - Any other AI-generated output within the Service
 
-If AI-generated content in your World, character, or chat session violates these Guidelines, the same enforcement actions apply as if you had written the content yourself (subject to the unintentional output exception in Section 30).
-
----
+If AI-generated content in your World, character, or chat session violates these Guidelines, the same enforcement actions apply as if you had written the content yourself (subject to the unintentional output exception in Section 29).
 
 ## Part 7: Multiplayer Room Rules
 
 Multiplayer Rooms allow multiple users to participate in shared interactive fiction sessions. Because Rooms involve real-time interaction between users, additional rules apply.
 
-### 33. Room Content Rating
+### 32. Room Content Rating
 
-- The Room creator MUST set a content rating (All Ages, R-18, or R-18G) at the time of Room creation
+- The Room creator MUST set a content rating (All Ages or R-18) at the time of Room creation
 - The Room's content rating is displayed prominently in the Room listing and lobby
 - All content within a Room — including user messages, AI-generated content, character actions, and shared media — must not exceed the Room's set content rating
 - Posting content that exceeds the Room's rating is a violation of these Guidelines, enforceable against the user who posted it
 
-### 34. Joining R-18 / R-18G Rooms
+### 33. Joining R-18 Rooms
 
-When a user attempts to join a Room rated R-18 or R-18G, the following confirmation process applies:
+When a user attempts to join a Room rated R-18, the following confirmation process applies:
 
 - A confirmation popup is displayed showing the Room's content rating
 - The user must confirm that they are 18 years of age or older
 - The user must confirm that they understand and consent to potentially encountering content at the Room's rated level
-- The user must have their content level set to a level that includes the Room's rating (e.g., R-18 or R-18G for R-18 Rooms; R-18G for R-18G Rooms)
+- The user must have their content level set to a level that includes the Room's rating (e.g., R-18 for R-18 Rooms)
 - Users who do not meet all requirements cannot join the Room
 
-### 35. Room Host Responsibilities
+### 34. Room Host Responsibilities
 
 The Room creator (host) has additional responsibilities:
 
-- **Maintain order:** Ensure participants follow the Room's content rating and these Guidelines
-- **Moderate content:** Address violations promptly by warning, muting, kicking, or banning users who violate rules
-- **Kick and ban:** Hosts have the authority to remove users from their Room at their discretion
-- **Report:** Hosts should report serious violations to Yumina through the standard reporting process
+- __Maintain order:__ Ensure participants follow the Room's content rating and these Guidelines
+- __Moderate content:__ Address violations promptly by warning, muting, kicking, or banning users who violate rules
+- __Kick and ban:__ Hosts have the authority to remove users from their Room at their discretion
+- __Report:__ Hosts should report serious violations to Yumina through the standard reporting process
 
 Hosts who persistently fail to moderate their Rooms — allowing ongoing violations to continue unchecked — may lose the ability to create or host Rooms.
 
-### 36. Participant Rights
+### 35. Participant Rights
 
 All Room participants have the following rights:
 
-- **Report:** Any participant can report content or other users within a Room at any time
-- **Leave:** Any participant can leave a Room at any time, for any reason, without penalty
-- **Block:** Any participant can block other users, which prevents further interaction
+- __Report:__ Any participant can report content or other users within a Room at any time
+- __Leave:__ Any participant can leave a Room at any time, for any reason, without penalty
+- __Block:__ Any participant can block other users, which prevents further interaction
 
-### 37. R-18 Interaction Consent
+### 36. R-18 Interaction Consent
 
-- All participants in R-18 or R-18G Rooms must have their content level set to the appropriate level in their account settings
+- All participants in R-18 Rooms must have their content level set to the appropriate level in their account settings
 - Consent to participate in mature content is ongoing and can be withdrawn at any time by leaving the Room
 - No participant may pressure, coerce, or shame another participant into remaining in a Room or engaging with content they are uncomfortable with
 - If a participant expresses discomfort with the direction of content, other participants and the host should respect that
 
-### 38. Rating Change Prohibition
+### 37. Rating Change Prohibition
 
 - A Room's content rating CANNOT be upgraded during an active session (for example, changing an All Ages Room to R-18 while users are present)
 - If participants wish to engage in content at a higher rating level, a new Room must be created with the appropriate rating
 - This rule exists to protect participants who joined under the expectation of a specific content level
 
----
-
 ## Part 8: Reporting & Enforcement
 
-### 39. How to Report
+### 38. How to Report
 
 If you encounter content or behavior that violates these Guidelines, you can report it through the following channels:
 
-- **In-platform reporting:** Use the report button available on Worlds, characters, chat messages, Room content, and user profiles
-- **Email:** Send a report to [CONTACT EMAIL]
+- __In-platform reporting:__ Use the report button available on Worlds, characters, chat messages, Room content, and user profiles
+- __Email:__ Send a report to support@yumina.io
 
 All reports are reviewed by the Yumina team. Reports are confidential — the identity of the reporter is not disclosed to the reported party.
 
-### 40. What to Include in Reports
+### 39. What to Include in Reports
 
 To help us review your report efficiently, please include:
 
-- **Location:** Where the violating content is located (World name/URL, Room name, user profile, specific message)
-- **Rule violated:** Which section of these Guidelines you believe was violated
-- **Context:** Any additional context, screenshots, or evidence that would help us understand the situation
-- **Urgency:** If the situation involves immediate danger (threats of violence, CSAM, etc.), please indicate this clearly
+- __Location:__ Where the violating content is located (World name/URL, Room name, user profile, specific message)
+- __Rule violated:__ Which section of these Guidelines you believe was violated
+- __Context:__ Any additional context, screenshots, or evidence that would help us understand the situation
+- __Urgency:__ If the situation involves immediate danger (threats of violence, CSAM, etc.), please indicate this clearly
 
-### 41. Review Process
+### 40. Review Process
 
 When Yumina receives a report:
 
 1. The report is reviewed by the Yumina moderation team
 2. The reported content or behavior is evaluated against these Guidelines
-3. If a violation is confirmed, appropriate action is taken (see Section 42)
+3. If a violation is confirmed, appropriate action is taken (see Section 41)
 4. Both the reporter and the reported party are notified of the outcome, including what action was taken and why
 5. If no violation is found, the reporter is notified that the report was reviewed and no action was warranted
 
 Review times vary depending on report volume and complexity. Urgent reports (safety threats, CSAM) are prioritized.
 
-### 42. Penalty Ladder
+### 41. Penalty Ladder
 
 For most violations, Yumina follows an escalating penalty structure:
 
-1. **Warning** — A formal notice that a violation occurred, with an explanation of the rule and expected behavior
-2. **Content removal** — The violating content is removed or hidden from the platform
-3. **Feature restriction** — Specific privileges are restricted (e.g., publishing ban, Room creation ban, commenting ban) for a defined period or until conditions are met
-4. **Temporary ban (7 days)** — Account access is suspended for 7 days
-5. **Temporary ban (30 days)** — Account access is suspended for 30 days
-6. **Permanent ban** — Account is permanently terminated with no possibility of reinstatement (except through a successful appeal)
+1. __Warning__ — A formal notice that a violation occurred, with an explanation of the rule and expected behavior
+2. __Content removal__ — The violating content is removed or hidden from the platform
+3. __Feature restriction__ — Specific privileges are restricted (e.g., publishing ban, Room creation ban, commenting ban) for a defined period or until conditions are met
+4. __Temporary ban (7 days)__ — Account access is suspended for 7 days
+5. __Temporary ban (30 days)__ — Account access is suspended for 30 days
+6. __Permanent ban__ — Account is permanently terminated with no possibility of reinstatement (except through a successful appeal)
 
 The severity of enforcement depends on:
 
@@ -506,7 +463,7 @@ The severity of enforcement depends on:
 
 Yumina reserves the right to skip steps in the penalty ladder for serious violations.
 
-### 43. Immediate Permanent Ban
+### 42. Immediate Permanent Ban
 
 The following violations result in immediate permanent account termination without prior warnings:
 
@@ -517,48 +474,34 @@ The following violations result in immediate permanent account termination witho
 
 These violations may also be referred to law enforcement agencies.
 
-### 44. Appeal Process
+### 43. Appeal Process
 
 If you believe an enforcement action was taken in error, you may appeal:
 
-- **How to appeal:** Send an email to [CONTACT EMAIL] with the subject line "Appeal" and include your username, the action taken, and your explanation of why you believe the action was incorrect
-- **Response time:** Yumina will respond to appeals within 14 business days
-- **Penalty during appeal:** Penalties are NOT suspended during the appeal process. The enforcement action remains in effect until the appeal is resolved.
-- **Final decision:** The decision made after an appeal review is final
+- __How to appeal:__ Send an email to support@yumina.io with the subject line "Appeal" and include your username, the action taken, and your explanation of why you believe the action was incorrect
+- __Response time:__ Yumina will respond to appeals within 14 business days
+- __Penalty during appeal:__ Penalties are NOT suspended during the appeal process. The enforcement action remains in effect until the appeal is resolved.
+- __Final decision:__ The decision made after an appeal review is final
 
-### 45. False Reports
+### 44. False Reports
 
 The reporting system exists to keep the community safe. Abuse of the reporting system undermines that purpose.
 
 - Submitting malicious, knowingly false, or frivolous reports is a violation of these Guidelines
 - Repeatedly filing false reports against a specific user constitutes harassment
-- Users who abuse the reporting system will be subject to the same penalty ladder described in Section 42
-
----
+- Users who abuse the reporting system will be subject to the same penalty ladder described in Section 41
 
 ## Part 9: Closing
 
-### 46. Cooperation with Law Enforcement
+### 45. Cooperation with Law Enforcement
 
 Yumina will cooperate with law enforcement agencies when legally required to do so, including in response to valid legal process such as subpoenas, court orders, or search warrants. Yumina may also voluntarily report to law enforcement when we have a good-faith belief that content or conduct on the Service involves imminent danger to life, child exploitation, or other serious criminal activity.
 
-### 47. Contact
+### 46. Contact
 
 If you have questions about these Community Guidelines, need to report a violation, or wish to appeal an enforcement action, please contact us:
 
-- **Email:** [CONTACT EMAIL]
-- **Security issues:** [SECURITY EMAIL]
+- __Email:__ support@yumina.io
+- __Security issues:__ security@yumina.io
 
 Thank you for being part of the Yumina community. These Guidelines exist because we believe that creative freedom and user safety are not at odds — they depend on each other. By following these rules, you help build a platform where everyone can create, explore, and play with confidence.
-
----
-
-## Placeholders to Complete
-
-| Placeholder | Description |
-|---|---|
-| `[EFFECTIVE DATE]` | The date these Guidelines take effect |
-| `[TERMS OF USE URL]` | URL to the Yumina Terms of Use |
-| `[PRIVACY POLICY URL]` | URL to the Yumina Privacy Policy |
-| `[CONTACT EMAIL]` | General contact / reporting email address |
-| `[SECURITY EMAIL]` | Security vulnerability reporting email address |

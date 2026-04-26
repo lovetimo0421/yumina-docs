@@ -26,9 +26,21 @@ export default defineConfig({
           { text: 'Basic Guide', link: '/guide/01-what-is-yumina' },
           { text: 'Vision', link: '/vision/' },
           { text: 'Creator Guide', link: '/creator-guide/00-welcome' },
+          { text: 'Legal', link: '/legal/' },
           { text: 'Yumina', link: 'https://yumina.io' }
         ],
         sidebar: {
+          '/legal/': [
+            {
+              text: 'Legal',
+              items: [
+                { text: 'Overview', link: '/legal/' },
+                { text: 'Terms of Use', link: '/legal/terms-of-use' },
+                { text: 'Privacy Policy', link: '/legal/privacy-policy' },
+                { text: 'Community Guidelines', link: '/legal/community-guidelines' },
+              ]
+            }
+          ],
           '/guide/': [
             {
               text: 'Basic Guide',

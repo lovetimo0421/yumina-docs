@@ -56,8 +56,12 @@ SDK 完整接口（按功能分类）：
 | `worldName` | `string` | 当前世界的名字 |
 | `worldId` | `string` | 当前世界的 UUID |
 | `sessionId` | `string` | 当前游玩会话的 UUID |
-| `currentUser` | `{ id, name?, image? } \| null` | 当前登录玩家，未登录时为 `null` |
+| `currentUser` | `{ id, name?, image? } \| null` | 原始账号:id、昵称、账号头像。未登录为 `null`。**账号级 UI** 用这个(比如"查看个人主页"按钮)。**世界内角色扮演**渲染请用 `user` |
+| `user` | `{ name: string; avatar: string \| null }` | 角色扮演视角的玩家——遵循跟 `{{user}}` 宏一致的 persona/账号分支:玩家启用了 persona 时 `user.name` 是 persona 名、`user.avatar` 是 persona 头像;否则回退到账号。**世界内的聊天气泡、人物卡、个人面板就用这个** |
 | `room` | `Record<string, unknown> \| null` | 当前多人房间数据，单人游戏为 `null` |
+| `mode` | `"session" \| "guest-preview"` | `"session"` 是真实游玩会话。`"guest-preview"` 是未登录玩家在 hub 的预览态——会改状态的动作都是空操作，并把登录提示交给主应用 |
+| `capabilities` | `{ canSendMessage, canPersistSession, canUseSessionApis, requiresAuth }` | 当前 `mode` 的权能。读它来 disable 那些"按了也白按"的按钮(比如游客预览态的发送键)，或者渲染一个"登录后继续"的内联 CTA |
+| `language` | `string` | 宿主当前 i18n 语言代码(`"en"`、`"zh"` …)。卡片自己做 i18n 时读它选翻译，不用依赖宿主 i18next 实例 |
 | `messages` | `Array<Record<string, unknown>>` | 完整消息历史，类型见[`SandboxMessage`](#sandboxmessage) |
 | `permissions` | `Record<string, unknown> \| null` | 当前玩家对当前世界的权限（编辑、分享等） |
 | `isStreaming` | `boolean` | AI 正在生成回复时为 `true` |
@@ -85,6 +89,7 @@ SDK 完整接口（按功能分类）：
 | `executeAction(actionId)` | 触发一条规则引擎定义的命名动作（例如 `"attackBoss"`） |
 | `switchGreeting(index)` | 切换到指定索引的开场白变体 |
 | `clearPendingChoices()` | 清空待选按钮（不选任何一个直接关掉） |
+| `setComposerDraft(text)` | 把 `text` 填进聊天输入框并聚焦。**不发送。** 用于希望玩家审稿/编辑后再发的场景(比如 NPC 互动按钮，先把开场话术准备好)。沙箱内本地事件——不走父窗口往返——所以**只能跟内置的 `<MessageInput>` / `<Chat>` 组件配合使用** |
 
 ### 聊天控制
 
@@ -182,7 +187,21 @@ const text = await api.ai.complete({
 })
 ```
 
-返回 `Promise<string>`——完整响应文本。120 秒超时。
+返回 `Promise<string>`——完整响应文本。客户端 120 秒超时。
+
+#### 限制与计费
+
+| 限制 | 数值 | 来源 |
+|------|------|------|
+| 单次最多消息数 | 50 | 服务端 HTTP 400 拒绝 |
+| 全部消息总字符数 | 50,000 字符 | 服务端 HTTP 400 拒绝 |
+| `maxTokens` 默认值 | 2048 | 不传时的默认 |
+| `maxTokens` 上限 | 8192 | 超过会被静默夹紧 |
+| `temperature` 范围 | 0–2，默认 1.0 | 越界会夹紧 |
+| 默认模型 | 玩家的 `selectedModel`;两者都空时回退到 `anthropic/claude-sonnet-4.6` | |
+| 速率限制 | **与主聊天共享** —— 旁路调用和主聊轮次共用同一个每分钟配额 | 超额返回 HTTP 429 |
+| Credits | 跟主聊天一样按 token 计费。**BYOK 用户**跳过服务端扣费，但还是要付自己 provider 的钱 | 在使用日志里 endpoint 标为 `"side-completion"` |
+| 鉴权 | 会话必须属于当前玩家;否则返回 HTTP 404 | |
 
 #### `includeLorebook` —— 自动注入世界书
 
@@ -486,6 +505,21 @@ interface BranchContext {
 | `window.location = "/app/hub"` | `api.navigate("/app/hub")` |
 | `navigator.clipboard.writeText(t)` | `api.copyToClipboard(t)` |
 
+### 可以直接用的浏览器 API
+
+沙箱对那些不碰网络、不碰共享源的 API 是放行的。下面这些跟普通浏览器一样能用，不需要 SDK 包装:
+
+| API | 卡片里的典型用法 |
+|-----|------------------|
+| `<input type="file">` + `FileReader.readAsDataURL` / `readAsText` | 让玩家选图/音/文本文件 → 存成 data URL 或字符串放进变量。见[配方:玩家上传图片](./26-recipe-player-uploaded-images.md) |
+| `URL.createObjectURL` / `revokeObjectURL` | 给 `Blob` 生成临时内存 URL(比如保存前预览) |
+| `<canvas>` + `getContext("2d")` + `toDataURL` / `toBlob` | 存进变量前对图片做缩放、裁剪、合成 |
+| `<img>`、`<audio>`、`<video>` | 渲染同源 URL、`@asset:...` 解析后的 URL、`data:`/`blob:` URL |
+| `IntersectionObserver`、`ResizeObserver`、`matchMedia`、`requestAnimationFrame` | 标准布局/动画原语 |
+| `crypto.randomUUID`、`crypto.subtle` | 客户端 hash 与 ID 生成 |
+| `WebAudio` (`AudioContext`) | 轻量音频合成或分析 |
+| `Notification`、`navigator.vibrate`、`screen.orientation` | 受浏览器自身权限限制，不受沙箱限制 |
+
 ---
 
 ## 速查：API 全貌
@@ -496,8 +530,10 @@ interface BranchContext {
 useYumina()
 ├── 状态读取
 │   ├── variables, globalVariables, personalVariables, roomPersonalVariables
-│   ├── worldName, worldId, sessionId, currentUser, room
-│   ├── messages, permissions
+│   ├── worldName, worldId, sessionId
+│   ├── currentUser (账号), user (角色扮演视角)
+│   ├── room, mode, capabilities, language
+│   ├── messages, permissions, entries
 │   ├── isStreaming, streamingContent, streamingReasoning
 │   ├── pendingChoices, error, readOnly, greetingContent, canvasMode
 │   ├── checkpoints
@@ -507,7 +543,8 @@ useYumina()
 │   ├── setVariable(id, value, options?)
 │   ├── executeAction(actionId)
 │   ├── switchGreeting(index)
-│   └── clearPendingChoices()
+│   ├── clearPendingChoices()
+│   └── setComposerDraft(text)              // 仅填入输入框，不发送
 ├── 聊天控制
 │   ├── editMessage(id, content) → Promise<boolean>
 │   ├── deleteMessage(id) → Promise<boolean>
@@ -571,6 +608,13 @@ useYumina()
 ├── localStorage / sessionStorage → api.storage
 ├── window.location → 合成对象 + navigate
 └── navigator.clipboard → copyToClipboard
+
+可以直接用的浏览器 API
+├── <input type="file"> + FileReader      // 玩家上传文件 → data URL
+├── <canvas>, URL.createObjectURL          // 图片处理
+├── IntersectionObserver, ResizeObserver, matchMedia, rAF
+├── crypto.randomUUID, crypto.subtle
+└── WebAudio (AudioContext)
 ```
 
 ---

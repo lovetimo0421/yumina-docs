@@ -105,6 +105,7 @@ export default defineConfig({
                 { text: 'Map & Scene Navigation ★★★', link: '/creator-guide/23-recipe-map-navigation' },
                 { text: 'Achievement System ★★★', link: '/creator-guide/24-recipe-achievements' },
                 { text: 'Audio Design Guide ★★', link: '/creator-guide/25-recipe-audio-design' },
+                { text: 'Player-Uploaded Images ★', link: '/creator-guide/26-recipe-player-uploaded-images' },
               ]
             },
             {
@@ -206,6 +207,7 @@ export default defineConfig({
                 { text: '地图与场景导航 ★★★', link: '/zh/creator-guide/23-recipe-map-navigation' },
                 { text: '成就系统 ★★★', link: '/zh/creator-guide/24-recipe-achievements' },
                 { text: '音效设计指南 ★★', link: '/zh/creator-guide/25-recipe-audio-design' },
+                { text: '玩家上传图片 ★', link: '/zh/creator-guide/26-recipe-player-uploaded-images' },
               ]
             },
             {

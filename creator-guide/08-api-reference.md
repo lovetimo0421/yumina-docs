@@ -56,8 +56,12 @@ Read the latest game state. The component re-renders whenever any of these chang
 | `worldName` | `string` | Name of the current world |
 | `worldId` | `string` | UUID of the current world |
 | `sessionId` | `string` | UUID of the current play session |
-| `currentUser` | `{ id, name?, image? } \| null` | Currently logged-in player; `null` when logged out |
+| `currentUser` | `{ id, name?, image? } \| null` | Raw account: id, display name, account avatar. `null` when logged out. Use for **account-level** UI like "view profile". For **role-play** rendering inside the world, use `user` instead |
+| `user` | `{ name: string; avatar: string \| null }` | The role-played player — same persona-vs-account branching as the `{{user}}` macro. When the player has a persona active, `user.name` is the persona name and `user.avatar` is the persona avatar; otherwise it falls back to the account. **This is what you want for in-world chat bubbles, character cards, profile panels** |
 | `room` | `Record<string, unknown> \| null` | Current multiplayer room data, `null` in single-player |
+| `mode` | `"session" \| "guest-preview"` | `"session"` is a real play session. `"guest-preview"` is a logged-out hub preview — actions that mutate state are no-ops and surface a sign-in prompt to the parent |
+| `capabilities` | `{ canSendMessage, canPersistSession, canUseSessionApis, requiresAuth }` | What the current `mode` allows. Read these to disable buttons that would no-op (e.g. the Send button in guest preview), or to render an inline "Sign in to continue" CTA |
+| `language` | `string` | Active i18n language code from the host (`"en"`, `"zh"`, ...). Use this to pick translations inside the card without depending on the host's i18next instance |
 | `messages` | `Array<Record<string, unknown>>` | Full message history — see [`SandboxMessage`](#sandboxmessage) |
 | `permissions` | `Record<string, unknown> \| null` | Current player's permissions for this world (edit, share, ...) |
 | `isStreaming` | `boolean` | `true` while the AI is generating a reply |
@@ -85,6 +89,7 @@ These methods return nothing; they just post the intent to the parent app.
 | `executeAction(actionId)` | Fire a named action defined by the rules engine (e.g. `"attackBoss"`) |
 | `switchGreeting(index)` | Swap to a different greeting variant by index |
 | `clearPendingChoices()` | Dismiss pending choice buttons without picking one |
+| `setComposerDraft(text)` | Drop `text` into the chat composer and focus it. **Does not send.** Use when you want the player to review or edit the message before hitting Send (e.g. an NPC interaction button that primes a conversation starter). Sandbox-local — no parent round-trip — so it only works alongside the bundled `<MessageInput>` / `<Chat>` components |
 
 ### Chat control
 
@@ -182,7 +187,21 @@ const text = await api.ai.complete({
 })
 ```
 
-Returns `Promise<string>` with the full response. 120-second timeout.
+Returns `Promise<string>` with the full response. 120-second client-side timeout.
+
+#### Limits and costs
+
+| Limit | Value | Source |
+|-------|-------|--------|
+| Max messages per call | 50 | Server rejects with HTTP 400 |
+| Max total content | 50,000 characters across all messages | Server rejects with HTTP 400 |
+| `maxTokens` default | 2048 | Default when omitted |
+| `maxTokens` ceiling | 8192 | Larger values are clamped silently |
+| `temperature` range | 0–2, default 1.0 | Out-of-range values are clamped |
+| Default model | Player's `selectedModel`, falling back to `anthropic/claude-sonnet-4.6` if neither `model` nor `selectedModel` is set | |
+| Rate limit | **Shared with main chat** — side calls and main-chat turns count against the same per-minute budget | Returns HTTP 429 + `INSUFFICIENT_CREDITS` style code on overflow |
+| Credits | Same per-token billing as the main chat. **BYOK users skip server credit deduction** but still pay their own provider | Logged with endpoint `"side-completion"` |
+| Auth | The session must belong to the current player; otherwise the call fails with HTTP 404 | |
 
 #### `includeLorebook` — auto-inject world lore
 
@@ -486,6 +505,21 @@ When writing new code, **use the SDK directly** — the redirects exist for old 
 | `window.location = "/app/hub"` | `api.navigate("/app/hub")` |
 | `navigator.clipboard.writeText(t)` | `api.copyToClipboard(t)` |
 
+### Browser APIs that ARE available
+
+The sandbox is permissive about anything that doesn't reach the network or shared origin. The following work as in any browser, with no SDK wrapper needed:
+
+| API | Typical use in cards |
+|-----|----------------------|
+| `<input type="file">` + `FileReader.readAsDataURL` / `readAsText` | Let the player pick an image/audio/text file → store as a data URL or string in a variable. See [Recipe: Player-Uploaded Images](./26-recipe-player-uploaded-images.md) |
+| `URL.createObjectURL` / `revokeObjectURL` | Generate a temporary in-memory URL for a `Blob` (e.g. preview before save) |
+| `<canvas>` + `getContext("2d")` + `toDataURL` / `toBlob` | Resize, crop, or composite images before saving to a variable |
+| `<img>`, `<audio>`, `<video>` | Render local-origin URLs, `@asset:...` resolved URLs, `data:`/`blob:` URLs |
+| `IntersectionObserver`, `ResizeObserver`, `matchMedia`, `requestAnimationFrame` | Standard layout / animation primitives |
+| `crypto.randomUUID`, `crypto.subtle` | Hashing and ID generation for client-side state |
+| `WebAudio` (`AudioContext`) | Lightweight audio synthesis or analysis |
+| `Notification`, `navigator.vibrate`, `screen.orientation` | Limited by browser-level permissions, not by the sandbox itself |
+
 ---
 
 ## At-a-glance: the whole API
@@ -496,8 +530,10 @@ One table, scan once.
 useYumina()
 ├── State reads
 │   ├── variables, globalVariables, personalVariables, roomPersonalVariables
-│   ├── worldName, worldId, sessionId, currentUser, room
-│   ├── messages, permissions
+│   ├── worldName, worldId, sessionId
+│   ├── currentUser (account), user (persona-aware)
+│   ├── room, mode, capabilities, language
+│   ├── messages, permissions, entries
 │   ├── isStreaming, streamingContent, streamingReasoning
 │   ├── pendingChoices, error, readOnly, greetingContent, canvasMode
 │   ├── checkpoints
@@ -507,7 +543,8 @@ useYumina()
 │   ├── setVariable(id, value, options?)
 │   ├── executeAction(actionId)
 │   ├── switchGreeting(index)
-│   └── clearPendingChoices()
+│   ├── clearPendingChoices()
+│   └── setComposerDraft(text)              // prefill, no send
 ├── Chat control
 │   ├── editMessage(id, content) → Promise<boolean>
 │   ├── deleteMessage(id) → Promise<boolean>
@@ -571,6 +608,13 @@ Blocked / redirected
 ├── localStorage / sessionStorage → api.storage
 ├── window.location → synthetic + navigate
 └── navigator.clipboard → copyToClipboard
+
+Browser APIs that work as-is
+├── <input type="file"> + FileReader      // player file uploads → data URL
+├── <canvas>, URL.createObjectURL          // image processing
+├── IntersectionObserver, ResizeObserver, matchMedia, rAF
+├── crypto.randomUUID, crypto.subtle
+└── WebAudio (AudioContext)
 ```
 
 ---

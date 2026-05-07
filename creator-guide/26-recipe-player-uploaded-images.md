@@ -236,7 +236,7 @@ The mental split is simple: **pre-baked content the creator chose** lives in Ass
 
 ---
 
-::: tip This is Recipe #11
+::: tip This is Recipe #15
 The pattern — *browser file API → string variable* — also works for short audio clips (`readAsDataURL` + `<audio src={dataUrl}>`), small text files (`readAsText`), and JSON imports. Whenever you need the player to bring data *into* the world, this is the shape.
 :::
 

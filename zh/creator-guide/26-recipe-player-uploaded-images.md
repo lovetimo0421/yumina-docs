@@ -236,7 +236,7 @@ async function handlePick(e) {
 
 ---
 
-::: tip 这是配方 #11
+::: tip 这是实战配方 #15
 *浏览器文件 API → 字符串变量* 这个套路对其他类型也成立:短音频(`readAsDataURL` + `<audio src={dataUrl}>`)、小段文本(`readAsText`)、JSON 导入。每当你需要让玩家把数据*带进*世界时，都是这个形状。
 :::
 

@@ -72,6 +72,7 @@ Read the latest game state. The component re-renders whenever any of these chang
 | `selectedModel` | `string` | Currently selected AI model ID |
 | `userPlan` | `string` | User's subscription plan (`"free"`, `"go"`, `"plus"`, `"pro"`, `"ultra"`, `"internal"`) |
 | `preferredProvider` | `"official" \| "private"` | Official API vs. user's own key |
+| `entries` | `ReadonlyArray<SandboxEntry>` | World lorebook entries — enabled only, sorted by `position`. See [Lorebook lookups](#lorebook-lookups) and [`SandboxEntry`](#sandboxentry) |
 
 ### Game actions (fire-and-forget)
 
@@ -151,9 +152,20 @@ Replacement for localStorage. Scoped by `worldId`; worlds cannot read each other
 
 Need complex data? `JSON.stringify` / `JSON.parse` on the way in/out.
 
+### Lorebook lookups
+
+Read-only access to the world's lorebook from inside your card. Useful for inspecting or hand-picking entries when assembling a side LLM prompt, building an in-game journal viewer, or wiring a debug panel.
+
+| Field / method | What it does |
+|----------------|--------------|
+| `entries` | `ReadonlyArray<SandboxEntry>` — every enabled entry, already sorted by `position`. See [`SandboxEntry`](#sandboxentry) |
+| `getEntry(name)` | Find one entry by **exact name**. Returns `SandboxEntry \| null`. On `localhost`, a missing lookup logs a one-time warning with the available names — handy when you rename an entry and forget to update the card |
+
+For most cases you don't need to touch these directly: pass `includeLorebook: "matched"` to `ai.complete()` and the server assembles the lore for you (see below). Reach for `entries` / `getEntry` when you need surgical control — e.g. *"this NPC only knows entries tagged `tavern`"*.
+
 ### Raw AI completions
 
-Call the LLM **outside** the main chat pipeline. Use for "NPC inner monologue in a side panel", "AI-generated item descriptions", and so on. **Does not** write to message history, does not trigger state updates, does not consume greetings.
+Call the LLM **outside** the main chat pipeline. Use for "NPC inner monologue in a side panel", "AI-generated item descriptions", "in-card phone chats", and so on. **Does not** write to message history, does not trigger state updates, does not consume greetings.
 
 ```tsx
 const api = useYumina()
@@ -164,12 +176,55 @@ const text = await api.ai.complete({
   ],
   onDelta: (chunk) => setStreaming((s) => s + chunk),  // optional, per-token
   model: "claude-sonnet-4-6",                           // optional, defaults to selectedModel
-  maxTokens: 500,                                       // optional
+  maxTokens: 500,                                       // optional, default 2048, max 8192
   temperature: 0.7,                                     // optional
+  includeLorebook: "matched",                           // optional — see below
 })
 ```
 
 Returns `Promise<string>` with the full response. 120-second timeout.
+
+#### `includeLorebook` — auto-inject world lore
+
+Side calls bypass the main chat's prompt assembly, so the model has no idea who your characters are unless you give it the lorebook. Pass `includeLorebook` and the server prepends a system message built from the world's entries:
+
+| Value | Behavior |
+|-------|----------|
+| omitted / `false` | No injection (default). Use for translations, summaries, classification — anything that doesn't need world context |
+| `true` / `"all"` | Inject every enabled non-greeting entry, sorted by `position`. Predictable, larger token cost |
+| `"matched"` | Run the same keyword matcher the main chat uses against the **last user message** in `messages`. `alwaysSend` entries are always included; keyword-triggered entries are added only when relevant. **Recommended for in-character side calls** |
+
+Without this, an "in-character" side call has the model fabricating personalities from names alone — the in-card persona drifts away from the main chat. With `"matched"`, a phone chat with an NPC sees the same world lore + character profile the main chat sees.
+
+```tsx
+// A phone chat that stays in canon
+api.ai.complete({
+  messages: [
+    { role: "system", content: "Stay strictly in character as Balder. Reply in one or two short lines." },
+    ...history,
+    { role: "user", content: userText },
+  ],
+  includeLorebook: "matched",  // server pulls Balder's profile + relevant world lore
+})
+```
+
+If you need finer control — inject a specific entry by name, or only entries with a specific tag — iterate `api.entries` and assemble the system message yourself instead of using `includeLorebook`:
+
+```tsx
+const tavernLore = api.entries
+  .filter((e) => e.tags?.includes("tavern"))
+  .map((e) => `【${e.name}】\n${e.content}`)
+  .join("\n\n")
+
+api.ai.complete({
+  messages: [
+    { role: "system", content: `You are the tavern keeper.\n\n${tavernLore}` },
+    { role: "user", content: userText },
+  ],
+})
+```
+
+**`"matched"` mode caveats**: it only scans the last user message for keywords (not full history), and condition-gated entries that depend on game variables don't fire on side calls (the matcher sees an empty state stub). Use `true` to force-include everything if precision matters more than tokens.
 
 ### Context injection
 
@@ -351,6 +406,26 @@ interface Checkpoint {
 }
 ```
 
+### `SandboxEntry`
+
+A single read-only lorebook entry, exposed via `api.entries` and `api.getEntry()`:
+
+```ts
+interface SandboxEntry {
+  id: string
+  name: string
+  content: string
+  keywords: string[]
+  position: number
+  section: "system-presets" | "examples" | "chat-history" | "post-history"
+  enabled: boolean
+  role: string                            // "system" | "character" | "lore" | etc.
+  tags?: string[]
+}
+```
+
+This is a slim view of the engine's internal `WorldEntry` — only the fields a card needs for prompt assembly. The runtime pre-filters disabled entries and pre-sorts by `position`, so cards never need to do either themselves.
+
 ### `BranchContext`
 
 ```ts
@@ -467,8 +542,12 @@ useYumina()
 │   ├── storage.get(key) → Promise<string | null>
 │   ├── storage.set(key, value) → Promise<void>
 │   └── storage.remove(key) → Promise<void>
+├── Lorebook
+│   ├── entries (ReadonlyArray<SandboxEntry>)  // sorted by position, enabled only
+│   └── getEntry(name) → SandboxEntry | null
 ├── AI
-│   └── ai.complete({ messages, onDelta?, model?, maxTokens?, temperature? }) → Promise<string>
+│   └── ai.complete({ messages, onDelta?, model?, maxTokens?, temperature?, includeLorebook? }) → Promise<string>
+│        // includeLorebook: true | "all" | "matched" — auto-inject world lore
 ├── Context injection
 │   └── injectContext(message, { role? })
 ├── Model picker

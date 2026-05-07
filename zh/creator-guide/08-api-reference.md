@@ -72,6 +72,7 @@ SDK 完整接口（按功能分类）：
 | `selectedModel` | `string` | 当前选中的 AI 模型 ID |
 | `userPlan` | `string` | 用户订阅计划（`"free"`、`"go"`、`"plus"`、`"pro"`、`"ultra"`、`"internal"`） |
 | `preferredProvider` | `"official" \| "private"` | 官方 API 或用户自有密钥 |
+| `entries` | `ReadonlyArray<SandboxEntry>` | 当前世界的世界书条目（仅 enabled，按 `position` 排好序）。详见[世界书查询](#世界书查询) 与 [`SandboxEntry`](#sandboxentry) |
 
 ### 游戏动作（即发即忘）
 
@@ -151,9 +152,20 @@ localStorage 的替代品。存储按 `worldId` 隔离，不同世界互不可�
 
 存复杂数据？自己 `JSON.stringify` / `JSON.parse`。
 
+### 世界书查询
+
+让卡片代码只读访问当前世界的世界书条目。适合做"在卡片里手挑条目拼到旁路 LLM 调用的提示里"、"游戏内日志/百科查阅器"、"调试面板"这类需要看条目原文的场景。
+
+| 字段 / 方法 | 作用 |
+|-------------|------|
+| `entries` | `ReadonlyArray<SandboxEntry>` —— 所有 enabled 条目，已按 `position` 排好序。详见 [`SandboxEntry`](#sandboxentry) |
+| `getEntry(name)` | 按**精确名字**查找单个条目，找不到返回 `null`。在 `localhost` 下找不到时会打印一次性 warning 列出所有可用名字——作者改名忘了同步卡片时能立刻发现 |
+
+大部分情况其实不需要直接动这两个字段：在 `ai.complete()` 里传 `includeLorebook: "matched"` 就够了，服务端会自动帮你拼好世界书（详见下方）。要做更精细的控制时再用 `entries` / `getEntry`——比如*"这个 NPC 只能知道带 `tavern` 标签的条目"*。
+
 ### AI 原始补全
 
-**跳过**主聊天管线的 LLM 调用。用来做"NPC 在旁路里自言自语"、"用 AI 生成物品描述"之类的场景。**不会**写入消息历史、不会触发状态变更、不会消耗开场白。
+**跳过**主聊天管线的 LLM 调用。用来做"NPC 在旁路里自言自语"、"用 AI 生成物品描述"、"卡片内手机聊天"之类的场景。**不会**写入消息历史、不会触发状态变更、不会消耗开场白。
 
 ```tsx
 const api = useYumina()
@@ -164,12 +176,55 @@ const text = await api.ai.complete({
   ],
   onDelta: (chunk) => setStreaming((s) => s + chunk),  // 可选，逐 token 回调
   model: "claude-sonnet-4-6",                           // 可选，默认用 selectedModel
-  maxTokens: 500,                                       // 可选
+  maxTokens: 500,                                       // 可选，默认 2048，硬顶 8192
   temperature: 0.7,                                     // 可选
+  includeLorebook: "matched",                           // 可选，详见下方
 })
 ```
 
 返回 `Promise<string>`——完整响应文本。120 秒超时。
+
+#### `includeLorebook` —— 自动注入世界书
+
+旁路调用绕过了主聊天的 prompt 拼装，所以模型默认对你这个世界的角色一无所知，除非你把世界书喂给它。传 `includeLorebook` 后，服务端会在你的 `messages` 之前预置一条系统消息，内容由世界条目拼成：
+
+| 取值 | 行为 |
+|------|------|
+| 不传 / `false` | 不注入（默认）。翻译、摘要、分类等不需要世界观的场景就用这个 |
+| `true` / `"all"` | 注入所有 enabled 非 greeting 条目，按 `position` 排序。可预测，但 token 成本较高 |
+| `"matched"` | 用主聊天用的同一套关键词匹配器，匹配 `messages` 里**最后一条 user 消息**。`alwaysSend` 条目永远包括，关键词命中的条目按需加入。**做角色扮演型旁路调用首选这个** |
+
+不传 `includeLorebook` 的话，"扮演型"旁路调用就只能凭名字脑补人设——卡片里的角色和主聊里的同一个人会逐渐漂移成两个人。传了 `"matched"`，手机里跟某个 NPC 聊天就会拿到主聊一样的世界书 + 该角色的人设。
+
+```tsx
+// 不会跑偏的手机私聊
+api.ai.complete({
+  messages: [
+    { role: "system", content: "请严格扮演 Balder，通过微信私聊回复，不超过两句话。" },
+    ...history,
+    { role: "user", content: userText },
+  ],
+  includeLorebook: "matched",  // 服务端自动塞 Balder 的人设 + 相关世界条目
+})
+```
+
+如果需要更细的控制（按名字精确指定某条、或只塞特定标签的条目），就别用 `includeLorebook`，改成自己遍历 `api.entries` 拼系统消息：
+
+```tsx
+const tavernLore = api.entries
+  .filter((e) => e.tags?.includes("tavern"))
+  .map((e) => `【${e.name}】\n${e.content}`)
+  .join("\n\n")
+
+api.ai.complete({
+  messages: [
+    { role: "system", content: `你是酒馆老板。\n\n${tavernLore}` },
+    { role: "user", content: userText },
+  ],
+})
+```
+
+**`"matched"` 模式注意点**：只扫最后一条 user 消息的关键词（不看历史）；依赖游戏变量条件触发的条目在旁路调用里不会触发（matcher 看到的是空状态 stub）。需要精确就用 `true` 强制全注入。
 
 ### 上下文注入
 
@@ -351,6 +406,26 @@ interface Checkpoint {
 }
 ```
 
+### `SandboxEntry`
+
+`api.entries` 与 `api.getEntry()` 暴露给卡片的只读世界书条目：
+
+```ts
+interface SandboxEntry {
+  id: string
+  name: string
+  content: string
+  keywords: string[]
+  position: number
+  section: "system-presets" | "examples" | "chat-history" | "post-history"
+  enabled: boolean
+  role: string                            // "system" | "character" | "lore" 等
+  tags?: string[]
+}
+```
+
+这是引擎内部 `WorldEntry` 类型的精简切片——只暴露卡片拼提示词需要用到的字段。运行时已经过滤掉 disabled 条目并按 `position` 排好序，卡片不需要自己处理。
+
 ### `BranchContext`
 
 ```ts
@@ -467,8 +542,12 @@ useYumina()
 │   ├── storage.get(key) → Promise<string | null>
 │   ├── storage.set(key, value) → Promise<void>
 │   └── storage.remove(key) → Promise<void>
+├── 世界书
+│   ├── entries (ReadonlyArray<SandboxEntry>)  // 仅 enabled，按 position 排好序
+│   └── getEntry(name) → SandboxEntry | null
 ├── AI
-│   └── ai.complete({ messages, onDelta?, model?, maxTokens?, temperature? }) → Promise<string>
+│   └── ai.complete({ messages, onDelta?, model?, maxTokens?, temperature?, includeLorebook? }) → Promise<string>
+│        // includeLorebook: true | "all" | "matched" —— 自动注入世界书
 ├── 上下文注入
 │   └── injectContext(message, { role? })
 ├── 模型选择
